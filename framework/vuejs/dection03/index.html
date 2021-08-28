@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="三、Array 数组侦测数组 Array 虽然也是属于对象类型，但还是存在一些差别，它没办法像 Object 对象那样，通过 setter&#x2F;getter 的方式来监听属性的变化，因此对于 Array 而言，需要用到另外一套变化侦测方案。 3.1 如何追踪变化我们知道，Array 数组有很多个内置方法可以改变数组的值，比如 push,pop,shift等，这些方法都可以改变数组的内容，所以可以尝试通">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对象变化侦测原理（三）">
+<meta property="og:url" content="http://example.com/framework/vuejs/dection03/index.html">
+<meta property="og:site_name" content="Strive">
+<meta property="og:description" content="三、Array 数组侦测数组 Array 虽然也是属于对象类型，但还是存在一些差别，它没办法像 Object 对象那样，通过 setter&#x2F;getter 的方式来监听属性的变化，因此对于 Array 而言，需要用到另外一套变化侦测方案。 3.1 如何追踪变化我们知道，Array 数组有很多个内置方法可以改变数组的值，比如 push,pop,shift等，这些方法都可以改变数组的内容，所以可以尝试通">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-28T08:18:22.000Z">
+<meta property="article:modified_time" content="2021-08-28T13:03:52.687Z">
+<meta property="article:author" content="jiaduo">
+<meta property="article:tag" content="Vue">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/framework/vuejs/dection03/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>对象变化侦测原理（三） | Strive</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Strive</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Rome was not built in one day</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/framework/vuejs/dection03/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          对象变化侦测原理（三）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-08-28 16:18:22 / 修改时间：21:03:52" itemprop="dateCreated datePublished" datetime="2021-08-28T16:18:22+08:00">2021-08-28</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="三、Array-数组侦测"><a href="#三、Array-数组侦测" class="headerlink" title="三、Array 数组侦测"></a>三、Array 数组侦测</h2><p>数组 Array 虽然也是属于对象类型，但还是存在一些差别，它没办法像 Object 对象那样，通过 <code>setter/getter</code> 的方式来监听属性的变化，因此对于 Array 而言，需要用到另外一套变化侦测方案。</p>
+<h3 id="3-1-如何追踪变化"><a href="#3-1-如何追踪变化" class="headerlink" title="3.1 如何追踪变化"></a>3.1 如何追踪变化</h3><p>我们知道，Array 数组有很多个内置方法可以改变数组的值，比如 <code>push</code>,<code>pop</code>,<code>shift</code>等，这些方法都可以改变数组的内容，所以可以尝试通过监听这些方法的调用，来达到监听数组变化的目的。</p>
+<p>但是，这些方法都是内置方法，而且 js 中并没有提供接口给我们覆盖，因此要如何修改这些方法，以达到我们需要的效果呢？</p>
+<span id="more"></span>
+
+<p>答案是，原型方法覆盖。</p>
+<p>方法覆盖的方式可以分为2种：自定义同名私有方法，数组对象原型覆盖。</p>
+<ul>
+<li>1、自定义同名私有方法</li>
+</ul>
+<p>比如说，我们通过给数组对象添加同名的私有方法，就可以覆盖数组的内置方法。</p>
+<p>假设数组对象 <code>arr</code> 本身自带有内置方法 <code>push</code>，我们可以通过添加同名私有方法 <code>arr.push</code> 来覆盖它：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">arr.push = <span class="function"><span class="keyword">function</span> (<span class="params">...args</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 里面再调回数组的内置方法</span></span><br><span class="line">  <span class="built_in">Array</span>.prototype.push.apply(arr, args)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过利用私有方法调用优先级的方式，就可以实现内置方法的代理。</p>
+<p>每当我们调用 <code>push</code> 方法时，效果依旧和原来的一样，只不过实际上调用的是被我们包装代理过后的方法。</p>
+<ul>
+<li>2、数组对象原型覆盖</li>
+</ul>
+<p>除了使用私有方法覆盖的方式以外，还可以通过覆盖数组对象原型 <code>Array.prototype</code> 来实现。</p>
+<p>我们都知道，在调用方法时，会优先从当前对象中查找该方法，如果没有，则会继续往上查找对象的原型中有没有该方法，然后这样一直向上，直到找到对应的方法为止，因此我们可以通过覆盖原型对象来实现方法代理。</p>
+<p>比如说，数组对象 <code>arr</code> 在调用方法 <code>push</code> 时，会先查找本身有没有这个方法，如果没有，它就会去找原型 <code>Array.prototype</code> 中有没有该方法，这个时候找到了，就可以顺利调用 <code>push</code> 方法了。</p>
+<p>假设这个时候，我把 <code>arr</code> 的原型换掉，换成我们自己封装过的，那么在数组对象向上寻找方法时，就会去我们换过的原型中查找方法：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = []</span><br><span class="line"><span class="comment">// 覆盖原型对象</span></span><br><span class="line">arr.__proto__ = &#123;</span><br><span class="line">  <span class="attr">push</span>: <span class="function"><span class="keyword">function</span> (<span class="params">...args</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 里面再调回数组的内置方法</span></span><br><span class="line">    <span class="built_in">Array</span>.prototype.push.apply(arr, args);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>利用这种原型对象替换的方式，也可以实现内置方法的代理。</p>
+<h3 id="3-2-方法拦截器"><a href="#3-2-方法拦截器" class="headerlink" title="3.2 方法拦截器"></a>3.2 方法拦截器</h3><p>方法拦截器就是前面介绍的2种代理方式，其实对于这2种代理方式，Vue 中都有相应的实现。</p>
+<p>首先，需要代理的方法是能够修改数组对象的方法，包括7个方法：<code>push</code>、<code>pop</code>、<code>shift</code>、<code>unshift</code>、<code>splice</code>、<code>sort</code>、<code>reverse</code>。</p>
+<p>其实，我们再构造拦截方法，具体看 Vue 的代码实现：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建一个和原始数组原型一样的对象</span></span><br><span class="line"><span class="keyword">const</span> arrayProto = <span class="built_in">Array</span>.prototype</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> arrayMethods = <span class="built_in">Object</span>.create(arrayProto)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 需要拦截的方法</span></span><br><span class="line"><span class="keyword">const</span> methodsToPatch = [</span><br><span class="line">  <span class="string">&#x27;push&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;pop&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;shift&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;unshift&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;splice&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;sort&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;reverse&#x27;</span></span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 实现方法拦截</span></span><br><span class="line">methodsToPatch.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">method</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> original = arrayProto[method]</span><br><span class="line">  <span class="built_in">Object</span>.defineProperty(arrayMethods, method, &#123;</span><br><span class="line">    <span class="attr">value</span>: <span class="function"><span class="keyword">function</span> <span class="title">mutator</span> (<span class="params">...args</span>) </span>&#123;</span><br><span class="line">      <span class="comment">// 里面再调回原始的方法</span></span><br><span class="line">      <span class="keyword">const</span> result = original.apply(<span class="built_in">this</span>, args)</span><br><span class="line">      <span class="comment">// 后面还可以做其他事情</span></span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">      <span class="keyword">return</span> result</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">enumerable</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="attr">writable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">configurable</span>: <span class="literal">true</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>通过这种方法，我们就可以拦截数组对象的方法调用。</p>
+<p>然后，将构造好的拦截方法设置到数组对象上：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 是否支持 `__proto__` 属性</span></span><br><span class="line"><span class="keyword">const</span> hasProto = <span class="string">&#x27;__proto__&#x27;</span> <span class="keyword">in</span> &#123;&#125;</span><br><span class="line"><span class="comment">// 需要拦截的方法名称集合</span></span><br><span class="line"><span class="keyword">const</span> arrayKeys = <span class="built_in">Object</span>.getOwnPropertyNames(arrayMethods)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Observer</span> </span>&#123;</span><br><span class="line">  <span class="title">constructor</span> (<span class="params">value</span>) &#123;</span><br><span class="line">    <span class="built_in">this</span>.value = value</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">Array</span>.isArray(value)) &#123;</span><br><span class="line">      <span class="comment">// 数组的方法拦截处理</span></span><br><span class="line">      <span class="keyword">if</span> (hasProto) &#123;</span><br><span class="line">        <span class="comment">// 原型替换</span></span><br><span class="line">        protoAugment(value, arrayMethods)</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 自定义私有方法</span></span><br><span class="line">        copyAugment(value, arrayMethods, arrayKeys)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="built_in">this</span>.walk(value)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 替换原型拦截代理</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">protoAugment</span> (<span class="params">target, src</span>) </span>&#123;</span><br><span class="line">  target.__proto__ = src</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 自定义私有方法拦截代理</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">copyAugment</span> (<span class="params">target, src, keys</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, l = keys.length; i &lt; l; i++) &#123;</span><br><span class="line">    <span class="keyword">const</span> key = keys[i]</span><br><span class="line">    <span class="built_in">Object</span>.defineProperty(target, key, &#123;</span><br><span class="line">      <span class="attr">value</span>: src[key],</span><br><span class="line">      <span class="attr">enumerable</span>: <span class="literal">false</span>,</span><br><span class="line">      <span class="attr">writable</span>: <span class="literal">true</span>,</span><br><span class="line">      <span class="attr">configurable</span>: <span class="literal">true</span></span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>为什么需要2种实现方式呢？只用自定义私有方法不就可以实现了吗？</p>
+<p>其实是 Vue 优先使用原型替换来实现拦截，但是由于原型属性 <code>__proto__</code> 在 ES6 之前并不属于官方标准属性，也就是说，通过 <code>__proto__</code>  访问原型的方式并不是所有浏览器都支持！！！</p>
+<p>所以，当浏览器不支持 <code>__proto__</code> 时，就使用自定义方法拦截的方式实现。</p>
+<h3 id="3-3-收集依赖"><a href="#3-3-收集依赖" class="headerlink" title="3.3 收集依赖"></a>3.3 收集依赖</h3><p>既然方法拦截已经实现了，那么接下来就应该要实现依赖收集了。</p>
+<p>依旧是按3步走：在哪里收集依赖、收集到哪里、什么时候触发依赖。</p>
+<ul>
+<li>在哪里收集依赖</li>
+</ul>
+<p>这个其实和 Objec 对象一样，数组对象的依赖也是在 <code>getter</code> 中收集的。</p>
+<p>举个例子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">  <span class="attr">arr</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一般而言，访问数组对象实际上都是通过访问另外一个对象的属性来得到的，例如这里的 <code>obj.arr</code>。</p>
+<p>也就是说，在收集 <code>obj.arr</code> 属性的依赖时，可以顺便收集数组的依赖，记住，是顺便收集~~。</p>
+<p>因此，Array 数组对象的依赖收集，也是在 <code>defineReactive</code> 中收集的：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">defineReactive</span> (<span class="params">obj, key, val</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 递归子属性</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> val === <span class="string">&#x27;object&#x27;</span>) &#123;</span><br><span class="line">    <span class="keyword">new</span> Observer(val)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> dep = <span class="keyword">new</span> Dep()</span><br><span class="line">  <span class="built_in">Object</span>.defineProperty(obj, key, &#123;</span><br><span class="line">    <span class="attr">enumerable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">configurable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveGetter</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="comment">// 收集对象属性的依赖</span></span><br><span class="line">      dep.depend()</span><br><span class="line">      <span class="comment">// 如果val是数组，则顺便收集数组的依赖</span></span><br><span class="line">      <span class="keyword">if</span> (<span class="built_in">Array</span>.isArray(val)) &#123;</span><br><span class="line">        <span class="comment">// 这里收集数组依赖</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> val</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveSetter</span> (<span class="params">newVal</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (newVal === val) &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">      &#125;</span><br><span class="line">      val = newVal</span><br><span class="line">      <span class="comment">// 触发依赖</span></span><br><span class="line">      dep.notify()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所以，在收集值为数组对象依赖时，实际上收集了2次依赖，一次是对象属性 <code>obj.arr</code> 的依赖），一次是属性对应的数组值 <code>[1, 2, 3]</code> 的依赖。</p>
+<p>综上，Array 数组对象的依赖是在 <code>getter</code> 中收集，而依赖的触发则是在方法拦截器中。</p>
+<ul>
+<li>收集到哪里</li>
+</ul>
+<p>Array 数组对象依赖收集起来的地方，和 Object 对象的稍微有点不同。</p>
+<p>原因在于，Object 对象的依赖收集和依赖触发，都是放在同一个作用域内的，也就是 <code>getter/setter</code> 方法，因此依赖只要保存在收集和触发的方法都能访问到的地方即可，在代码中也就是在 <code>defineReactive</code> 方法内。</p>
+<p>而 Array 数组对象的话，依赖收集是在 <code>getter</code> 方法中，依赖触发则是在方法拦截器中，需要保证它们俩都能访问到依赖才行。</p>
+<p>其实也很简单，只要找到它们的公共父作用域即可，而数组对象本身就可以满足这个条件。</p>
+<p>为了能够让收集和触发访问到依赖对象，我们可以将依赖对象保存到数组对象中：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Observer</span> </span>&#123;</span><br><span class="line">  <span class="title">constructor</span> (<span class="params">value</span>) &#123;</span><br><span class="line">    <span class="built_in">this</span>.value = value</span><br><span class="line">    <span class="comment">// 把依赖对象保存在数组对象中，这样两边都可以访问</span></span><br><span class="line">    <span class="built_in">this</span>.value.dep = <span class="keyword">new</span> Dep()</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">Array</span>.isArray(value)) &#123;</span><br><span class="line">      <span class="comment">// 数组的方法拦截处理</span></span><br><span class="line">      <span class="keyword">if</span> (hasProto) &#123;</span><br><span class="line">        <span class="comment">// 原型替换</span></span><br><span class="line">        protoAugment(value, arrayMethods)</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 自定义私有方法</span></span><br><span class="line">        copyAugment(value, arrayMethods, arrayKeys)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="built_in">this</span>.walk(value)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">defineReactive</span> (<span class="params">obj, key, val</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 递归子属性</span></span><br><span class="line">  <span class="keyword">let</span> childOb</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> val === <span class="string">&#x27;object&#x27;</span>) &#123;</span><br><span class="line">    childOb = <span class="keyword">new</span> Observer(val) <span class="comment">// 修改</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> dep = <span class="keyword">new</span> Dep();</span><br><span class="line">  <span class="built_in">Object</span>.defineProperty(obj, key, &#123;</span><br><span class="line">    <span class="attr">enumerable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">configurable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveGetter</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="comment">// 收集对象属性的依赖</span></span><br><span class="line">      dep.depend();</span><br><span class="line">      <span class="comment">// 如果有子对象/子数组</span></span><br><span class="line">      <span class="keyword">if</span> (childOb &amp;&amp; childOb.value.dep) &#123; <span class="comment">// 修改</span></span><br><span class="line">        childOb.value.dep.depend()</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> val</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveSetter</span> (<span class="params">newVal</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (newVal === val) &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">      &#125;</span><br><span class="line">      val = newVal;</span><br><span class="line">      <span class="comment">// 触发依赖</span></span><br><span class="line">      dep.notify();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 方法拦截</span></span><br><span class="line">methodsToPatch.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">method</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> original = arrayProto[method]</span><br><span class="line">  <span class="built_in">Object</span>.defineProperty(arrayMethods, method, &#123;</span><br><span class="line">    <span class="attr">value</span>: <span class="function"><span class="keyword">function</span> <span class="title">mutator</span> (<span class="params">...args</span>) </span>&#123;</span><br><span class="line">      <span class="comment">// 里面再调回原始的方法</span></span><br><span class="line">      <span class="keyword">const</span> result = original.apply(<span class="built_in">this</span>, args)</span><br><span class="line">      <span class="comment">// 前面已经把依赖保存到数组的属性中，可以直接调用</span></span><br><span class="line">      <span class="keyword">if</span> (<span class="built_in">this</span>.dep) &#123; <span class="comment">// 修改</span></span><br><span class="line">        <span class="built_in">this</span>.dep.notify() </span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> result</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">enumerable</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="attr">writable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">configurable</span>: <span class="literal">true</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>虽然这种方式也可以使得收集和触发都能访问到 <code>dep</code> 依赖对象，但是感觉不是很优雅，代码中直接在 <code>value</code> 上赋值了 <code>value.dep</code> 属性，这样很容易造成冲突。</p>
+<p>所以 Vue 使用了另外一种方式，不是直接在 <code>value</code> 上添加属性 <code>value.dep</code>，而是在 <code>value</code> 上加了一个私有属性 <code>__ob__</code>，表示观察者 <code>Observer</code>。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Observer</span> </span>&#123;</span><br><span class="line">  <span class="title">constructor</span> (<span class="params">value</span>) &#123;</span><br><span class="line">    <span class="built_in">this</span>.value = value</span><br><span class="line">    <span class="built_in">this</span>.dep = <span class="keyword">new</span> Dep() <span class="comment">// 修改，直接把依赖放在观察者下</span></span><br><span class="line">    <span class="built_in">this</span>.value.__ob__ = <span class="built_in">this</span> <span class="comment">// 修改，保存到 value.__ob__ 中</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">Array</span>.isArray(value)) &#123;</span><br><span class="line">      <span class="comment">// 数组的方法拦截处理</span></span><br><span class="line">      <span class="keyword">if</span> (hasProto) &#123;</span><br><span class="line">        <span class="comment">// 原型替换</span></span><br><span class="line">        protoAugment(value, arrayMethods)</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 自定义私有方法</span></span><br><span class="line">        copyAugment(value, arrayMethods, arrayKeys)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="built_in">this</span>.walk(value)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">defineReactive</span> (<span class="params">obj, key, val</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 递归子属性</span></span><br><span class="line">  <span class="keyword">let</span> childOb</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> val === <span class="string">&#x27;object&#x27;</span>) &#123;</span><br><span class="line">    childOb = <span class="keyword">new</span> Observer(val)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> dep = <span class="keyword">new</span> Dep();</span><br><span class="line">  <span class="built_in">Object</span>.defineProperty(obj, key, &#123;</span><br><span class="line">    <span class="attr">enumerable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">configurable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveGetter</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="comment">// 收集对象属性的依赖</span></span><br><span class="line">      dep.depend();</span><br><span class="line">      <span class="comment">// 如果有子对象/子数组</span></span><br><span class="line">      <span class="keyword">if</span> (childOb) &#123;</span><br><span class="line">        childOb.dep.depend() <span class="comment">// 修改</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> val</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveSetter</span> (<span class="params">newVal</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (newVal === val) &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">      &#125;</span><br><span class="line">      val = newVal;</span><br><span class="line">      <span class="comment">// 触发依赖</span></span><br><span class="line">      dep.notify();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 方法拦截</span></span><br><span class="line">methodsToPatch.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">method</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> original = arrayProto[method]</span><br><span class="line">  <span class="built_in">Object</span>.defineProperty(arrayMethods, method, &#123;</span><br><span class="line">    <span class="attr">value</span>: <span class="function"><span class="keyword">function</span> <span class="title">mutator</span> (<span class="params">...args</span>) </span>&#123;</span><br><span class="line">      <span class="comment">// 里面再调回原始的方法</span></span><br><span class="line">      <span class="keyword">const</span> result = original.apply(<span class="built_in">this</span>, args)</span><br><span class="line">      </span><br><span class="line">      <span class="comment">// 先获取观察者，再得到依赖</span></span><br><span class="line">      <span class="keyword">const</span> ob = <span class="built_in">this</span>.__ob__ <span class="comment">// 修改</span></span><br><span class="line">      <span class="keyword">if</span> (ob) &#123;</span><br><span class="line">        ob.dep.notify() </span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> result</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">enumerable</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="attr">writable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">configurable</span>: <span class="literal">true</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-4-存在问题"><a href="#3-4-存在问题" class="headerlink" title="3.4 存在问题"></a>3.4 存在问题</h3><p>数组的变化侦测存在的问题，其实很明显。从上面的介绍可知，数组的变化侦测是通过代理数组的原型方法来实现的，所以只要是不经过代理方法调用的，都不会被侦测到。</p>
+<p>比如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">arr[<span class="number">2</span>] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">arr.length = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+
+<p>类似这种直接修改数组的值，就不会被变化侦测检测到。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Vue/" rel="tag"># Vue</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/framework/vuejs/dection02/" rel="prev" title="对象变化侦测原理（二）">
+      <i class="fa fa-chevron-left"></i> 对象变化侦测原理（二）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/lang/js/dom/" rel="next" title="HTML中的DOM对象">
+      HTML中的DOM对象 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81Array-%E6%95%B0%E7%BB%84%E4%BE%A6%E6%B5%8B"><span class="nav-number">1.</span> <span class="nav-text">三、Array 数组侦测</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E5%A6%82%E4%BD%95%E8%BF%BD%E8%B8%AA%E5%8F%98%E5%8C%96"><span class="nav-number">1.1.</span> <span class="nav-text">3.1 如何追踪变化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E6%96%B9%E6%B3%95%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="nav-number">1.2.</span> <span class="nav-text">3.2 方法拦截器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E6%94%B6%E9%9B%86%E4%BE%9D%E8%B5%96"><span class="nav-number">1.3.</span> <span class="nav-text">3.3 收集依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-%E5%AD%98%E5%9C%A8%E9%97%AE%E9%A2%98"><span class="nav-number">1.4.</span> <span class="nav-text">3.4 存在问题</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">jiaduo</p>
+  <div class="site-description" itemprop="description">不积跬步，无以至千里</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021-08 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiaduo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">63k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">57 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
