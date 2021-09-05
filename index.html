@@ -164,7 +164,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/core/enumerated/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/source/jdk8/collection/Stack/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/lufei.jpeg">
@@ -178,7 +178,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/lang/java/core/enumerated/" class="post-title-link" itemprop="url">注解@Enumerated</a>
+            <a href="/lang/java/source/jdk8/collection/Stack/" class="post-title-link" itemprop="url">Stack</a>
         </h2>
 
         <div class="post-meta">
@@ -189,7 +189,668 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-09-05 19:41:42 / 修改时间：19:45:39" itemprop="dateCreated datePublished" datetime="2021-09-05T19:41:42+08:00">2021-09-05</time>
+              <time title="创建时间：2021-09-05 20:20:52 / 修改时间：20:18:31" itemprop="dateCreated datePublished" datetime="2021-09-05T20:20:52+08:00">2021-09-05</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>580</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Stack"><a href="#Stack" class="headerlink" title="Stack"></a>Stack</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Stack</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">Vector</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>Stack</code> 继承自 <code>Vector</code> 类，因此拥有 <code>Vector</code> 的所有特性。</p>
+<h2 id="二、原理"><a href="#二、原理" class="headerlink" title="二、原理"></a>二、原理</h2><p><code>Stack</code> 除了增加几个栈特用的方法以外，其他的和 <code>Vector</code> 都一样，而增加的这几个方法，内部实际上也是调用的 <code>Vector</code> 的方法。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/lang/java/source/jdk8/collection/Stack/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/source/jdk8/collection/Vector/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/lang/java/source/jdk8/collection/Vector/" class="post-title-link" itemprop="url">Vector</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-05 20:19:42 / 修改时间：20:18:05" itemprop="dateCreated datePublished" datetime="2021-09-05T20:19:42+08:00">2021-09-05</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Vector"><a href="#Vector" class="headerlink" title="Vector"></a>Vector</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Vector</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">extends</span> <span class="title">AbstractList</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">List</span>&lt;<span class="title">E</span>&gt;, <span class="title">RandomAccess</span>, <span class="title">Cloneable</span>, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>定义上和 <code>ArrayList</code> 一样，继承同一个父类和实现相同的接口。</p>
+<h2 id="二、实现原理"><a href="#二、实现原理" class="headerlink" title="二、实现原理"></a>二、实现原理</h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/lang/java/source/jdk8/collection/Vector/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/source/jdk8/collection/PriorityQueue/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/lang/java/source/jdk8/collection/PriorityQueue/" class="post-title-link" itemprop="url">PriorityQueue</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-05 20:18:23 / 修改时间：20:45:12" itemprop="dateCreated datePublished" datetime="2021-09-05T20:18:23+08:00">2021-09-05</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="PriorityQueue"><a href="#PriorityQueue" class="headerlink" title="PriorityQueue"></a>PriorityQueue</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PriorityQueue</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractQueue</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PriorityQueue</span><span class="params">(<span class="keyword">int</span> initialCapacity,</span></span></span><br><span class="line"><span class="params"><span class="function">                         Comparator&lt;? <span class="keyword">super</span> E&gt; comparator)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// Note: This restriction of at least one is not actually needed,</span></span><br><span class="line">        <span class="comment">// but continues for 1.5 compatibility</span></span><br><span class="line">        <span class="keyword">if</span> (initialCapacity &lt; <span class="number">1</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</span><br><span class="line">        <span class="keyword">this</span>.queue = <span class="keyword">new</span> Object[initialCapacity];</span><br><span class="line">        <span class="keyword">this</span>.comparator = comparator;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从名称就可以看出来，这是个优先队列，也就是按照从小到大（或从大到小）排序的队列。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/lang/java/source/jdk8/collection/PriorityQueue/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/source/jdk8/collection/Hashtable/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/lang/java/source/jdk8/collection/Hashtable/" class="post-title-link" itemprop="url">Hashtable</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-05 20:17:12 / 修改时间：20:48:47" itemprop="dateCreated datePublished" datetime="2021-09-05T20:17:12+08:00">2021-09-05</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Hashtable"><a href="#Hashtable" class="headerlink" title="Hashtable"></a>Hashtable</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Hashtable</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">extends</span> <span class="title">Dictionary</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">Map</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt;, <span class="title">Cloneable</span>, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>Hashtable</code> 继承了旧的父类 <code>Dictionary</code>，和新的接口 <code>Map</code>。</p>
+<h2 id="二、实现"><a href="#二、实现" class="headerlink" title="二、实现"></a>二、实现</h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/lang/java/source/jdk8/collection/Hashtable/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/source/jdk8/collection/LinkedList/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/lang/java/source/jdk8/collection/LinkedList/" class="post-title-link" itemprop="url">LinkedList</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-05 20:16:28 / 修改时间：20:40:44" itemprop="dateCreated datePublished" datetime="2021-09-05T20:16:28+08:00">2021-09-05</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="LinkedList"><a href="#LinkedList" class="headerlink" title="LinkedList"></a>LinkedList</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LinkedList</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">extends</span> <span class="title">AbstractSequentialList</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">List</span>&lt;<span class="title">E</span>&gt;, <span class="title">Deque</span>&lt;<span class="title">E</span>&gt;, <span class="title">Cloneable</span>, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>LinkedList</code> 和 <code>ArrayList</code> 的定义有一些区别，<code>LinkedList</code> 是继承于 <code>AbstractSequentialList</code> 的，而 <code>ArrayList</code> 是直接继承于 <code>AbstractList</code>。</p>
+<p><code>LinkedList</code> 的继承链多了一层 <code>AbstractSequentialList</code>。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/lang/java/source/jdk8/collection/LinkedList/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/source/jdk8/collection/ArrayList/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/lang/java/source/jdk8/collection/ArrayList/" class="post-title-link" itemprop="url">ArrayList</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-05 20:15:45 / 修改时间：20:15:19" itemprop="dateCreated datePublished" datetime="2021-09-05T20:15:45+08:00">2021-09-05</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="ArrayList"><a href="#ArrayList" class="headerlink" title="ArrayList"></a>ArrayList</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ArrayList</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractList</span>&lt;<span class="title">E</span>&gt; <span class="keyword">implements</span> <span class="title">List</span>&lt;<span class="title">E</span>&gt;, <span class="title">RandomAccess</span>, <span class="title">Cloneable</span>, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    ...    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>有个地方没搞明白，按理说抽象类 <code>AbstractList</code> 已经包含了接口 <code>List</code>，为何还需要再次实现这个接口呢？</p>
+<p>难道是担心抽象类 <code>AbstractList</code> 有可能会修改，不再实现接口 <code>List</code>？</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/lang/java/source/jdk8/collection/ArrayList/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/source/jdk8/collection/ArrayDeque/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/lang/java/source/jdk8/collection/ArrayDeque/" class="post-title-link" itemprop="url">ArrayDeque</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-05 20:14:27 / 修改时间：20:14:00" itemprop="dateCreated datePublished" datetime="2021-09-05T20:14:27+08:00">2021-09-05</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="ArrayDeque"><a href="#ArrayDeque" class="headerlink" title="ArrayDeque"></a>ArrayDeque</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ArrayDeque</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractCollection</span>&lt;<span class="title">E</span>&gt; </span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">Deque</span>&lt;<span class="title">E</span>&gt;, <span class="title">Cloneable</span>, <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>ArrayDeque</code> 实现了 <code>Deque</code> 接口，是一个数组实现的双向队列。</p>
+<h2 id="二、原理"><a href="#二、原理" class="headerlink" title="二、原理"></a>二、原理</h2><h3 id="2-1-数据结构"><a href="#2-1-数据结构" class="headerlink" title="2.1 数据结构"></a>2.1 数据结构</h3><p><code>ArrayDeque</code> 底层数据存储结构是数组：</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/lang/java/source/jdk8/collection/ArrayDeque/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/source/jdk8/collection/AbstractQueue/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/lang/java/source/jdk8/collection/AbstractQueue/" class="post-title-link" itemprop="url">AbstractQueue</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-05 20:13:58 / 修改时间：20:14:40" itemprop="dateCreated datePublished" datetime="2021-09-05T20:13:58+08:00">2021-09-05</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>614</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="AbstractQueue"><a href="#AbstractQueue" class="headerlink" title="AbstractQueue"></a>AbstractQueue</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractQueue</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">extends</span> <span class="title">AbstractCollection</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">Queue</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>AbstractQueue</code> 只是一个抽取类，其目的主要是为接口 <code>Queue</code> 的一些方法提供了基础的实现模板。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/lang/java/source/jdk8/collection/AbstractQueue/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/source/jdk8/collection/AbstractSet/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/lang/java/source/jdk8/collection/AbstractSet/" class="post-title-link" itemprop="url">AbstractSet</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-05 20:13:54 / 修改时间：20:12:53" itemprop="dateCreated datePublished" datetime="2021-09-05T20:13:54+08:00">2021-09-05</time>
             </span>
 
           <br>
@@ -217,15 +878,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="Enumerated"><a href="#Enumerated" class="headerlink" title="@Enumerated"></a>@Enumerated</h1><p><code>@Enumerated</code> 是JDK中 <code>javax.persistence</code> 包下的注解，用在持久化实体类属性或字段上，表示该属性或字段应该按照枚举类型 <code>Enum</code> 来持久化。例如：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">Gender</span> </span>&#123;</span><br><span class="line">    MALE,</span><br><span class="line">    FEMALE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <h1 id="AbstractSet"><a href="#AbstractSet" class="headerlink" title="AbstractSet"></a>AbstractSet</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractSet</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractCollection</span>&lt;<span class="title">E</span>&gt; <span class="keyword">implements</span> <span class="title">Set</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Column</span></span><br><span class="line">    <span class="meta">@Enumerated</span></span><br><span class="line">    <span class="keyword">private</span> Gender gender;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 省略其他属性方法，后面也是</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>属性或字段按照枚举类型来持久化时，可以分为两种情况：原始类型和字符串类型。</p>
+<p><code>AbstractSet</code> 提供了接口 <code>Set</code> 的模板实现，也就是提供了 <code>Set</code> 中某些方法的实现，减少实现 <code>Set</code> 接口时的代码。</p>
+<h2 id="二、实现"><a href="#二、实现" class="headerlink" title="二、实现"></a>二、实现</h2>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/lang/java/core/enumerated/#more" rel="contents">
+              <a class="btn" href="/lang/java/source/jdk8/collection/AbstractSet/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -249,7 +908,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/core/native/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/source/jdk8/collection/AbstractMap/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/lufei.jpeg">
@@ -263,7 +922,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/lang/java/core/native/" class="post-title-link" itemprop="url">关键字native</a>
+            <a href="/lang/java/source/jdk8/collection/AbstractMap/" class="post-title-link" itemprop="url">AbstractMap</a>
         </h2>
 
         <div class="post-meta">
@@ -274,7 +933,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-09-05 19:30:09 / 修改时间：19:48:49" itemprop="dateCreated datePublished" datetime="2021-09-05T19:30:09+08:00">2021-09-05</time>
+              <time title="创建时间：2021-09-05 20:11:34 / 修改时间：20:12:17" itemprop="dateCreated datePublished" datetime="2021-09-05T20:11:34+08:00">2021-09-05</time>
             </span>
 
           <br>
@@ -283,7 +942,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>3.4k</span>
+              <span>3k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -302,690 +961,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="native"><a href="#native" class="headerlink" title="native"></a>native</h1><h2 id="1-含义"><a href="#1-含义" class="headerlink" title="1. 含义"></a>1. 含义</h2><p>在 JDK 源代码中，有一些方法是被关键字 native 修饰的，就比如 <code>Object</code> 类：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// java.lang.Object</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+          <h1 id="AbstractMap"><a href="#AbstractMap" class="headerlink" title="AbstractMap"></a>AbstractMap</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractMap</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; <span class="keyword">implements</span> <span class="title">Map</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>那 <code>native</code> 关键字的作用是什么呢？</p>
-<p><em><strong><code>native</code> 修饰的方法表示这个方法是原生函数，其具体实现由非 Java 语言实现，比如 C 语言，其代码定义不在 Java 类中，而是在外部文件中（一般是动态链接库 .dll 文件）。</strong></em></p>
+<p><code>AbstractMap</code> 就是接口 <code>Map</code> 的模板实现类，提供一些已经实现好的方法，后续子类继承时就不用重复写了。</p>
+<h2 id="二、实现"><a href="#二、实现" class="headerlink" title="二、实现"></a>二、实现</h2><h3 id="2-1-entrySet"><a href="#2-1-entrySet" class="headerlink" title="2.1 entrySet"></a>2.1 entrySet</h3><p>实际上，<code>AbstractMap</code> 里面的方法实现都是依赖 <code>entrySet()</code> 方法来实现的，具体看看代码吧：</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/lang/java/core/native/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/js/json_data/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/lang/js/json_data/" class="post-title-link" itemprop="url">JSON数据格式</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-08-28 16:37:46 / 修改时间：21:00:48" itemprop="dateCreated datePublished" datetime="2021-08-28T16:37:46+08:00">2021-08-28</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>3.7k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="JSON"><a href="#JSON" class="headerlink" title="JSON"></a>JSON</h1><p>JSON 是一种数据格式，不是一种编程语言。一般用于Web服务的前后端的数据交流格式。</p>
-<h2 id="一、类型"><a href="#一、类型" class="headerlink" title="一、类型"></a>一、类型</h2><p>JSON 的语法可以有3种类型的值：</p>
-<ul>
-<li>简单值：包括字符串、数值、布尔值和 null（但是不支持 Javascript 中的 undefined）</li>
-<li>对象：表示一组无序的键值对</li>
-<li>数组：表示一组有序的值的列表</li>
-</ul>
-<h2 id="二、与-Jsvacript-的区别"><a href="#二、与-Jsvacript-的区别" class="headerlink" title="二、与 Jsvacript 的区别"></a>二、与 Jsvacript 的区别</h2>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/lang/js/json_data/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/js/error/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/lang/js/error/" class="post-title-link" itemprop="url">js如何处理错误</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-08-28 16:32:16 / 修改时间：21:02:50" itemprop="dateCreated datePublished" datetime="2021-08-28T16:32:16+08:00">2021-08-28</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>2.4k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h1><p>在 Javascript 中，处理异常的方式一般有两种：</p>
-<ul>
-<li>try-catch 语句捕获异常</li>
-<li>onerror 事件捕获异常</li>
-</ul>
-<h2 id="一、try-catch-语句"><a href="#一、try-catch-语句" class="headerlink" title="一、try-catch 语句"></a>一、try-catch 语句</h2>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/lang/js/error/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/js/events/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/lang/js/events/" class="post-title-link" itemprop="url">事件的监听以及处理</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-08-28 16:27:33 / 修改时间：21:02:41" itemprop="dateCreated datePublished" datetime="2021-08-28T16:27:33+08:00">2021-08-28</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>11k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>10 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h1><p>事件，是文档或浏览器窗口中发生的一些特定的交互瞬间。</p>
-<p>下面分别介绍事件中的几个重要特性：</p>
-<ul>
-<li>事件流</li>
-<li>事件处理程序</li>
-<li>事件对象</li>
-</ul>
-<h2 id="一、事件流"><a href="#一、事件流" class="headerlink" title="一、事件流"></a>一、事件流</h2><p>事件流是用于描述页面接收事件的顺序。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/lang/js/events/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/js/bom/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/lang/js/bom/" class="post-title-link" itemprop="url">浏览器中的BOM对象</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-08-28 16:24:55 / 修改时间：21:02:58" itemprop="dateCreated datePublished" datetime="2021-08-28T16:24:55+08:00">2021-08-28</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>6.5k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>6 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="BOM"><a href="#BOM" class="headerlink" title="BOM"></a>BOM</h1><p>BOM 是指浏览器对象模型。</p>
-<p>主要用于开发人员控制浏览器显示的界面以外的部分，例如浏览器窗口的位置、浏览器的地址信息、浏览历史界面的前进后退等。</p>
-<h2 id="一、window"><a href="#一、window" class="headerlink" title="一、window"></a>一、window</h2><p>window 对象是 BOM 的核心对象，表示浏览器的一个实例。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/lang/js/bom/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/js/dom/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/lang/js/dom/" class="post-title-link" itemprop="url">HTML中的DOM对象</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-08-28 16:23:19 / 修改时间：21:03:09" itemprop="dateCreated datePublished" datetime="2021-08-28T16:23:19+08:00">2021-08-28</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>13k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>12 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="DOM"><a href="#DOM" class="headerlink" title="DOM"></a>DOM</h1><p>DOM（文档对象模型）是针对 HTML 和 XML 文档的一个API。</p>
-<ul>
-<li>主流浏览器都完成了 DOM1 级的实现</li>
-<li>IE 的 DOM 对象都是以 COM 对象的形式存在，和原始的 DOM 对象行为并不一致</li>
-</ul>
-<h2 id="一、节点层次"><a href="#一、节点层次" class="headerlink" title="一、节点层次"></a>一、节点层次</h2><p>DOM 可以将 HTML 或 XML 文档描绘成一个由多层节点构成的结构，简单点说，就是一个树结构。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/lang/js/dom/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/framework/vuejs/dection03/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/framework/vuejs/dection03/" class="post-title-link" itemprop="url">对象变化侦测原理（三）</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-08-28 16:18:22 / 修改时间：21:03:52" itemprop="dateCreated datePublished" datetime="2021-08-28T16:18:22+08:00">2021-08-28</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>7k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>6 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="三、Array-数组侦测"><a href="#三、Array-数组侦测" class="headerlink" title="三、Array 数组侦测"></a>三、Array 数组侦测</h2><p>数组 Array 虽然也是属于对象类型，但还是存在一些差别，它没办法像 Object 对象那样，通过 <code>setter/getter</code> 的方式来监听属性的变化，因此对于 Array 而言，需要用到另外一套变化侦测方案。</p>
-<h3 id="3-1-如何追踪变化"><a href="#3-1-如何追踪变化" class="headerlink" title="3.1 如何追踪变化"></a>3.1 如何追踪变化</h3><p>我们知道，Array 数组有很多个内置方法可以改变数组的值，比如 <code>push</code>,<code>pop</code>,<code>shift</code>等，这些方法都可以改变数组的内容，所以可以尝试通过监听这些方法的调用，来达到监听数组变化的目的。</p>
-<p>但是，这些方法都是内置方法，而且 js 中并没有提供接口给我们覆盖，因此要如何修改这些方法，以达到我们需要的效果呢？</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/framework/vuejs/dection03/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/framework/vuejs/dection02/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/framework/vuejs/dection02/" class="post-title-link" itemprop="url">对象变化侦测原理（二）</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-08-28 16:15:19 / 修改时间：21:03:26" itemprop="dateCreated datePublished" datetime="2021-08-28T16:15:19+08:00">2021-08-28</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>5.8k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>5 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="二、Object-变化侦测"><a href="#二、Object-变化侦测" class="headerlink" title="二、Object 变化侦测"></a>二、Object 变化侦测</h2><p>变化侦测指的是，当运行时的状态发生变化时，应用程序可以知道哪个状态发生了变化，并作出相应的动作。</p>
-<p>变化侦测的方式可以分为2种：一种是“推（push）”，一种是“拉（pull）”。</p>
-<p>Vue 的变化侦测就属于“推，当状态发生变化时，它就会通知相应的依赖对象进行更新。</p>
-<h3 id="2-1-追踪变化"><a href="#2-1-追踪变化" class="headerlink" title="2.1 追踪变化"></a>2.1 追踪变化</h3>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/framework/vuejs/dection02/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/framework/vuejs/dection01/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/framework/vuejs/dection01/" class="post-title-link" itemprop="url">对象变化侦测原理（一）</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-08-28 16:13:10 / 修改时间：21:03:42" itemprop="dateCreated datePublished" datetime="2021-08-28T16:13:10+08:00">2021-08-28</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>3.1k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="变化侦测原理"><a href="#变化侦测原理" class="headerlink" title="变化侦测原理"></a>变化侦测原理</h1><h2 id="一、对象属性"><a href="#一、对象属性" class="headerlink" title="一、对象属性"></a>一、对象属性</h2><p>对于 js 对象的属性，可以分为2种：数据属性和访问属性。</p>
-<h3 id="1-1-数据属性"><a href="#1-1-数据属性" class="headerlink" title="1.1 数据属性"></a>1.1 数据属性</h3><p>数据属性就是普通的对象属性值，可以读入和写入值。</p>
-<p>例如，下述的属性 <code>data</code> 就是数据属性：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;&#125;;</span><br><span class="line">obj.data = <span class="string">&#x27;data&#x27;</span>;</span><br><span class="line"></span><br><span class="line">alert(obj.data) <span class="comment">// &quot;data&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>对于数据属性，它有4个特性：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/framework/vuejs/dection01/#more" rel="contents">
+              <a class="btn" href="/lang/java/source/jdk8/collection/AbstractMap/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1008,7 +990,7 @@
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1076,14 +1058,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1119,12 +1101,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">68k</span>
+    <span title="站点总字数">107k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:02</span>
+    <span title="站点阅读时长">1:37</span>
 </div>
 
         

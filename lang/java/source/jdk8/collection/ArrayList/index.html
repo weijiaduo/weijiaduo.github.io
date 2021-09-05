@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="ArrayList一、定义123public class ArrayList&lt;E&gt; extends AbstractList&lt;E&gt; implements List&lt;E&gt;, RandomAccess, Cloneable, java.io.Serializable &amp;#123;    ...    &amp;#125; 有个地方没搞明白，按理说抽象类 AbstractLi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ArrayList">
+<meta property="og:url" content="http://example.com/lang/java/source/jdk8/collection/ArrayList/index.html">
+<meta property="og:site_name" content="Strive">
+<meta property="og:description" content="ArrayList一、定义123public class ArrayList&lt;E&gt; extends AbstractList&lt;E&gt; implements List&lt;E&gt;, RandomAccess, Cloneable, java.io.Serializable &amp;#123;    ...    &amp;#125; 有个地方没搞明白，按理说抽象类 AbstractLi">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-05T12:15:45.000Z">
+<meta property="article:modified_time" content="2021-09-05T12:15:19.693Z">
+<meta property="article:author" content="jiaduo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="集合">
+<meta property="article:tag" content="源码">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/lang/java/source/jdk8/collection/ArrayList/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>ArrayList | Strive</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Strive</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Rome was not built in one day</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/source/jdk8/collection/ArrayList/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ArrayList
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-05 20:15:45 / 修改时间：20:15:19" itemprop="dateCreated datePublished" datetime="2021-09-05T20:15:45+08:00">2021-09-05</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="ArrayList"><a href="#ArrayList" class="headerlink" title="ArrayList"></a>ArrayList</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ArrayList</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractList</span>&lt;<span class="title">E</span>&gt; <span class="keyword">implements</span> <span class="title">List</span>&lt;<span class="title">E</span>&gt;, <span class="title">RandomAccess</span>, <span class="title">Cloneable</span>, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    ...    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>有个地方没搞明白，按理说抽象类 <code>AbstractList</code> 已经包含了接口 <code>List</code>，为何还需要再次实现这个接口呢？</p>
+<p>难道是担心抽象类 <code>AbstractList</code> 有可能会修改，不再实现接口 <code>List</code>？</p>
+<span id="more"></span>
+
+<h2 id="二、实现原理"><a href="#二、实现原理" class="headerlink" title="二、实现原理"></a>二、实现原理</h2><p><code>ArrayList</code> 底层实现是用数组 <code>elementData</code> 来保存集合元素的，并且数组的类型是 <code>Object</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 没有设为private的原因是为了让内部类可以访问该属性</span></span><br><span class="line"><span class="keyword">transient</span> Object[] elementData;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-最大容量"><a href="#2-1-最大容量" class="headerlink" title="2.1 最大容量"></a>2.1 最大容量</h3><p><code>ArrayList</code> 内置数组的最大容量是：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The maximum size of array to allocate. Some VMs reserve some header words in an array. Attempts to allocate larger arrays may result in OutOfMemoryError: Requested array size exceeds VM limit</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">MAX_ARRAY_SIZE = Integer.MAX_VALUE - <span class="number">8</span>;</span><br></pre></td></tr></table></figure>
+
+<p>为什么需要 <code>-8</code> 呢？按照源码的备注来看，是因为有些 JVM 在数组的实现上，会保留一些字节作为数组头，用于标记数组的相关信息。可能是“长度”“类型”之类的信息（具体我也没了解）。</p>
+<h3 id="2-2-扩容机制"><a href="#2-2-扩容机制" class="headerlink" title="2.2 扩容机制"></a>2.2 扩容机制</h3><p>虽然底层实现是数组，但是集合列表 <code>ArrayList</code> 是可扩容的，它的扩容方法是：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">grow</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 首先在当前基础上是增长1/2容量</span></span><br><span class="line">    <span class="keyword">int</span> oldCapacity = elementData.length;</span><br><span class="line">    <span class="keyword">int</span> newCapacity = oldCapacity + (oldCapacity &gt;&gt; <span class="number">1</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 判断增长1/2后是否满足容量要求</span></span><br><span class="line">    <span class="keyword">if</span> (newCapacity - minCapacity &lt; <span class="number">0</span>)</span><br><span class="line">        newCapacity = minCapacity;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 新容量-数组最大值 &gt; 0，则扩充为大容量数组</span></span><br><span class="line">    <span class="keyword">if</span> (newCapacity - MAX_ARRAY_SIZE &gt; <span class="number">0</span>)</span><br><span class="line">        newCapacity = hugeCapacity(minCapacity);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 复制数组到更大的内存</span></span><br><span class="line">    elementData = Arrays.copyOf(elementData, newCapacity);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>扩容可以分为3步：</p>
+<ol>
+<li>正常情况下，每次扩容增长当前数组容量的 1/2。</li>
+<li>扩容1/2后仍小于最小容量，则使用最小容量；</li>
+<li>若最小容量值大于数组最大值，则使用大数组容量。</li>
+</ol>
+<p>举几个例子说明：</p>
+<p>例1：假如当前的数组容量是 <code>oldCapacity = 16</code>，<code>minCapacity = 23</code>，那么按照扩容机制的第1条规则：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">newCapacity = <span class="number">16</span> + <span class="number">16</span> / <span class="number">2</span> = <span class="number">24</span></span><br></pre></td></tr></table></figure>
+
+<p>满足要求，因此最终扩容后的数组容量是 <code>24</code>。</p>
+<p>例2：假如当前的数组容量是 <code>oldCapacity = 16</code>，<code>minCapacity = 30</code>，那么按照扩容机制的第2条规则：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 第1条规则</span></span><br><span class="line">newCapacity = <span class="number">16</span> + <span class="number">16</span> / <span class="number">2</span> = <span class="number">24</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 第2条规则</span></span><br><span class="line"><span class="keyword">if</span> (newCapacity - <span class="number">30</span> &lt; <span class="number">0</span>) &#123;</span><br><span class="line">    newCapacity = <span class="number">30</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>那么此时按照第2条规则，最终扩容后的数组容量是 <code>30</code>。</p>
+<p>例3：假如当前的数组容量是 <code>oldCapacity = 16</code>，<code>minCapacity = Integer.MAX_VALUE - 4</code>，那么按照扩容机制的第3条规则：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">minCapacity = Integer.MAX_VALUE - <span class="number">4</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 第1条规则</span></span><br><span class="line">newCapacity = <span class="number">16</span> + <span class="number">16</span> / <span class="number">2</span> = <span class="number">24</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 第2条规则</span></span><br><span class="line"><span class="keyword">if</span> (newCapacity - minCapacity &lt; <span class="number">0</span>) &#123;</span><br><span class="line">    newCapacity = minCapacity</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第3条规则</span></span><br><span class="line"><span class="keyword">if</span> (newCapacity - MAX_ARRAY_SIZE &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    newCapacity = hugeCapacity(minCapacity);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时扩充后的数组容量由方法 <code>hugeCapacity(minCapacity)</code> 计算，而这个方法的定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">hugeCapacity</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (minCapacity &lt; <span class="number">0</span>) <span class="comment">// overflow</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> OutOfMemoryError();</span><br><span class="line">    <span class="keyword">return</span> (minCapacity &gt; MAX_ARRAY_SIZE) ?</span><br><span class="line">        Integer.MAX_VALUE :</span><br><span class="line">        MAX_ARRAY_SIZE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也就是说，当 <code>minCapacity</code> 值介于 <code>MAX_ARRAY_SIZE</code> 和 <code>Integer.MAX_VALUE</code> 之间时，返回 <code>Integer.MAX_VALUE</code>；否则返回默认的数组最大值 <code>MAX_ARRAY_SIZE</code>。</p>
+<p>虽然这3条规则的代码看起来比较简单，但是实际上它还考虑到了溢出的问题。</p>
+<h3 id="2-3-集合操作"><a href="#2-3-集合操作" class="headerlink" title="2.3 集合操作"></a>2.3 集合操作</h3><p>集合的操作，不外乎增删查改，由于底层是数组实现，因此对于查询和更新，可以直接根据数组的索引来访问即可，很简单（当然，这中间还会进行索引范围的检查，但也不是难事）。</p>
+<p>至于添加和删除，这就涉及到了数组的移动。如果插入到数组中间，就需要把插入位置后面的数组元素都往后移动，才能插入；而删除中间的某个元素，也需要把该元素之后的数组元素往前移动。</p>
+<p>实际上操作也不复杂，举个插入的例子。首先是插入函数的定义：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> index, E element)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 检查索引的范围</span></span><br><span class="line">    rangeCheckForAdd(index);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 保证数组空间足够，不够就扩容</span></span><br><span class="line">    ensureCapacityInternal(size + <span class="number">1</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 把插入位置后的元素往后移动</span></span><br><span class="line">    System.arraycopy(elementData, index, elementData, index + <span class="number">1</span>, size - index);</span><br><span class="line">                     </span><br><span class="line">    <span class="comment">// 插入新元素</span></span><br><span class="line">    elementData[index] = element;</span><br><span class="line">    size++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>原理比较简单，和平时自己用把数据插入到数组时的操作差不多，只是多了一些索引范围和扩容的校验。</p>
+<p>删除的原理也差不多，不过有一个比较有意思的就是，如果同一个对象保存在集合中不止一个位置，那么在删除的时候，只会删除第一个出现的位置：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (o == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; size; index++)</span><br><span class="line">            <span class="keyword">if</span> (elementData[index] == <span class="keyword">null</span>) &#123;</span><br><span class="line">                fastRemove(index);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; size; index++)</span><br><span class="line">            <span class="keyword">if</span> (o.equals(elementData[index])) &#123;</span><br><span class="line">                fastRemove(index);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，删除元素时，只要找到第一个就把它删除，至于后面是否还有这个元素，就不再管了。</p>
+<h3 id="2-4-子列表"><a href="#2-4-子列表" class="headerlink" title="2.4 子列表"></a>2.4 子列表</h3><p>子列表本来觉得没什么特别的东西，后来仔细一看，还真发现了一些华点。</p>
+<p><strong>1）子列表构造函数的参数</strong></p>
+<p>子列表构造函数的参数有啥特别的？先上源代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">SubList(AbstractList&lt;E&gt; parent,</span><br><span class="line">        <span class="keyword">int</span> offset, <span class="keyword">int</span> fromIndex, <span class="keyword">int</span> toIndex) &#123;</span><br><span class="line">    <span class="keyword">this</span>.parent = parent;</span><br><span class="line">    <span class="keyword">this</span>.parentOffset = fromIndex;</span><br><span class="line">    <span class="keyword">this</span>.offset = offset + fromIndex;</span><br><span class="line">    <span class="keyword">this</span>.size = toIndex - fromIndex;</span><br><span class="line">    <span class="keyword">this</span>.modCount = ArrayList.<span class="keyword">this</span>.modCount;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>fromIndex</code> 和 <code>toIndex</code> 很容易理解，就是子集合的索引范围；<code>parent</code> 也很清楚，就是子集合的父集合；</p>
+<p>但是 <code>offset</code> 是干啥用的，不是已经有 <code>fromIndex</code> 和 <code>toIndex</code> 了吗？需要这个参数吗？</p>
+<p>看到后面才发现，原来是为了嵌套子列表，也就是子列表再获取子列表的情况：</p>
+<p><code>ArrayList -&gt; SubList -&gt; SubList -&gt; ...</code></p>
+<p>就类似这种层层嵌套的结构。</p>
+<p>子列表的子列表函数如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;E&gt; <span class="title">subList</span><span class="params">(<span class="keyword">int</span> fromIndex, <span class="keyword">int</span> toIndex)</span> </span>&#123;</span><br><span class="line">    subListRangeCheck(fromIndex, toIndex, size);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> SubList(<span class="keyword">this</span>, offset, fromIndex, toIndex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个时候 <code>offset</code> 的作用就体现出来了。</p>
+<p><strong>2）内部类 <code>SubList</code> 与 <code>ArrayList</code> 的关系</strong></p>
+<p>在源码里可以看到，<code>SubList</code> 里经常会访问 <code>ArrayList</code> 的变量，主要包括 <code>modCount</code> 和 <code>elementData</code>。</p>
+<p>但是考虑到嵌套子列表的情况，它里面是怎么访问到相当于祖先级别的 <code>ArrayList</code> 呢？</p>
+<p>貌似还挺简单的，直接使用 <code>ArrayList.this</code> 就可以访问到外部类的成员（但是我以前还真不知道这种操作，所以特地记下来，哈哈哈~~）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ArrayList.<span class="keyword">this</span>.modCount</span><br><span class="line"></span><br><span class="line">ArrayList.<span class="keyword">this</span>.elementData</span><br><span class="line"></span><br><span class="line">ArrayList.<span class="keyword">this</span>.set(offset + lastRet, e)</span><br></pre></td></tr></table></figure>
+
+<p>由于内部类占用了 <code>this</code>，为了和外部类区分开来，就加上了外部类的类名前缀 <code>ArrayList.this</code>。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/%E9%9B%86%E5%90%88/" rel="tag"># 集合</a>
+              <a href="/tags/%E6%BA%90%E7%A0%81/" rel="tag"># 源码</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/lang/java/source/jdk8/collection/ArrayDeque/" rel="prev" title="ArrayDeque">
+      <i class="fa fa-chevron-left"></i> ArrayDeque
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/lang/java/source/jdk8/collection/LinkedList/" rel="next" title="LinkedList">
+      LinkedList <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ArrayList"><span class="nav-text">ArrayList</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%AE%9A%E4%B9%89"><span class="nav-text">一、定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-text">二、实现原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E6%9C%80%E5%A4%A7%E5%AE%B9%E9%87%8F"><span class="nav-text">2.1 最大容量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E6%89%A9%E5%AE%B9%E6%9C%BA%E5%88%B6"><span class="nav-text">2.2 扩容机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E9%9B%86%E5%90%88%E6%93%8D%E4%BD%9C"><span class="nav-text">2.3 集合操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-%E5%AD%90%E5%88%97%E8%A1%A8"><span class="nav-text">2.4 子列表</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jiaduo"
+      src="/images/lufei.jpeg">
+  <p class="site-author-name" itemprop="name">jiaduo</p>
+  <div class="site-description" itemprop="description">不积跬步，无以至千里</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021/08 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiaduo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">107k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:37</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

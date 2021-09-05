@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Hashtable一、定义1234public class Hashtable&lt;K,V&gt;    extends Dictionary&lt;K,V&gt;    implements Map&lt;K,V&gt;, Cloneable, java.io.Serializable &amp;#123;&amp;#125;  Hashtable 继承了旧的父类 Dictionary，和新的接口 Map。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hashtable">
+<meta property="og:url" content="http://example.com/lang/java/source/jdk8/collection/Hashtable/index.html">
+<meta property="og:site_name" content="Strive">
+<meta property="og:description" content="Hashtable一、定义1234public class Hashtable&lt;K,V&gt;    extends Dictionary&lt;K,V&gt;    implements Map&lt;K,V&gt;, Cloneable, java.io.Serializable &amp;#123;&amp;#125;  Hashtable 继承了旧的父类 Dictionary，和新的接口 Map。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-05T12:17:12.000Z">
+<meta property="article:modified_time" content="2021-09-05T12:48:47.853Z">
+<meta property="article:author" content="jiaduo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="集合">
+<meta property="article:tag" content="源码">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/lang/java/source/jdk8/collection/Hashtable/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Hashtable | Strive</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Strive</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Rome was not built in one day</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/source/jdk8/collection/Hashtable/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hashtable
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-05 20:17:12 / 修改时间：20:48:47" itemprop="dateCreated datePublished" datetime="2021-09-05T20:17:12+08:00">2021-09-05</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Hashtable"><a href="#Hashtable" class="headerlink" title="Hashtable"></a>Hashtable</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Hashtable</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">extends</span> <span class="title">Dictionary</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">Map</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt;, <span class="title">Cloneable</span>, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>Hashtable</code> 继承了旧的父类 <code>Dictionary</code>，和新的接口 <code>Map</code>。</p>
+<h2 id="二、实现"><a href="#二、实现" class="headerlink" title="二、实现"></a>二、实现</h2><span id="more"></span>
+
+<h3 id="2-1-数据结构"><a href="#2-1-数据结构" class="headerlink" title="2.1 数据结构"></a>2.1 数据结构</h3><p><code>HashTable</code> 底层是采用“数组 + 链表”的结构实现的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">transient</span> Entry&lt;?,?&gt;[] table;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">int</span> count;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; <span class="keyword">implements</span> <span class="title">Map</span>.<span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> hash;</span><br><span class="line">    <span class="keyword">final</span> K key;</span><br><span class="line">    V value;</span><br><span class="line">    Entry&lt;K,V&gt; next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过 <code>key</code> 的 <code>hash</code> 映射到数组table上，找到位置后，再将不同的 <code>key</code> 链接到链表上：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">数组（4）</span><br><span class="line"> ___      ___      ___ </span><br><span class="line">| 0 | -&gt; | 4 | -&gt; | 8 |      --链表</span><br><span class="line"> ___      ___ </span><br><span class="line">| 1 | -&gt; | 5 |               --链表</span><br><span class="line"> ___ </span><br><span class="line">| 2 |                        --链表</span><br><span class="line"> ___      ___      ____ </span><br><span class="line">| 3 | -&gt; | 7 | -&gt; | 11 |     --链表</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-集合操作"><a href="#2-2-集合操作" class="headerlink" title="2.2 集合操作"></a>2.2 集合操作</h3><p><strong>1）添加元素</strong></p>
+<p>知道了数据结构，实际上就很容易理解怎么添加一个元素了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addEntry</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    modCount++;</span><br><span class="line"></span><br><span class="line">    Entry&lt;?,?&gt; tab[] = table;</span><br><span class="line">    <span class="keyword">if</span> (count &gt;= threshold) &#123;</span><br><span class="line">        <span class="comment">// 扩容</span></span><br><span class="line">        rehash();</span><br><span class="line"></span><br><span class="line">        tab = table;</span><br><span class="line">        hash = key.hashCode();</span><br><span class="line">        index = (hash &amp; <span class="number">0x7FFFFFFF</span>) % tab.length;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 添加新元素</span></span><br><span class="line">    <span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line">    Entry&lt;K,V&gt; e = (Entry&lt;K,V&gt;) tab[index];</span><br><span class="line">    tab[index] = <span class="keyword">new</span> Entry&lt;&gt;(hash, key, value, e);</span><br><span class="line">    count++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>扩容代码那里暂时忽略，后面再解释，直接看后面几行代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Entry&lt;K,V&gt; e = (Entry&lt;K,V&gt;) tab[index];</span><br><span class="line">tab[index] = <span class="keyword">new</span> Entry&lt;&gt;(hash, key, value, e);</span><br></pre></td></tr></table></figure>
+
+<p>举个例子说明这2行代码的意义，假设当前数据结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">数组（4）</span><br><span class="line"> ___ </span><br><span class="line">| 4 |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___</span><br><span class="line">| 3 |</span><br></pre></td></tr></table></figure>
+
+<p>这个时候添加 0，此时 0 还不在集合里，<code>0 % 4 = 0</code>，所以应该要放入 <code>table[0]</code> 中，但是此时 <code>table[0]</code> 已经有 4 了，所以就需要追加到链表上。</p>
+<p>那么按照上面的2行代码，最终结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">数组（4）</span><br><span class="line"> ___      ___ </span><br><span class="line">| 0 | -&gt; | 4 |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___</span><br><span class="line">| 3 |</span><br></pre></td></tr></table></figure>
+
+<p>注意，添加元素时，是插入到链表头部的，而不是链表尾部。</p>
+<p>至于为什么倒着插入，我想应该是如果每次都插到尾部的话，就得遍历一次链表，代价有点高~~</p>
+<p><strong>2）删除元素</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> V <span class="title">remove</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    Entry&lt;?,?&gt; tab[] = table;</span><br><span class="line">    <span class="keyword">int</span> hash = key.hashCode();</span><br><span class="line">    <span class="keyword">int</span> index = (hash &amp; <span class="number">0x7FFFFFFF</span>) % tab.length;</span><br><span class="line">    <span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line">    Entry&lt;K,V&gt; e = (Entry&lt;K,V&gt;)tab[index];</span><br><span class="line">    <span class="keyword">for</span>(Entry&lt;K,V&gt; prev = <span class="keyword">null</span> ; e != <span class="keyword">null</span> ; prev = e, e = e.next) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((e.hash == hash) &amp;&amp; e.key.equals(key)) &#123;</span><br><span class="line">            modCount++;</span><br><span class="line">            <span class="keyword">if</span> (prev != <span class="keyword">null</span>) &#123;</span><br><span class="line">                prev.next = e.next;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 删除数组元素</span></span><br><span class="line">                tab[index] = e.next;</span><br><span class="line">            &#125;</span><br><span class="line">            count--;</span><br><span class="line">            V oldValue = e.value;</span><br><span class="line">            e.value = <span class="keyword">null</span>;</span><br><span class="line">            <span class="keyword">return</span> oldValue;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>删除没什么好说的，直接删就是了，唯一需要注意的就是，如果删除的是数组上的节点，就需要更新它的值：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">数组（4）</span><br><span class="line"> ___      ___ </span><br><span class="line">| 0 | -&gt; | 4 |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___</span><br><span class="line">| 3 |</span><br></pre></td></tr></table></figure>
+
+<p>比如删除 0，就需要把 4 设置到数组里：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">数组（4）</span><br><span class="line"> ___ </span><br><span class="line">| 4 |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___</span><br><span class="line">| 3 |</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-扩容机制"><a href="#2-2-扩容机制" class="headerlink" title="2.2 扩容机制"></a>2.2 扩容机制</h3><p><code>HashTable</code> 是采用“数组 + 链表”的结构实现的，理论上链表可以无限长。</p>
+<p>但是如果链表太长了，就会导致查询变得很慢，这个要怎么解决呢？</p>
+<p>这个时候就需要扩容了，把过长的链表拆分，变成短链表。那要怎么拆分？</p>
+<p>数据是通过“数组 + 链表”保存的，在维持元素数量不变的情况下，想要链表变短，那就只能增长数组长度。</p>
+<p>其实，<code>HashTable</code> 的扩容规则就是这样的，通过增长数组容量，以重新调整链表的结构，缩短链表的长度。</p>
+<p><strong>1）负载因子</strong></p>
+<p>那还有一个问题，就是，多长的链表才算是太长？或者说，什么时候才需要重新调整数组容量？</p>
+<p>在 <code>HashTable</code> 中，使用了负载因子来表示需要重构数组的时机：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 负载因子</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">float</span> loadFactor;</span><br></pre></td></tr></table></figure>
+
+<p>为了了解负载因子的作用，先解释一下负载的意义。</p>
+<p>举个例子说明，比如当前结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">数组（4）</span><br><span class="line"> ___      ___ </span><br><span class="line">| 0 | -&gt; | 4 |</span><br><span class="line"> ___ </span><br><span class="line">| 1 |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___      ___      ____ </span><br><span class="line">| 3 | -&gt; | 7 | -&gt; | 11 |</span><br></pre></td></tr></table></figure>
+
+<p>那么，此时的数组容量是 4，元素数量是 6，因此实际负载就是 <code>6 / 4 = 1.5</code>。</p>
+<p>也就是说，负载其实表示的是当前数据结构的负载情况，数值越高，表示保存的数据越多。</p>
+<p>因此，负载因子相当于一个阈值，当负载超过这个阈值时，就表示当前数据已经很满了，需要对数组进行扩容了。</p>
+<p>再举个例子，假设当前 <code>HashTable</code> 的负载因子是 0.8，此时的数据结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">数组（4）</span><br><span class="line"> ___      ___ </span><br><span class="line">| 0 | -&gt; | 4 |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___</span><br><span class="line">| 3 |</span><br></pre></td></tr></table></figure>
+
+<p>此时的负载是 <code>4 / 3 = 0.75 &lt; 0.8</code>，暂时不需要扩容。</p>
+<p>如果我再添加一个元素 1 之后：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">数组（4）</span><br><span class="line"> ___      ___ </span><br><span class="line">| 0 | -&gt; | 4 |</span><br><span class="line"> ___ </span><br><span class="line">| 1 |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___</span><br><span class="line">| 3 |</span><br></pre></td></tr></table></figure>
+
+<p>此时的负载是 <code>4 / 4 = 1 &gt; 0.8</code>，这个时候就需要扩容了。</p>
+<p>还有，<code>HashTable</code> 中为了避免经常计算负载，就添加了另一个变量阈值，来维护需要扩容的数量阈值：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 阈值</span><br><span class="line">private int threshold;</span><br></pre></td></tr></table></figure>
+
+<p>它实际就是由数组容量和负载因子算出来的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">threshold = table.length * loadFactor</span><br></pre></td></tr></table></figure>
+
+<p>当元素数量大于这个阈值时，就需要扩容：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (count &gt;= threshold) &#123;</span><br><span class="line">    <span class="comment">// 扩容</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但实际上，阈值 <code>threshold</code> 并不是一个必要的变量，只是为了减少负载的计算（除法计算），而添加的。</p>
+<p><strong>2）扩容规则</strong></p>
+<p>好了，既然知道了扩容的时机，那就说一下扩容的规则吧，究竟要扩容多少才好呢？</p>
+<p><code>HashTable</code> 和其他集合类差不多，具体如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> newCapacity = (oldCapacity &lt;&lt; <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line"><span class="keyword">if</span> (newCapacity - MAX_ARRAY_SIZE &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (oldCapacity == MAX_ARRAY_SIZE)</span><br><span class="line">        <span class="comment">// Keep running with MAX_ARRAY_SIZE buckets</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    newCapacity = MAX_ARRAY_SIZE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>除去溢出判断，一般情况下其实就是 <code>2倍 + 1</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">新数组容量 = 旧数组容量 * 2 + 1</span><br></pre></td></tr></table></figure>
+
+<p><strong>3）扩容实现</strong></p>
+<p>先上代码，后面再解释：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">rehash</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> oldCapacity = table.length;</span><br><span class="line">    Entry&lt;?,?&gt;[] oldMap = table;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算扩容后新的数组容量</span></span><br><span class="line">    <span class="keyword">int</span> newCapacity = (oldCapacity &lt;&lt; <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (newCapacity - MAX_ARRAY_SIZE &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (oldCapacity == MAX_ARRAY_SIZE)</span><br><span class="line">            <span class="comment">// Keep running with MAX_ARRAY_SIZE buckets</span></span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        newCapacity = MAX_ARRAY_SIZE;</span><br><span class="line">    &#125;</span><br><span class="line">    Entry&lt;?,?&gt;[] newMap = <span class="keyword">new</span> Entry&lt;?,?&gt;[newCapacity];</span><br><span class="line"></span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="comment">// 计算新的阈值</span></span><br><span class="line">    threshold = (<span class="keyword">int</span>)Math.min(newCapacity * loadFactor, MAX_ARRAY_SIZE + <span class="number">1</span>);</span><br><span class="line">    table = newMap;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = oldCapacity ; i-- &gt; <span class="number">0</span> ;) &#123;</span><br><span class="line">        <span class="keyword">for</span> (Entry&lt;K,V&gt; old = (Entry&lt;K,V&gt;)oldMap[i] ; old != <span class="keyword">null</span> ; ) &#123;</span><br><span class="line">            Entry&lt;K,V&gt; e = old;</span><br><span class="line">            old = old.next;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 重新分配数组的链表</span></span><br><span class="line">            <span class="keyword">int</span> index = (e.hash &amp; <span class="number">0x7FFFFFFF</span>) % newCapacity;</span><br><span class="line">            e.next = (Entry&lt;K,V&gt;)newMap[index];</span><br><span class="line">            newMap[index] = e;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>举例子说明，假设 <code>HashTable</code> 的负载因子是 0.75，阈值 <code>threshold = 4 * 0.75 = 3</code>，此时的数据结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">数组（4）</span><br><span class="line"> ___      ___ </span><br><span class="line">| 0 | -&gt; | 4 |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___</span><br><span class="line">| 3 |</span><br></pre></td></tr></table></figure>
+
+<p>此时元素数量是 <code>3 &gt;= threshold</code>，表示要扩容了，但是暂时还不需要扩容，因为实际上的扩容，是在下一次添加元素的时候。比如当下次再添加一个元素 1 时，添加前会先扩容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">新数组容量 = 4 * 2 + 1 = 9</span><br></pre></td></tr></table></figure>
+
+<p>好了，现在就开始重新分配数据了：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">旧数组（4）              新数组（9）</span><br><span class="line"> ___      ___             ___ </span><br><span class="line">| 0 | -&gt; | 4 |           |   |</span><br><span class="line"> ___                      ___ </span><br><span class="line">|   |                    |   |</span><br><span class="line"> ___                      ___ </span><br><span class="line">|   |                    |   |</span><br><span class="line"> ___                      ___ </span><br><span class="line">| 3 |                    |   |</span><br><span class="line">                          ___ </span><br><span class="line">                         |   |</span><br><span class="line">                          ___ </span><br><span class="line">                         |   |</span><br><span class="line">                          ___ </span><br><span class="line">                         |   |</span><br><span class="line">                          ___ </span><br><span class="line">                         |   |</span><br><span class="line">                          ___ </span><br><span class="line">                         |   |</span><br></pre></td></tr></table></figure>
+
+<p>首先是 3（为什么是3？仔细看看上面的代码，遍历是从 <code>table.length - 1</code> 倒着开始的），<code>3 % 9 = 3</code>，所以它的新位置就在新数组索引 3 那里：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">旧数组（4）              新数组（9）</span><br><span class="line"> ___      ___             ___ </span><br><span class="line">| 0 | -&gt; | 4 |           |   |</span><br><span class="line"> ___                      ___ </span><br><span class="line">|   |                    |   |</span><br><span class="line"> ___                      ___ </span><br><span class="line">|   |                    |   |</span><br><span class="line"> ___                      ___ </span><br><span class="line">| 3 |                    | 3 |</span><br><span class="line">                          ___ </span><br><span class="line">                         |   |</span><br><span class="line">                          ___ </span><br><span class="line">                         |   |</span><br><span class="line">                          ___ </span><br><span class="line">                         |   |</span><br><span class="line">                          ___ </span><br><span class="line">                         |   |</span><br><span class="line">                          ___ </span><br><span class="line">                         |   |</span><br></pre></td></tr></table></figure>
+
+<p>接着是 0，<code>0 % 9 = 0</code>，所以它的新位置就在新数组索引 0 那里：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">旧数组（4）              新数组（9）</span><br><span class="line"> ___      ___             ___ </span><br><span class="line">| 0 | -&gt; | 4 |           | 0 |</span><br><span class="line"> ___                      ___ </span><br><span class="line">|   |                    |   |</span><br><span class="line"> ___                      ___ </span><br><span class="line">|   |                    |   |</span><br><span class="line"> ___                      ___ </span><br><span class="line">| 3 |                    | 3 |</span><br><span class="line">                          ___ </span><br><span class="line">                         |   |</span><br><span class="line">                          ___ </span><br><span class="line">                         |   |</span><br><span class="line">                          ___ </span><br><span class="line">                         |   |</span><br><span class="line">                          ___ </span><br><span class="line">                         |   |</span><br><span class="line">                          ___ </span><br><span class="line">                         |   |</span><br></pre></td></tr></table></figure>
+
+<p>最后是 4，<code>4 % 9 = 4</code>，所以它的新位置就在新数组索引 4 那里：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">旧数组（4）              新数组（9）</span><br><span class="line"> ___      ___             ___ </span><br><span class="line">| 0 | -&gt; | 4 |           | 0 |</span><br><span class="line"> ___                      ___ </span><br><span class="line">|   |                    |   |</span><br><span class="line"> ___                      ___ </span><br><span class="line">|   |                    |   |</span><br><span class="line"> ___                      ___ </span><br><span class="line">| 3 |                    | 3 |</span><br><span class="line">                          ___ </span><br><span class="line">                         | 4 |</span><br><span class="line">                          ___ </span><br><span class="line">                         |   |</span><br><span class="line">                          ___ </span><br><span class="line">                         |   |</span><br><span class="line">                          ___ </span><br><span class="line">                         |   |</span><br><span class="line">                          ___ </span><br><span class="line">                         |   |</span><br></pre></td></tr></table></figure>
+
+<p>至此，扩容重新分配就完成了。</p>
+<p>其实可以看到，链表 0 被拆分了，就是通过这种扩容方式，来减短链表的长度，提高查询效率。</p>
+<p>差点忘了，还要把新增元素1加进去：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">数组（9）</span><br><span class="line"> ___ </span><br><span class="line">| 0 |</span><br><span class="line"> ___ </span><br><span class="line">| 1 |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___ </span><br><span class="line">| 3 |</span><br><span class="line"> ___ </span><br><span class="line">| 4 |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br></pre></td></tr></table></figure>
+
+<p>这样才算是圆满结束了~~</p>
+<p>等等！！其实还有个比较有趣的地方，那就是分配后的链表元素顺序，怎么说？</p>
+<p>还是直接举例子吧，下面这种结构，重新分配后是怎么样的呢：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">数组（4）</span><br><span class="line"> ___      ___      ____ </span><br><span class="line">| 0 | -&gt; | 4 | -&gt; | 12 |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___</span><br><span class="line">|   |</span><br></pre></td></tr></table></figure>
+
+<p>过程就不说了，直接给结果吧：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">数组（9）</span><br><span class="line"> ____      ___ </span><br><span class="line">| 12 | -&gt; | 0 |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___ </span><br><span class="line">| 4 |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br><span class="line"> ___ </span><br><span class="line">|   |</span><br></pre></td></tr></table></figure>
+
+<p>咦？0 和 12 的顺序变了！是的，没错，实际上确实是这样，仔细看看重新分配的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> index = (e.hash &amp; <span class="number">0x7FFFFFFF</span>) % newCapacity;</span><br><span class="line">e.next = (Entry&lt;K,V&gt;)newMap[index];</span><br><span class="line">newMap[index] = e;</span><br></pre></td></tr></table></figure>
+
+<p>实际上重新分配时，和添加元素时一样，元素是倒着插入的，都是为了提高效率。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/%E9%9B%86%E5%90%88/" rel="tag"># 集合</a>
+              <a href="/tags/%E6%BA%90%E7%A0%81/" rel="tag"># 源码</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/lang/java/source/jdk8/collection/LinkedList/" rel="prev" title="LinkedList">
+      <i class="fa fa-chevron-left"></i> LinkedList
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/lang/java/source/jdk8/collection/PriorityQueue/" rel="next" title="PriorityQueue">
+      PriorityQueue <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Hashtable"><span class="nav-text">Hashtable</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%AE%9A%E4%B9%89"><span class="nav-text">一、定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%AE%9E%E7%8E%B0"><span class="nav-text">二、实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-text">2.1 数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E9%9B%86%E5%90%88%E6%93%8D%E4%BD%9C"><span class="nav-text">2.2 集合操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E6%89%A9%E5%AE%B9%E6%9C%BA%E5%88%B6"><span class="nav-text">2.2 扩容机制</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jiaduo"
+      src="/images/lufei.jpeg">
+  <p class="site-author-name" itemprop="name">jiaduo</p>
+  <div class="site-description" itemprop="description">不积跬步，无以至千里</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021/08 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiaduo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">107k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:37</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
