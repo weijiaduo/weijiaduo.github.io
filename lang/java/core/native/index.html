@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="native1. 含义在 JDK 源代码中，有一些方法是被关键字 native 修饰的，就比如 Object 类： 123&#x2F;&#x2F; java.lang.Objectpublic native int hashCode();  那 native 关键字的作用是什么呢？ native 修饰的方法表示这个方法是原生函数，其具体实现由非 Java 语言实现，比如 C 语言，其代码定义不在 Java 类中，而是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关键字native">
+<meta property="og:url" content="http://example.com/lang/java/core/native/index.html">
+<meta property="og:site_name" content="Strive">
+<meta property="og:description" content="native1. 含义在 JDK 源代码中，有一些方法是被关键字 native 修饰的，就比如 Object 类： 123&#x2F;&#x2F; java.lang.Objectpublic native int hashCode();  那 native 关键字的作用是什么呢？ native 修饰的方法表示这个方法是原生函数，其具体实现由非 Java 语言实现，比如 C 语言，其代码定义不在 Java 类中，而是">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-05T11:30:09.000Z">
+<meta property="article:modified_time" content="2021-09-05T11:48:49.481Z">
+<meta property="article:author" content="jiaduo">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/lang/java/core/native/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>关键字native | Strive</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Strive</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Rome was not built in one day</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/core/native/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          关键字native
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-05 19:30:09 / 修改时间：19:48:49" itemprop="dateCreated datePublished" datetime="2021-09-05T19:30:09+08:00">2021-09-05</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="native"><a href="#native" class="headerlink" title="native"></a>native</h1><h2 id="1-含义"><a href="#1-含义" class="headerlink" title="1. 含义"></a>1. 含义</h2><p>在 JDK 源代码中，有一些方法是被关键字 native 修饰的，就比如 <code>Object</code> 类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// java.lang.Object</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>那 <code>native</code> 关键字的作用是什么呢？</p>
+<p><em><strong><code>native</code> 修饰的方法表示这个方法是原生函数，其具体实现由非 Java 语言实现，比如 C 语言，其代码定义不在 Java 类中，而是在外部文件中（一般是动态链接库 .dll 文件）。</strong></em></p>
+<span id="more"></span>
+
+<p><code>native</code> 修饰的方法称为本地方法，当在 Java 代码中调用该方法时，JVM 会到外部定义中寻找它的实现代码。</p>
+<p>在 Java 平台中，与本地代码进行互操作的 API，称为 Java Native Interface (Java 本地接口)。</p>
+<h2 id="2-native-方法实现"><a href="#2-native-方法实现" class="headerlink" title="2. native 方法实现"></a>2. native 方法实现</h2><h3 id="2-1-方法声明"><a href="#2-1-方法声明" class="headerlink" title="2.1 方法声明"></a>2.1 方法声明</h3><p>要实现 native 方法，首先要声明一个 native 方法。比如下面的这个类 <code>HelloNative</code>，它声明了一个本地方法 <code>sayHello</code>:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.demo;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloNative</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 外部定义方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">sayHello</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行时，JVM 会寻找本地方法 <code>sayHello</code> 的外部定义实现（一般是 C/C++ 实现），如果 JVM 没有找到并加载进去，执行 <code>sayHello</code>  方法时就会出现和以下类似的错误信息：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.demo.HelloNative;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        HelloNative helloNative = <span class="keyword">new</span> HelloNative();</span><br><span class="line">        helloNative.sayHello();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Exception in thread <span class="string">&quot;main&quot;</span> java.lang.UnsatisfiedLinkError: com.demo.HelloNative.sayHello()V</span><br><span class="line">	at com.demo.HelloNative.sayHello(Native Method)</span><br><span class="line">	at com.Main.main(Main.java:<span class="number">9</span>)</span><br></pre></td></tr></table></figure>
+
+<p>在这里，<code>sayHello</code> 方法并没有外部实现，因此肯定找不到。但是可以自己手写一个外部实现代码，并让 JVM 加载该代码，然后就可以正常调用 <code>sayHello</code> 了。</p>
+<h3 id="2-2-外部定义实现"><a href="#2-2-外部定义实现" class="headerlink" title="2.2 外部定义实现"></a>2.2 外部定义实现</h3><p>Java 对于 JNI 接口方法定义格式有一定的要求，因此按照一般的 C/C++ 的文件格式可能无法正常加载到 JVM 中。JDK 中提供了一个 <code>javah</code> 命令，可以用来生成符合 JNI 样式的标头文件。</p>
+<p>在类 <code>HelloNative</code> 的==包根目录==执行以下命令：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 生成 JNI 标头文件</span></span><br><span class="line">javah -d com/demo com.demo.HelloNative</span><br></pre></td></tr></table></figure>
+
+<p>这样就可以在源文件 <code>HelloNative.java</code> 所在目录生成 JNI 标头文件 <code>com_demo_HelloNative.h</code>，<code>javah</code> 命令默认生成的标头文件名是“包名_类名”。<code>com_demo_HelloNative.h</code> 文件的内容如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* DO NOT EDIT THIS FILE - it is machine generated */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;jni.h&gt;</span></span></span><br><span class="line"><span class="comment">/* Header for class com_demo_HelloNative */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _Included_com_demo_HelloNative</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _Included_com_demo_HelloNative</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __cplusplus</span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> &#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Class:     com_demo_HelloNative</span></span><br><span class="line"><span class="comment"> * Method:    sayHello</span></span><br><span class="line"><span class="comment"> * Signature: ()V</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function">JNIEXPORT <span class="keyword">void</span> JNICALL <span class="title">Java_com_demo_HelloNative_sayHello</span></span></span><br><span class="line"><span class="function">  <span class="params">(JNIEnv *, jobject)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __cplusplus</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>从头文件 <code>com_demo_HelloNative.h</code> 中可以看到，<code>javah</code> 命令生成的标头文件是使用 C 语言声明定义的（<code>extern &quot;C&quot;</code>）。</p>
+<p><em><strong>JNI 接口方法名称是“Java_包名_类名_方法名”，该方法和 Java 中的 native 方法是一一对应的。</strong></em></p>
+<p>有了接口方法声明，就可以实现具体的代码了。首先创建一个 .c 文件 <code>com_demo_HelloNative.c</code>，并引入上面生成的头文件 <code>com_demo_HelloNative.h</code>，然后在文件中实现 JNI 方法定义：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;com_demo_HelloNative.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function">JNIEXPORT <span class="keyword">void</span> JNICALL <span class="title">Java_com_demo_HelloNative_sayHello</span><span class="params">(JNIEnv *env, jobject object)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Hello，world!&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来还需要将头文件（.h）和实现文件（.c）结合生成动态链接库文件（DLL），才能在 JAVA<br> 中使用。不同编译软件的生成命令可能不太一样，比如利用 MinGW GCC 的命令生成：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -m64 是指编译成64位的库</span></span><br><span class="line"><span class="comment"># 需要注意给路径添加双引号，因为路径上有可能存在空格</span></span><br><span class="line">gcc -m64 -Wl,--add-stdcall-alias -I <span class="string">&quot;%JAVA_HOME%\include&quot;</span> -I <span class="string">&quot;%JAVA_HOME%\include\win32&quot;</span> -shared -o HelloNative.dll .\com_demo_HelloNative.c</span><br></pre></td></tr></table></figure>
+
+<p>参数 <code>-I</code> 是用于指定头文件（.h，例如 <code>jni.h</code>）的寻找路径。</p>
+<p>通过上述的操作，就可以生成一个实现了 <code>sayHello</code> 接口的 <code>HelloNative.dll</code> 动态链接库文件了。</p>
+<h3 id="2-3-加载外部定义"><a href="#2-3-加载外部定义" class="headerlink" title="2.3 加载外部定义"></a>2.3 加载外部定义</h3><p>生成 dll 后，还要在 JVM 中加载该 dll 后才能使用。需要注意的是，dll 文件需要放到 JVM 能够找到的位置，它才能被正确加载。</p>
+<p><em><strong>默认的加载路径是程序当前目录或者 <code>System.getProperty(&quot;java.library.path&quot;)</code>。</strong></em></p>
+<p>只要把 dll 文件放到这些路径中的其中一个，JVM 就能够正常加载该 dll 文件，最后就可以正确调用 native 方法了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.demo.HelloNative;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="comment">// &quot;HelloNative&quot; 是 dll 文件名称</span></span><br><span class="line">        <span class="comment">// 默认查找路径是程序当前目录 </span></span><br><span class="line">        <span class="comment">// 或者 System.getProperty(&quot;java.library.path&quot;)</span></span><br><span class="line">        System.loadLibrary(<span class="string">&quot;HelloNative&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        HelloNative helloNative = <span class="keyword">new</span> HelloNative();</span><br><span class="line">        helloNative.sayHello();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hello，world!</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-流程图"><a href="#3-流程图" class="headerlink" title="3. 流程图"></a>3. 流程图</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">源文件(.java源文件) --&gt; javac</span><br><span class="line">javac --&gt; 类文件(.class类文件)</span><br><span class="line">类文件(.class类文件) --&gt; JVM</span><br><span class="line">JVM -- 加载 --&gt; 共享库</span><br><span class="line">源文件(.java源文件) -. native方法 .-&gt; javah</span><br><span class="line">javah --&gt; 头文件(.h头文件)</span><br><span class="line">头文件(.h头文件) --&gt; 编译链接</span><br><span class="line">实现文件(.c文件) --&gt; 编译链接</span><br><span class="line">编译链接 --&gt; 共享库</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h2><ol>
+<li>native 方法不是由 java 语言实现的，而是由 C/C++ 语言实现的。</li>
+<li>外部定义实现一般是编译成 dll 文件后，再被 JVM 加载。</li>
+<li>native 方法的主要作用是为了跨平台、速度快、隐藏敏感代码。</li>
+<li>native 方法可以提供 java 访问操作系统底层的需求。</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/lang/js/json_data/" rel="prev" title="JSON数据格式">
+      <i class="fa fa-chevron-left"></i> JSON数据格式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/lang/java/core/enumerated/" rel="next" title="注解@Enumerated">
+      注解@Enumerated <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#native"><span class="nav-text">native</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%90%AB%E4%B9%89"><span class="nav-text">1. 含义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-native-%E6%96%B9%E6%B3%95%E5%AE%9E%E7%8E%B0"><span class="nav-text">2. native 方法实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E6%96%B9%E6%B3%95%E5%A3%B0%E6%98%8E"><span class="nav-text">2.1 方法声明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E5%A4%96%E9%83%A8%E5%AE%9A%E4%B9%89%E5%AE%9E%E7%8E%B0"><span class="nav-text">2.2 外部定义实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E5%8A%A0%E8%BD%BD%E5%A4%96%E9%83%A8%E5%AE%9A%E4%B9%89"><span class="nav-text">2.3 加载外部定义</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-text">3. 流程图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E6%80%BB%E7%BB%93"><span class="nav-text">4. 总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jiaduo"
+      src="/images/lufei.jpeg">
+  <p class="site-author-name" itemprop="name">jiaduo</p>
+  <div class="site-description" itemprop="description">不积跬步，无以至千里</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021/08 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiaduo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">68k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:02</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

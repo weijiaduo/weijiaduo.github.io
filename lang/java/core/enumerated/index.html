@@ -20,20 +20,20 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="有意义的命名1. 名副其实 变量、函数或类的名称应该能够准确地说明它的意义，比如它存在的意义，它做什么事，以及它应该怎么用。  一旦发现好的命名，就应该换掉旧的名称（当然要确定修改的难易程度）。   2. 避免误导">
+  <meta name="description" content="@Enumerated@Enumerated 是JDK中 javax.persistence 包下的注解，用在持久化实体类属性或字段上，表示该属性或字段应该按照枚举类型 Enum 来持久化。例如： 1234public enum Gender &amp;#123;    MALE,    FEMALE;&amp;#125;  12345678@Entitypublic class Person &amp;#123;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="有意义的命名">
-<meta property="og:url" content="http://example.com/book/clean_code/meaningful_naming/index.html">
+<meta property="og:title" content="注解@Enumerated">
+<meta property="og:url" content="http://example.com/lang/java/core/enumerated/index.html">
 <meta property="og:site_name" content="Strive">
-<meta property="og:description" content="有意义的命名1. 名副其实 变量、函数或类的名称应该能够准确地说明它的意义，比如它存在的意义，它做什么事，以及它应该怎么用。  一旦发现好的命名，就应该换掉旧的名称（当然要确定修改的难易程度）。   2. 避免误导">
+<meta property="og:description" content="@Enumerated@Enumerated 是JDK中 javax.persistence 包下的注解，用在持久化实体类属性或字段上，表示该属性或字段应该按照枚举类型 Enum 来持久化。例如： 1234public enum Gender &amp;#123;    MALE,    FEMALE;&amp;#125;  12345678@Entitypublic class Person &amp;#123;">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-08-28T06:16:23.000Z">
-<meta property="article:modified_time" content="2021-08-28T13:04:22.188Z">
+<meta property="article:published_time" content="2021-09-05T11:41:42.000Z">
+<meta property="article:modified_time" content="2021-09-05T11:45:39.280Z">
 <meta property="article:author" content="jiaduo">
-<meta property="article:tag" content="代码规范">
+<meta property="article:tag" content="java">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/book/clean_code/meaningful_naming/">
+<link rel="canonical" href="http://example.com/lang/java/core/enumerated/">
 
 
 <script id="page-configurations">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>有意义的命名 | Strive</title>
+  <title>注解@Enumerated | Strive</title>
   
 
 
@@ -168,7 +168,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/book/clean_code/meaningful_naming/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/core/enumerated/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/lufei.jpeg">
@@ -181,7 +181,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          有意义的命名
+          注解@Enumerated
         </h1>
 
         <div class="post-meta">
@@ -192,7 +192,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-08-28 14:16:23 / 修改时间：21:04:22" itemprop="dateCreated datePublished" datetime="2021-08-28T14:16:23+08:00">2021-08-28</time>
+              <time title="创建时间：2021-09-05 19:41:42 / 修改时间：19:45:39" itemprop="dateCreated datePublished" datetime="2021-09-05T19:41:42+08:00">2021-09-05</time>
             </span>
 
           <br>
@@ -201,7 +201,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.1k</span>
+              <span>1.4k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -220,62 +220,42 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="有意义的命名"><a href="#有意义的命名" class="headerlink" title="有意义的命名"></a>有意义的命名</h1><h2 id="1-名副其实"><a href="#1-名副其实" class="headerlink" title="1. 名副其实"></a>1. 名副其实</h2><ul>
-<li><p>变量、函数或类的名称应该能够准确地说明它的意义，比如它存在的意义，它做什么事，以及它应该怎么用。</p>
-</li>
-<li><p>一旦发现好的命名，就应该换掉旧的名称（当然要确定修改的难易程度）。</p>
-</li>
-</ul>
-<h2 id="2-避免误导"><a href="#2-避免误导" class="headerlink" title="2. 避免误导"></a>2. 避免误导</h2><span id="more"></span>
+        <h1 id="Enumerated"><a href="#Enumerated" class="headerlink" title="@Enumerated"></a>@Enumerated</h1><p><code>@Enumerated</code> 是JDK中 <code>javax.persistence</code> 包下的注解，用在持久化实体类属性或字段上，表示该属性或字段应该按照枚举类型 <code>Enum</code> 来持久化。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">Gender</span> </span>&#123;</span><br><span class="line">    MALE,</span><br><span class="line">    FEMALE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li><p>避免使用与本意相悖的词语，例如变量名 <code>userList</code>，如果不是 <code>List</code> 类型的变量，就不应该用这种命名。</p>
-</li>
-<li><p>提防使用区别很小的名称，因为很容易拼写错误。</p>
-</li>
-<li><p>避免使用误导性比较大的字母，例如 <code>0</code>，<code>O</code>，<code>1</code>，<code>l</code>，因为变量之间的区别只是这些字母的话，看错的可能性比较高。</p>
-</li>
-</ul>
-<h2 id="3-做有意义的区分"><a href="#3-做有意义的区分" class="headerlink" title="3. 做有意义的区分"></a>3. 做有意义的区分</h2><ul>
-<li><p>名称不同，那么其意义应该也不同才对。</p>
-</li>
-<li><p>不要使用数字序列作为名称的区分，会让人搞不清楚用途，例如 <code>a1</code>，<code>a2</code>。</p>
-</li>
-<li><p>多余的废话是冗余的区分，例如 <code>getProduct</code> 和 <code>getProductData</code> 这种就让人比较疑惑，意思区别不大。</p>
-</li>
-</ul>
-<h2 id="4-使用可读性好的名称"><a href="#4-使用可读性好的名称" class="headerlink" title="4. 使用可读性好的名称"></a>4. 使用可读性好的名称</h2><ul>
-<li>名称中的单词应该是可读的词语，或者公认的常见缩写，不要自造词语，例如 <code>modymdhms</code> 和 <code>modifinationTimestamp</code>。</li>
-</ul>
-<h2 id="5-使用可搜索的名称"><a href="#5-使用可搜索的名称" class="headerlink" title="5. 使用可搜索的名称"></a>5. 使用可搜索的名称</h2><ul>
-<li><p>名称长短应该与其作用域大小相对应，长名称要优于短名称。</p>
-</li>
-<li><p>单字母名字应仅用于短方法中的本地变量，例如 <code>i</code>，<code>j</code>。</p>
-</li>
-<li><p>对于在代码中多次使用的变量或者常量，应该为其定义便于搜索的名称。例如数字常量 7，可以在代码中定义为 <code>DAYS_PER_WEEK</code>，这会比 7 好找得多。</p>
-</li>
-</ul>
-<h2 id="6-避免使用编码"><a href="#6-避免使用编码" class="headerlink" title="6. 避免使用编码"></a>6. 避免使用编码</h2><ul>
-<li><p>不要添加成员前缀（或后缀），例如类成员 <code>m_name</code> 和 <code>name</code>，前后缀是以前旧代码所使用的，现在已经废弃了。</p>
-</li>
-<li><p>不要使用前导字母 <code>I</code> 来编码区分接口和实现，使用 <code>impl</code> 来标识实现类或许更好。</p>
-</li>
-</ul>
-<h2 id="7-别用俗语"><a href="#7-别用俗语" class="headerlink" title="7. 别用俗语"></a>7. 别用俗语</h2><ul>
-<li>不要使用俗语或典故作为名称，因为别人有可能不了解这方面的知识。</li>
-</ul>
-<h2 id="8-每个概念对应一个词"><a href="#8-每个概念对应一个词" class="headerlink" title="8. 每个概念对应一个词"></a>8. 每个概念对应一个词</h2><ul>
-<li>给每个抽象概念都选定一个词，并且一以贯之。例如获取这个概念，<code>fetch</code>，<code>get</code>，<code>retrieve</code> 等都可以拿来使用，但是不要在代码中混杂着写，这里用 <code>fetch</code>，那边用 <code>get</code>，除非有明确说明，否则这很容易会让人受到误导。</li>
-</ul>
-<h2 id="9-别用双关语"><a href="#9-别用双关语" class="headerlink" title="9. 别用双关语"></a>9. 别用双关语</h2><ul>
-<li>避免将同一单词用于不用的目的。例如 <code>add</code> 方法，在这个类中用来表示将两个数加起来，而在另一个类中则表示将对象放入集合中。因此可以修改第二个方法名称为 <code>append</code> 来作出区分。</li>
-</ul>
-<h2 id="10-添加有意义的语境"><a href="#10-添加有意义的语境" class="headerlink" title="10. 添加有意义的语境"></a>10. 添加有意义的语境</h2><ul>
-<li><p>如果语境不够清晰，可以为变量加上前缀。假如成员变量 <code>state</code> 在当前上下文中不是很明确时，因为 <code>state</code> 有可能在多个类中都存在。因此可以为其加上前缀 <code>addrState</code>，这样就能表明 <code>state</code> 是属于 <code>Address</code> 类了。</p>
-</li>
-<li><p>不要添加没用的语境。例如为每个名称都加上 <code>app</code> 的前缀，如 <code>appUser</code>，<code>appAddress</code>，这根本就是毫无意义的冗余。</p>
-</li>
-</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Column</span></span><br><span class="line">    <span class="meta">@Enumerated</span></span><br><span class="line">    <span class="keyword">private</span> Gender gender;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 省略其他属性方法，后面也是</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>属性或字段按照枚举类型来持久化时，可以分为两种情况：原始类型和字符串类型。</p>
+<span id="more"></span>
+
+<p>枚举持久化类型可以在 <code>javax.persistence.EnumType</code> 类中找到，其中 <code>ORDINAL</code> 表示原始类型；<code>STRING</code> 表示字符串类型。例如字符串类型的写法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Column</span></span><br><span class="line">    <span class="meta">@Enumerated(EnumType.STRING)</span></span><br><span class="line">    <span class="keyword">private</span> Gender gender;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果没有特别指定类型，枚举属性或字段默认按照 <code>ORDINAL</code> 来持久化。</p>
+<h2 id="1-原始类型"><a href="#1-原始类型" class="headerlink" title="1. 原始类型"></a>1. 原始类型</h2><p><code>ORDINAL</code> 表示将枚举类按照其原始类型，也就是整数，来持久化。比如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Column</span></span><br><span class="line">    <span class="meta">@Enumerated(EnumType.ORDINAL)</span></span><br><span class="line">    <span class="keyword">private</span> Gender gender;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果按照上述的代码执行，枚举字段 <code>gender</code> 将被转成数据库的整型字段（以Mysql为例）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">JAVA    &lt;---&gt;  Mysql</span><br><span class="line">gender  &lt;---&gt;  int(11)</span><br></pre></td></tr></table></figure>
+
+<p>也就是当 <code>Person</code> 对象被持久化到数据库时，枚举字段 <code>gender</code> 的值将按照其整数值来保存。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Gender  &lt;---&gt;  Mysql</span><br><span class="line">MALE    &lt;---&gt;  0</span><br><span class="line">FEMALE  &lt;---&gt;  1</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-字符串类型"><a href="#2-字符串类型" class="headerlink" title="2. 字符串类型"></a>2. 字符串类型</h2><p><code>STRING</code> 表示将枚举类按照字符串类型持久化。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Column</span></span><br><span class="line">    <span class="meta">@Enumerated(EnumType.STRING)</span></span><br><span class="line">    <span class="keyword">private</span> Gender gender;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果按照上述的代码执行，枚举字段 <code>gender</code> 将被转成数据库的字符串字段（以Mysql为例）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">JAVA    &lt;---&gt;  Mysql</span><br><span class="line">gender  &lt;---&gt;  varchar(255)</span><br></pre></td></tr></table></figure>
+
+<p>当 <code>Person</code> 对象被持久化到数据库时，枚举字段 <code>gender</code> 的值不再按照原始整数来保存，而是将按照其字符串值来保存。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Gender  &lt;---&gt;  Mysql</span><br><span class="line">MALE    &lt;---&gt;  MALE</span><br><span class="line">FEMALE  &lt;---&gt;  FEMALE</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结"></a>3. 总结</h2><p>总的来说，<code>@Enumerated</code> 注解是用来标识枚举字段是按照什么方式来持久化的，也就是保存到数据库的数据类型：</p>
+<ol>
+<li><code>@Enumerated(EnumType.ORDINAL)</code> 就是保存枚举字段的的整数值（序号）；</li>
+<li><code>@Enumerated(EnumType.STRING)</code> 就是保存枚举字段的字符串值。</li>
+</ol>
+<p>另外，不指定类型的 <code>@Enumerated</code> 等于 <code>@Enumerated(EnumType.ORDINAL)</code> 。</p>
 
     </div>
 
@@ -285,7 +265,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/" rel="tag"># 代码规范</a>
+              <a href="/tags/java/" rel="tag"># java</a>
           </div>
 
         
@@ -294,13 +274,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/life/human_energy/" rel="prev" title="人的精力">
-      <i class="fa fa-chevron-left"></i> 人的精力
+    <a href="/lang/java/core/native/" rel="prev" title="关键字native">
+      <i class="fa fa-chevron-left"></i> 关键字native
     </a></div>
-      <div class="post-nav-item">
-    <a href="/book/clean_code/method/" rel="next" title="函数">
-      函数 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -359,7 +336,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%89%E6%84%8F%E4%B9%89%E7%9A%84%E5%91%BD%E5%90%8D"><span class="nav-text">有意义的命名</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%90%8D%E5%89%AF%E5%85%B6%E5%AE%9E"><span class="nav-text">1. 名副其实</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E9%81%BF%E5%85%8D%E8%AF%AF%E5%AF%BC"><span class="nav-text">2. 避免误导</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%81%9A%E6%9C%89%E6%84%8F%E4%B9%89%E7%9A%84%E5%8C%BA%E5%88%86"><span class="nav-text">3. 做有意义的区分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E4%BD%BF%E7%94%A8%E5%8F%AF%E8%AF%BB%E6%80%A7%E5%A5%BD%E7%9A%84%E5%90%8D%E7%A7%B0"><span class="nav-text">4. 使用可读性好的名称</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E4%BD%BF%E7%94%A8%E5%8F%AF%E6%90%9C%E7%B4%A2%E7%9A%84%E5%90%8D%E7%A7%B0"><span class="nav-text">5. 使用可搜索的名称</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E9%81%BF%E5%85%8D%E4%BD%BF%E7%94%A8%E7%BC%96%E7%A0%81"><span class="nav-text">6. 避免使用编码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E5%88%AB%E7%94%A8%E4%BF%97%E8%AF%AD"><span class="nav-text">7. 别用俗语</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E6%AF%8F%E4%B8%AA%E6%A6%82%E5%BF%B5%E5%AF%B9%E5%BA%94%E4%B8%80%E4%B8%AA%E8%AF%8D"><span class="nav-text">8. 每个概念对应一个词</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-%E5%88%AB%E7%94%A8%E5%8F%8C%E5%85%B3%E8%AF%AD"><span class="nav-text">9. 别用双关语</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-%E6%B7%BB%E5%8A%A0%E6%9C%89%E6%84%8F%E4%B9%89%E7%9A%84%E8%AF%AD%E5%A2%83"><span class="nav-text">10. 添加有意义的语境</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Enumerated"><span class="nav-text">@Enumerated</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%8E%9F%E5%A7%8B%E7%B1%BB%E5%9E%8B"><span class="nav-text">1. 原始类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B1%BB%E5%9E%8B"><span class="nav-text">2. 字符串类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E6%80%BB%E7%BB%93"><span class="nav-text">3. 总结</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
