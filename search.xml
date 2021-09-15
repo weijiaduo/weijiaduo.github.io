@@ -1,24 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Hello World</title>
-    <url>/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
-  </entry>
-  <entry>
     <title>人的精力</title>
     <url>/life/human_energy/</url>
     <content><![CDATA[<h1 id="人的精力"><a href="#人的精力" class="headerlink" title="人的精力"></a>人的精力</h1><blockquote>
@@ -66,6 +48,24 @@
       <tags>
         <tag>生活</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
   </entry>
   <entry>
     <title>格式</title>
@@ -220,6 +220,70 @@
       </tags>
   </entry>
   <entry>
+    <title>有意义的命名</title>
+    <url>/book/clean_code/meaningful_naming/</url>
+    <content><![CDATA[<h1 id="有意义的命名"><a href="#有意义的命名" class="headerlink" title="有意义的命名"></a>有意义的命名</h1><h2 id="1-名副其实"><a href="#1-名副其实" class="headerlink" title="1. 名副其实"></a>1. 名副其实</h2><ul>
+<li><p>变量、函数或类的名称应该能够准确地说明它的意义，比如它存在的意义，它做什么事，以及它应该怎么用。</p>
+</li>
+<li><p>一旦发现好的命名，就应该换掉旧的名称（当然要确定修改的难易程度）。</p>
+</li>
+</ul>
+<h2 id="2-避免误导"><a href="#2-避免误导" class="headerlink" title="2. 避免误导"></a>2. 避免误导</h2><span id="more"></span>
+
+<ul>
+<li><p>避免使用与本意相悖的词语，例如变量名 <code>userList</code>，如果不是 <code>List</code> 类型的变量，就不应该用这种命名。</p>
+</li>
+<li><p>提防使用区别很小的名称，因为很容易拼写错误。</p>
+</li>
+<li><p>避免使用误导性比较大的字母，例如 <code>0</code>，<code>O</code>，<code>1</code>，<code>l</code>，因为变量之间的区别只是这些字母的话，看错的可能性比较高。</p>
+</li>
+</ul>
+<h2 id="3-做有意义的区分"><a href="#3-做有意义的区分" class="headerlink" title="3. 做有意义的区分"></a>3. 做有意义的区分</h2><ul>
+<li><p>名称不同，那么其意义应该也不同才对。</p>
+</li>
+<li><p>不要使用数字序列作为名称的区分，会让人搞不清楚用途，例如 <code>a1</code>，<code>a2</code>。</p>
+</li>
+<li><p>多余的废话是冗余的区分，例如 <code>getProduct</code> 和 <code>getProductData</code> 这种就让人比较疑惑，意思区别不大。</p>
+</li>
+</ul>
+<h2 id="4-使用可读性好的名称"><a href="#4-使用可读性好的名称" class="headerlink" title="4. 使用可读性好的名称"></a>4. 使用可读性好的名称</h2><ul>
+<li>名称中的单词应该是可读的词语，或者公认的常见缩写，不要自造词语，例如 <code>modymdhms</code> 和 <code>modifinationTimestamp</code>。</li>
+</ul>
+<h2 id="5-使用可搜索的名称"><a href="#5-使用可搜索的名称" class="headerlink" title="5. 使用可搜索的名称"></a>5. 使用可搜索的名称</h2><ul>
+<li><p>名称长短应该与其作用域大小相对应，长名称要优于短名称。</p>
+</li>
+<li><p>单字母名字应仅用于短方法中的本地变量，例如 <code>i</code>，<code>j</code>。</p>
+</li>
+<li><p>对于在代码中多次使用的变量或者常量，应该为其定义便于搜索的名称。例如数字常量 7，可以在代码中定义为 <code>DAYS_PER_WEEK</code>，这会比 7 好找得多。</p>
+</li>
+</ul>
+<h2 id="6-避免使用编码"><a href="#6-避免使用编码" class="headerlink" title="6. 避免使用编码"></a>6. 避免使用编码</h2><ul>
+<li><p>不要添加成员前缀（或后缀），例如类成员 <code>m_name</code> 和 <code>name</code>，前后缀是以前旧代码所使用的，现在已经废弃了。</p>
+</li>
+<li><p>不要使用前导字母 <code>I</code> 来编码区分接口和实现，使用 <code>impl</code> 来标识实现类或许更好。</p>
+</li>
+</ul>
+<h2 id="7-别用俗语"><a href="#7-别用俗语" class="headerlink" title="7. 别用俗语"></a>7. 别用俗语</h2><ul>
+<li>不要使用俗语或典故作为名称，因为别人有可能不了解这方面的知识。</li>
+</ul>
+<h2 id="8-每个概念对应一个词"><a href="#8-每个概念对应一个词" class="headerlink" title="8. 每个概念对应一个词"></a>8. 每个概念对应一个词</h2><ul>
+<li>给每个抽象概念都选定一个词，并且一以贯之。例如获取这个概念，<code>fetch</code>，<code>get</code>，<code>retrieve</code> 等都可以拿来使用，但是不要在代码中混杂着写，这里用 <code>fetch</code>，那边用 <code>get</code>，除非有明确说明，否则这很容易会让人受到误导。</li>
+</ul>
+<h2 id="9-别用双关语"><a href="#9-别用双关语" class="headerlink" title="9. 别用双关语"></a>9. 别用双关语</h2><ul>
+<li>避免将同一单词用于不用的目的。例如 <code>add</code> 方法，在这个类中用来表示将两个数加起来，而在另一个类中则表示将对象放入集合中。因此可以修改第二个方法名称为 <code>append</code> 来作出区分。</li>
+</ul>
+<h2 id="10-添加有意义的语境"><a href="#10-添加有意义的语境" class="headerlink" title="10. 添加有意义的语境"></a>10. 添加有意义的语境</h2><ul>
+<li><p>如果语境不够清晰，可以为变量加上前缀。假如成员变量 <code>state</code> 在当前上下文中不是很明确时，因为 <code>state</code> 有可能在多个类中都存在。因此可以为其加上前缀 <code>addrState</code>，这样就能表明 <code>state</code> 是属于 <code>Address</code> 类了。</p>
+</li>
+<li><p>不要添加没用的语境。例如为每个名称都加上 <code>app</code> 的前缀，如 <code>appUser</code>，<code>appAddress</code>，这根本就是毫无意义的冗余。</p>
+</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>代码规范</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>函数</title>
     <url>/book/clean_code/method/</url>
     <content><![CDATA[<h1 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h1><h2 id="1-短小"><a href="#1-短小" class="headerlink" title="1. 短小"></a>1. 短小</h2><ul>
@@ -282,136 +346,78 @@
       </tags>
   </entry>
   <entry>
-    <title>对象变化侦测原理（一）</title>
-    <url>/framework/vuejs/dection01/</url>
-    <content><![CDATA[<h1 id="变化侦测原理"><a href="#变化侦测原理" class="headerlink" title="变化侦测原理"></a>变化侦测原理</h1><h2 id="一、对象属性"><a href="#一、对象属性" class="headerlink" title="一、对象属性"></a>一、对象属性</h2><p>对于 js 对象的属性，可以分为2种：数据属性和访问属性。</p>
-<h3 id="1-1-数据属性"><a href="#1-1-数据属性" class="headerlink" title="1.1 数据属性"></a>1.1 数据属性</h3><p>数据属性就是普通的对象属性值，可以读入和写入值。</p>
-<p>例如，下述的属性 <code>data</code> 就是数据属性：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;&#125;;</span><br><span class="line">obj.data = <span class="string">&#x27;data&#x27;</span>;</span><br><span class="line"></span><br><span class="line">alert(obj.data) <span class="comment">// &quot;data&quot;</span></span><br></pre></td></tr></table></figure>
+    <title>对象变化侦测原理（二）</title>
+    <url>/framework/vuejs/dection02/</url>
+    <content><![CDATA[<h2 id="二、Object-变化侦测"><a href="#二、Object-变化侦测" class="headerlink" title="二、Object 变化侦测"></a>二、Object 变化侦测</h2><p>变化侦测指的是，当运行时的状态发生变化时，应用程序可以知道哪个状态发生了变化，并作出相应的动作。</p>
+<p>变化侦测的方式可以分为2种：一种是“推（push）”，一种是“拉（pull）”。</p>
+<p>Vue 的变化侦测就属于“推，当状态发生变化时，它就会通知相应的依赖对象进行更新。</p>
+<h3 id="2-1-追踪变化"><a href="#2-1-追踪变化" class="headerlink" title="2.1 追踪变化"></a>2.1 追踪变化</h3><span id="more"></span>
 
-<p>对于数据属性，它有4个特性：</p>
-<span id="more"></span>
+<p>前面说过，Object 的属性可以分为2种：数据属性和访问属性。</p>
+<p>Vue 就是通过利用访问属性的 <code>setter</code> 和 <code>getter</code> 函数来追踪对象的变化的。</p>
+<p>每当对象属性被读取时，<code>getter</code> 函数就会被触发；每当对象属性更新时，<code>setter</code> 函数就会被触发。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> isStateChange = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(objProxy, <span class="string">&#x27;access&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> obj.data;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</span><br><span class="line">    obj.data = val;</span><br><span class="line">    isStateChange = <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">objProxy.access</span><br><span class="line">alert(isStateChange)  <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line">objProxy.access = <span class="string">&#x27;111&#x27;</span></span><br><span class="line">alert(isStateChange)  <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-收集依赖"><a href="#2-2-收集依赖" class="headerlink" title="2.2 收集依赖"></a>2.2 收集依赖</h3><p>知道了如何监听对象的变化，但是应该如何收集依赖呢？也就是说当状态发生变化后，该向谁通知状态变更呢？</p>
+<p>收集依赖需要分为3步：要收集什么？什么时候收集？收集到哪里？</p>
+<ul>
+<li>1、要收集什么？</li>
+</ul>
+<p>哪些算是依赖？其实就是用到了对象属性的地方就是依赖。比如说：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span>&#123;&#123; obj.name &#125;&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>对于上述模板，它调用了 <code>name</code> 属性，也就是对 <code>obj.name</code> 产生了依赖，当 <code>obj.name</code> 发生变化时，就需要通知模板进行重新渲染。</p>
+<p>对于这种调用了对象属性的地方，都是需要收集起来的。</p>
+<ul>
+<li>2、什么时候收集？</li>
+</ul>
+<p>前面已经说过了，Vue 是通过利用访问属性的 <code>setter</code> 和 <code>getter</code> 函数来进行侦听变化的。</p>
+<p>因此收集原理也很简单，在 <code>getter</code> 中收集依赖，在 <code>setter</code> 中触发依赖。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> isStateChange = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(objProxy, <span class="string">&#x27;access&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> obj.data;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</span><br><span class="line">    obj.data = val;</span><br><span class="line">    isStateChange = <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">objProxy.access</span><br><span class="line">alert(isStateChange)  <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line">objProxy.access = <span class="string">&#x27;111&#x27;</span></span><br><span class="line">alert(isStateChange)  <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>[[Configureable]]：表示能否通过 <code>delete</code> 删除属性从而重新定义属性，能否修改属性的特性，或者能否把属性修改为访问属性。</li>
-<li>[[Enumerable]]：表示能否通过 for-in 循环返回属性。</li>
-<li>[[Writable]]：表示能否修改数据的值。</li>
-<li>[[Value]]：这个属性的值。</li>
+<li>3、收集到哪里？</li>
 </ul>
-<p>这些属性特性一般是不能通过一般的方式获取到，需要通过使用方法 <code>Object.getOwnPropertyDescriptor(obj, key)</code>来获取特性值。以上面的代码为例：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.getOwnPropertyDescriptor(obj, <span class="string">&#x27;data&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">configurable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">enumerable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">writable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">value</span>: <span class="string">&quot;data&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于这个，可以简单地为每一个属性创建一个局部变量 <code>dep</code> 来保存。</p>
+<p>假设依赖对象是一个函数，并且保存在 <code>window.target</code> 中，那么依赖的收集和通知实现可以如下所示：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">defineReactive</span> (<span class="params">obj, key, val</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> dep = []; <span class="comment">// 保存依赖的地方</span></span><br><span class="line">  <span class="built_in">Object</span>.defineProperty(obj, key, &#123;</span><br><span class="line">    <span class="attr">enumerable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">configurable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveGetter</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="comment">// 收集依赖</span></span><br><span class="line">      <span class="comment">// 假设依赖对象保存在 window.target 中</span></span><br><span class="line">      dep.push(<span class="built_in">window</span>.target);</span><br><span class="line">      <span class="keyword">return</span> val</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveSetter</span> (<span class="params">newVal</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (newVal === val) &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 触发依赖</span></span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; dep.length; i++) &#123;</span><br><span class="line">        dep[i](newVal, val)</span><br><span class="line">      &#125;</span><br><span class="line">      val = newVal;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>通过一般设置的对象属性，默认都是数据属性，而除了 <code>value</code> 特性以外，其他特性的值都是默认为 <code>true</code>。</p>
-<p>如果需要修改特性的值，必须使用方法 <code>Object.defineProperty(obj, key, option)</code>来修改。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.defineProperty(obj, <span class="string">&#x27;data&#x27;</span>, &#123;</span><br><span class="line">    <span class="attr">writable</span>: <span class="literal">false</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>按照这种实现方式，每个对象属性都拥有自己的依赖收集器 <code>dep</code>。</p>
+<p>当然，实际的 <code>dep</code> 并不是那么简单的一个数组，为了减低代码的耦合性，Vue 中把它实现为一个类 <code>Dep</code>，下面是它的简单实现：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dep</span> </span>&#123;</span><br><span class="line">  <span class="title">constructor</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// 依赖，订阅者</span></span><br><span class="line">    <span class="built_in">this</span>.subs = []</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  addSub (sub) &#123;</span><br><span class="line">    <span class="built_in">this</span>.subs.push(sub)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  removeSub (sub) &#123;</span><br><span class="line">    remove(<span class="built_in">this</span>.subs, sub)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  depend () &#123;</span><br><span class="line">    <span class="comment">// 假设依赖对象保存在 window.target 中</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">window</span>.target) &#123;</span><br><span class="line">      <span class="built_in">this</span>.addSub(<span class="built_in">window</span>.target)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  notify () &#123;</span><br><span class="line">    <span class="keyword">const</span> subs = <span class="built_in">this</span>.subs.slice()</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, l = subd.length; i &lt; l; i++) &#123;</span><br><span class="line">      <span class="comment">// 通知依赖（订阅者）更新</span></span><br><span class="line">      subs[i].update()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">remove</span> (<span class="params">arr, item</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (arr.length) &#123;</span><br><span class="line">    <span class="keyword">const</span> index = arr.indexOf(item)</span><br><span class="line">    <span class="keyword">if</span> (index &gt; -<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> arr.splice(index, <span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>再查看属性的特性，此时 <code>writable</code> 特性的值就已经发生变化了。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.getOwnPropertyDescriptor(obj, <span class="string">&#x27;data&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">configurable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">enumerable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">writable</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="attr">value</span>: <span class="string">&quot;data&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>根据新的 <code>dep</code>，修改 <code>defineReactive</code> 实现：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">defineReactive</span> (<span class="params">obj, key, val</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> dep = <span class="keyword">new</span> Dep(); <span class="comment">// 修改1</span></span><br><span class="line">  <span class="built_in">Object</span>.defineProperty(obj, key, &#123;</span><br><span class="line">    <span class="attr">enumerable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">configurable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveGetter</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="comment">// 收集依赖</span></span><br><span class="line">      dep.depend(); <span class="comment">// 修改2</span></span><br><span class="line">      <span class="keyword">return</span> val</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveSetter</span> (<span class="params">newVal</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (newVal === val) &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">      &#125;</span><br><span class="line">      val = newVal;</span><br><span class="line">      <span class="comment">// 触发依赖</span></span><br><span class="line">      dep.notify(); <span class="comment">// 修改3</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><code>writable=false</code> 表示属性不能修改，因此修改属性值是不生效的。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">alert(obj.data)  <span class="comment">// &quot;data&quot;</span></span><br><span class="line">obj.data = <span class="string">&quot;123&quot;</span> <span class="comment">// 此时修改的话也不生效</span></span><br><span class="line">alert(obj.data)  <span class="comment">// &quot;data&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>可以多次调用 <code>Object.defineProperty</code> 来修改属性特性。</p>
-<p>接下来看一下特性 <code>configurable</code> 的作用：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.defineProperty(obj, <span class="string">&#x27;data&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">configurable</span>: <span class="literal">false</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p><code>configurable=false</code> 表示属性无法通过 <code>delete</code> 删除，再重新定义属性。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">alert(obj.data)  <span class="comment">// &quot;data&quot;</span></span><br><span class="line"><span class="keyword">delete</span> obj.data  <span class="comment">// 无法删除</span></span><br><span class="line">alert(obj.data)  <span class="comment">// &quot;data&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>而且，还有一个比较重要的点，那就是一旦把 <code>configurable</code> 设置为 <code>false</code> 之后，就不能再把它重新恢复为 <code>true</code> 了。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.defineProperty(obj, <span class="string">&#x27;data&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">configurable</span>: <span class="literal">false</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置失败，抛出错误</span></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(obj, <span class="string">&#x27;data&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">configurable</span>: <span class="literal">true</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<h3 id="1-2-访问属性"><a href="#1-2-访问属性" class="headerlink" title="1.2 访问属性"></a>1.2 访问属性</h3><p>访问属性不包括数据，实际上是通过一对函数 <code>setter</code> 和 <code>getter</code> 进行属性的读取访问和设置。</p>
-<p>访问属性不能通过一般的对象属性进行定义，必须使用 <code>Object.defineProperty(obj, key, option)</code> 进行定义。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 数据属性</span></span><br><span class="line"><span class="keyword">var</span> obj = &#123;&#125;;</span><br><span class="line">obj.data = <span class="string">&#x27;data&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 访问属性</span></span><br><span class="line"><span class="keyword">var</span> objProxy = &#123;&#125;;</span><br><span class="line"><span class="built_in">Object</span>.defineProperty(objProxy, <span class="string">&#x27;access&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> obj.data;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</span><br><span class="line">    obj.data = val;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">alert(obj.data)        <span class="comment">// &quot;data&quot;</span></span><br><span class="line">alert(objProxy.access) <span class="comment">// &quot;data&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>属性 <code>access</code> 就是所谓的访问属性，它和一般的数据属性 <code>data</code> 一样，它也有 4 个特性：</p>
+<p>至此，收集依赖的工作基本完成了。</p>
+<p>等等，还有一件重要的事，究竟什么是依赖呢？它到底从哪来的？虽然在前面的代码里，假设依赖是一个函数，并且已经设置到了 <code>window.target</code> 中， 但是并没有具体说明它是从哪里来的，是什么时候设置到 <code>window.target</code> 的。下面详细说明一下它。</p>
 <ul>
-<li>[[Configureable]]：表示能否通过 <code>delete</code> 删除属性从而重新定义属性，能否修改属性的特性，或者能否把属性修改为访问属性。</li>
-<li>[[Enumerable]]：表示能否通过 for-in 循环返回属性。</li>
-<li>[[Get]]：在读取属性时调用的函数。</li>
-<li>[[Set]]：在设置属性时调用的函数。</li>
+<li>依赖对象</li>
 </ul>
-<p>其中特性 <code>Configureable</code> 和 <code>Enumerable</code> 和数据属性中的是一样的。</p>
-<p>获取属性特性的值也和数据属性的一样，通过方法 <code>Object.getOwnPropertyDescriptor(obj, key)</code> 来获取：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.getOwnPropertyDescriptor(objProxy, <span class="string">&#x27;access&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">configurable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">enumerable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">get</span>: [<span class="function"><span class="keyword">function</span> (<span class="params"></span>)],</span></span><br><span class="line"><span class="function">    <span class="title">set</span>: [<span class="function"><span class="keyword">function</span> (<span class="params"></span>)]</span></span></span><br><span class="line"><span class="function"><span class="function">&#125;</span></span></span><br></pre></td></tr></table></figure>
+<p>前面说过，依赖实际上是用到对象属性的地方，但是用到对象属性的地方太多了，而且类型可能不一样，环境也不一样。这个时候为了能够统一处理依赖对象，需要将其抽象成一个依赖对象，这个依赖对象就称为观察者 <code>Watcher</code>，它就像是一直在观察对象属性的变化一样，当对象属性发生变化后，它就可以通过“观察”发现，从而进行相应的动作。</p>
+<p>在 Vue 中，<code>Watcher</code> 是一个中介对象，当数据发生变化时，会通知到观察者 <code>Watcher</code>，然后 <code>Watcher</code> 再通知其他地方。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Watcher</span> </span>&#123;</span><br><span class="line">  <span class="title">constructor</span> (<span class="params">vm, expOrFn, cb</span>) &#123;</span><br><span class="line">    <span class="built_in">this</span>.vm = vm;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> expOrFn === <span class="string">&#x27;function&#x27;</span>) &#123;</span><br><span class="line">        <span class="built_in">this</span>.getter = expOrFn;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.getter = parsePath(expOrFn);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">this</span>.cb = cb;</span><br><span class="line">    <span class="built_in">this</span>.value = <span class="built_in">this</span>.get();</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  get () &#123;</span><br><span class="line">    <span class="comment">// 先把this设置到window.target中，然后再读取对象属性</span></span><br><span class="line">    <span class="built_in">window</span>.target = <span class="built_in">this</span>;</span><br><span class="line">    <span class="comment">// 这时候被读到的对象属性就会把当前this收集到它的依赖集合里面</span></span><br><span class="line">    <span class="keyword">let</span> value = <span class="built_in">this</span>.getter.call(<span class="built_in">this</span>.vm, <span class="built_in">this</span>.vm);</span><br><span class="line">    <span class="built_in">window</span>.target = <span class="literal">undefined</span>;</span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  update () &#123;</span><br><span class="line">    <span class="keyword">const</span> oldValue = <span class="built_in">this</span>.value;</span><br><span class="line">    <span class="built_in">this</span>.value = <span class="built_in">this</span>.get();</span><br><span class="line">    <span class="built_in">this</span>.cb(<span class="built_in">this</span>.vm, <span class="built_in">this</span>.value, oldValue);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>访问属性比较特别，可以通过在访问函数 <code>setter</code> 和 <code>getter</code><br>中做一些中间操作，获得其他的效果：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> readTimes = <span class="number">0</span></span><br><span class="line"><span class="keyword">var</span> writeTimes = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(objProxy, <span class="string">&#x27;access&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    readTimes++;</span><br><span class="line">    <span class="keyword">return</span> obj.data;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</span><br><span class="line">    writeTimes++;</span><br><span class="line">    obj.data = val;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">objProxy.access</span><br><span class="line">objProxy.access</span><br><span class="line">alert(readTimes)  <span class="comment">// 2</span></span><br><span class="line">alert(writeTimes) <span class="comment">// 0</span></span><br><span class="line"></span><br><span class="line">objProxy.access = <span class="string">&#x27;111&#x27;</span></span><br><span class="line">alert(readTimes)  <span class="comment">// 2</span></span><br><span class="line">alert(writeTimes) <span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
+<p>收集依赖的过程实际上就在 <code>getter</code> 函数被调用的时候，那么 <code>getter</code> 函数具体是什么呢？也就是 <code>parsePath</code> 的实现是怎么样的呢？</p>
+<p>其实 <code>parsePath</code> 的参数 <code>path</code> 是类似 <code>a.b.c</code> 这样的形式，如果用过 Vue 的话，就应该知道 Vue 中可以利用 <code>vm.$watch(&#39;a,b.c&#39;, function()&#123;&#125;)</code> 这种形式来监听对象属性的变化。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">parsePath</span> (<span class="params">path</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> segments = path.split(<span class="string">&#x27;.&#x27;</span>)</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">obj</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; segments.length; i++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!obj) <span class="keyword">return</span></span><br><span class="line">      obj = obj[segments[i]]</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> obj</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>这种利用访问函数的方式，其实就是 <code>Vue</code> 定义响应式属性所用的方法，通过利用访问属性的 <code>setter</code> 和 <code>getter</code> 来收集和通知属性发生了变更，就可以实现响应式属性。</p>
-<p>也许，访问属性叫访问方法更好，虽然操作上和数据属性类似，但是它本身并不算一个属性，只是通过方法 <code>setter</code> 和 <code>getter</code> 进行了定义，然后拿的还是其他数据属性的值。</p>
-<p>定义 <code>setter</code> 和 <code>getter</code> 实际上就是在定义 <code>objProxy.access=</code> 和 <code>objProxy.access</code>。调用 <code>objProxy.access</code> 就是在调用 <code>getter</code> 函数，调用 <code>objProxy.access=</code> 就是在调用 <code>setter</code> 函数。</p>
+<p>实际原理很简单，<code>parsePath</code> 只是按照分隔符 <code>.</code> 来逐层地访问对象属性。</p>
+<p>而前面说过，当读取对象的访问属性时，会触发依赖收集。所以当 <code>getter</code> 函数执行时，它其实就是在读取对象的访问属性，这个时候就会触发依赖收集的逻辑。</p>
+<h3 id="2-3-监测所有属性"><a href="#2-3-监测所有属性" class="headerlink" title="2.3 监测所有属性"></a>2.3 监测所有属性</h3><p>对于每个属性，如果需要监测它的变化，必须经过 <code>defineReactive</code> 来处理，这样它才能像访问属性那样收集依赖，实现响应式侦听。</p>
+<p>为了提高代码的封装，Vue 中封装了一个监听类 <code>Observer</code> 类，用于监听对象的所有属性。</p>
+<p>类 <code>Observer</code> 的作用就是将对象的所有属性都转换成访问属性，通过访问属性的 <code>setter</code> 和 <code>getter</code> 来实现变化追踪：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Observer</span> </span>&#123;</span><br><span class="line">  <span class="title">constructor</span> (<span class="params">value</span>) &#123;</span><br><span class="line">    <span class="built_in">this</span>.value = value</span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">Array</span>.isArray(value)) &#123;</span><br><span class="line">      <span class="built_in">this</span>.walk(value)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  walk (obj) &#123;</span><br><span class="line">    <span class="keyword">const</span> keys = <span class="built_in">Object</span>.keys(obj)</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; keys.length; i++) &#123;</span><br><span class="line">      defineReactive(obj, keys[i])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">defineReactive</span> (<span class="params">obj, key, val</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 递归子属性</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> val === <span class="string">&#x27;object&#x27;</span>) &#123;</span><br><span class="line">    <span class="keyword">new</span> Observer(val)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> dep = <span class="keyword">new</span> Dep();</span><br><span class="line">  <span class="built_in">Object</span>.defineProperty(obj, key, &#123;</span><br><span class="line">    <span class="attr">enumerable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">configurable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveGetter</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="comment">// 收集依赖</span></span><br><span class="line">      dep.depend();</span><br><span class="line">      <span class="keyword">return</span> val</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveSetter</span> (<span class="params">newVal</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (newVal === val) &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">      &#125;</span><br><span class="line">      val = newVal;</span><br><span class="line">      <span class="comment">// 触发依赖</span></span><br><span class="line">      dep.notify();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>类 <code>Observer</code> 的实现原理很简单，就是把所有属性都遍历一遍，利用 <code>defineReactive</code> 将属性都转成可追踪的访问属性。</p>
+<h3 id="2-4-存在问题"><a href="#2-4-存在问题" class="headerlink" title="2.4 存在问题"></a>2.4 存在问题</h3><p>Object 类型数据的变化侦听，其原理是通过访问属性 <code>setter/getter</code> 方法来实现的。</p>
+<p>但是这种方式还存在一些问题，比如添加新属性、删除新属性时，<code>setter/getter</code> 是不会触发的，这些情况就没办法追踪属性的变化了。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> isStateChange = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(objProxy, <span class="string">&#x27;access&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    isStateChange = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">return</span> obj.data;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</span><br><span class="line">    obj.data = val;</span><br><span class="line">    isStateChange = <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 删除属性不会触发set/get</span></span><br><span class="line"><span class="keyword">delete</span> objProxy.access</span><br><span class="line">alert(isStateChange)  <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 新增属性也不会触发set/get</span></span><br><span class="line">objProxy.name = <span class="string">&#x27;newProp&#x27;</span></span><br><span class="line">alert(isStateChange)  <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+
+<p><code>setter/getter</code> 只能跟踪属性值是否发生修改，但是没办法侦测到新增属性和删除属性。</p>
 ]]></content>
       <tags>
         <tag>Vue</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>有意义的命名</title>
-    <url>/book/clean_code/meaningful_naming/</url>
-    <content><![CDATA[<h1 id="有意义的命名"><a href="#有意义的命名" class="headerlink" title="有意义的命名"></a>有意义的命名</h1><h2 id="1-名副其实"><a href="#1-名副其实" class="headerlink" title="1. 名副其实"></a>1. 名副其实</h2><ul>
-<li><p>变量、函数或类的名称应该能够准确地说明它的意义，比如它存在的意义，它做什么事，以及它应该怎么用。</p>
-</li>
-<li><p>一旦发现好的命名，就应该换掉旧的名称（当然要确定修改的难易程度）。</p>
-</li>
-</ul>
-<h2 id="2-避免误导"><a href="#2-避免误导" class="headerlink" title="2. 避免误导"></a>2. 避免误导</h2><span id="more"></span>
-
-<ul>
-<li><p>避免使用与本意相悖的词语，例如变量名 <code>userList</code>，如果不是 <code>List</code> 类型的变量，就不应该用这种命名。</p>
-</li>
-<li><p>提防使用区别很小的名称，因为很容易拼写错误。</p>
-</li>
-<li><p>避免使用误导性比较大的字母，例如 <code>0</code>，<code>O</code>，<code>1</code>，<code>l</code>，因为变量之间的区别只是这些字母的话，看错的可能性比较高。</p>
-</li>
-</ul>
-<h2 id="3-做有意义的区分"><a href="#3-做有意义的区分" class="headerlink" title="3. 做有意义的区分"></a>3. 做有意义的区分</h2><ul>
-<li><p>名称不同，那么其意义应该也不同才对。</p>
-</li>
-<li><p>不要使用数字序列作为名称的区分，会让人搞不清楚用途，例如 <code>a1</code>，<code>a2</code>。</p>
-</li>
-<li><p>多余的废话是冗余的区分，例如 <code>getProduct</code> 和 <code>getProductData</code> 这种就让人比较疑惑，意思区别不大。</p>
-</li>
-</ul>
-<h2 id="4-使用可读性好的名称"><a href="#4-使用可读性好的名称" class="headerlink" title="4. 使用可读性好的名称"></a>4. 使用可读性好的名称</h2><ul>
-<li>名称中的单词应该是可读的词语，或者公认的常见缩写，不要自造词语，例如 <code>modymdhms</code> 和 <code>modifinationTimestamp</code>。</li>
-</ul>
-<h2 id="5-使用可搜索的名称"><a href="#5-使用可搜索的名称" class="headerlink" title="5. 使用可搜索的名称"></a>5. 使用可搜索的名称</h2><ul>
-<li><p>名称长短应该与其作用域大小相对应，长名称要优于短名称。</p>
-</li>
-<li><p>单字母名字应仅用于短方法中的本地变量，例如 <code>i</code>，<code>j</code>。</p>
-</li>
-<li><p>对于在代码中多次使用的变量或者常量，应该为其定义便于搜索的名称。例如数字常量 7，可以在代码中定义为 <code>DAYS_PER_WEEK</code>，这会比 7 好找得多。</p>
-</li>
-</ul>
-<h2 id="6-避免使用编码"><a href="#6-避免使用编码" class="headerlink" title="6. 避免使用编码"></a>6. 避免使用编码</h2><ul>
-<li><p>不要添加成员前缀（或后缀），例如类成员 <code>m_name</code> 和 <code>name</code>，前后缀是以前旧代码所使用的，现在已经废弃了。</p>
-</li>
-<li><p>不要使用前导字母 <code>I</code> 来编码区分接口和实现，使用 <code>impl</code> 来标识实现类或许更好。</p>
-</li>
-</ul>
-<h2 id="7-别用俗语"><a href="#7-别用俗语" class="headerlink" title="7. 别用俗语"></a>7. 别用俗语</h2><ul>
-<li>不要使用俗语或典故作为名称，因为别人有可能不了解这方面的知识。</li>
-</ul>
-<h2 id="8-每个概念对应一个词"><a href="#8-每个概念对应一个词" class="headerlink" title="8. 每个概念对应一个词"></a>8. 每个概念对应一个词</h2><ul>
-<li>给每个抽象概念都选定一个词，并且一以贯之。例如获取这个概念，<code>fetch</code>，<code>get</code>，<code>retrieve</code> 等都可以拿来使用，但是不要在代码中混杂着写，这里用 <code>fetch</code>，那边用 <code>get</code>，除非有明确说明，否则这很容易会让人受到误导。</li>
-</ul>
-<h2 id="9-别用双关语"><a href="#9-别用双关语" class="headerlink" title="9. 别用双关语"></a>9. 别用双关语</h2><ul>
-<li>避免将同一单词用于不用的目的。例如 <code>add</code> 方法，在这个类中用来表示将两个数加起来，而在另一个类中则表示将对象放入集合中。因此可以修改第二个方法名称为 <code>append</code> 来作出区分。</li>
-</ul>
-<h2 id="10-添加有意义的语境"><a href="#10-添加有意义的语境" class="headerlink" title="10. 添加有意义的语境"></a>10. 添加有意义的语境</h2><ul>
-<li><p>如果语境不够清晰，可以为变量加上前缀。假如成员变量 <code>state</code> 在当前上下文中不是很明确时，因为 <code>state</code> 有可能在多个类中都存在。因此可以为其加上前缀 <code>addrState</code>，这样就能表明 <code>state</code> 是属于 <code>Address</code> 类了。</p>
-</li>
-<li><p>不要添加没用的语境。例如为每个名称都加上 <code>app</code> 的前缀，如 <code>appUser</code>，<code>appAddress</code>，这根本就是毫无意义的冗余。</p>
-</li>
-</ul>
-]]></content>
-      <tags>
-        <tag>代码规范</tag>
       </tags>
   </entry>
   <entry>
@@ -496,78 +502,147 @@
       </tags>
   </entry>
   <entry>
-    <title>对象变化侦测原理（二）</title>
-    <url>/framework/vuejs/dection02/</url>
-    <content><![CDATA[<h2 id="二、Object-变化侦测"><a href="#二、Object-变化侦测" class="headerlink" title="二、Object 变化侦测"></a>二、Object 变化侦测</h2><p>变化侦测指的是，当运行时的状态发生变化时，应用程序可以知道哪个状态发生了变化，并作出相应的动作。</p>
-<p>变化侦测的方式可以分为2种：一种是“推（push）”，一种是“拉（pull）”。</p>
-<p>Vue 的变化侦测就属于“推，当状态发生变化时，它就会通知相应的依赖对象进行更新。</p>
-<h3 id="2-1-追踪变化"><a href="#2-1-追踪变化" class="headerlink" title="2.1 追踪变化"></a>2.1 追踪变化</h3><span id="more"></span>
+    <title>对象变化侦测原理（一）</title>
+    <url>/framework/vuejs/dection01/</url>
+    <content><![CDATA[<h1 id="变化侦测原理"><a href="#变化侦测原理" class="headerlink" title="变化侦测原理"></a>变化侦测原理</h1><h2 id="一、对象属性"><a href="#一、对象属性" class="headerlink" title="一、对象属性"></a>一、对象属性</h2><p>对于 js 对象的属性，可以分为2种：数据属性和访问属性。</p>
+<h3 id="1-1-数据属性"><a href="#1-1-数据属性" class="headerlink" title="1.1 数据属性"></a>1.1 数据属性</h3><p>数据属性就是普通的对象属性值，可以读入和写入值。</p>
+<p>例如，下述的属性 <code>data</code> 就是数据属性：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;&#125;;</span><br><span class="line">obj.data = <span class="string">&#x27;data&#x27;</span>;</span><br><span class="line"></span><br><span class="line">alert(obj.data) <span class="comment">// &quot;data&quot;</span></span><br></pre></td></tr></table></figure>
 
-<p>前面说过，Object 的属性可以分为2种：数据属性和访问属性。</p>
-<p>Vue 就是通过利用访问属性的 <code>setter</code> 和 <code>getter</code> 函数来追踪对象的变化的。</p>
-<p>每当对象属性被读取时，<code>getter</code> 函数就会被触发；每当对象属性更新时，<code>setter</code> 函数就会被触发。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> isStateChange = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(objProxy, <span class="string">&#x27;access&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> obj.data;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</span><br><span class="line">    obj.data = val;</span><br><span class="line">    isStateChange = <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">objProxy.access</span><br><span class="line">alert(isStateChange)  <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line">objProxy.access = <span class="string">&#x27;111&#x27;</span></span><br><span class="line">alert(isStateChange)  <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="2-2-收集依赖"><a href="#2-2-收集依赖" class="headerlink" title="2.2 收集依赖"></a>2.2 收集依赖</h3><p>知道了如何监听对象的变化，但是应该如何收集依赖呢？也就是说当状态发生变化后，该向谁通知状态变更呢？</p>
-<p>收集依赖需要分为3步：要收集什么？什么时候收集？收集到哪里？</p>
-<ul>
-<li>1、要收集什么？</li>
-</ul>
-<p>哪些算是依赖？其实就是用到了对象属性的地方就是依赖。比如说：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span>&#123;&#123; obj.name &#125;&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>对于上述模板，它调用了 <code>name</code> 属性，也就是对 <code>obj.name</code> 产生了依赖，当 <code>obj.name</code> 发生变化时，就需要通知模板进行重新渲染。</p>
-<p>对于这种调用了对象属性的地方，都是需要收集起来的。</p>
-<ul>
-<li>2、什么时候收集？</li>
-</ul>
-<p>前面已经说过了，Vue 是通过利用访问属性的 <code>setter</code> 和 <code>getter</code> 函数来进行侦听变化的。</p>
-<p>因此收集原理也很简单，在 <code>getter</code> 中收集依赖，在 <code>setter</code> 中触发依赖。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> isStateChange = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(objProxy, <span class="string">&#x27;access&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> obj.data;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</span><br><span class="line">    obj.data = val;</span><br><span class="line">    isStateChange = <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">objProxy.access</span><br><span class="line">alert(isStateChange)  <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line">objProxy.access = <span class="string">&#x27;111&#x27;</span></span><br><span class="line">alert(isStateChange)  <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<p>对于数据属性，它有4个特性：</p>
+<span id="more"></span>
 
 <ul>
-<li>3、收集到哪里？</li>
+<li>[[Configureable]]：表示能否通过 <code>delete</code> 删除属性从而重新定义属性，能否修改属性的特性，或者能否把属性修改为访问属性。</li>
+<li>[[Enumerable]]：表示能否通过 for-in 循环返回属性。</li>
+<li>[[Writable]]：表示能否修改数据的值。</li>
+<li>[[Value]]：这个属性的值。</li>
 </ul>
-<p>对于这个，可以简单地为每一个属性创建一个局部变量 <code>dep</code> 来保存。</p>
-<p>假设依赖对象是一个函数，并且保存在 <code>window.target</code> 中，那么依赖的收集和通知实现可以如下所示：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">defineReactive</span> (<span class="params">obj, key, val</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> dep = []; <span class="comment">// 保存依赖的地方</span></span><br><span class="line">  <span class="built_in">Object</span>.defineProperty(obj, key, &#123;</span><br><span class="line">    <span class="attr">enumerable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">configurable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveGetter</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="comment">// 收集依赖</span></span><br><span class="line">      <span class="comment">// 假设依赖对象保存在 window.target 中</span></span><br><span class="line">      dep.push(<span class="built_in">window</span>.target);</span><br><span class="line">      <span class="keyword">return</span> val</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveSetter</span> (<span class="params">newVal</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (newVal === val) &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 触发依赖</span></span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; dep.length; i++) &#123;</span><br><span class="line">        dep[i](newVal, val)</span><br><span class="line">      &#125;</span><br><span class="line">      val = newVal;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这些属性特性一般是不能通过一般的方式获取到，需要通过使用方法 <code>Object.getOwnPropertyDescriptor(obj, key)</code>来获取特性值。以上面的代码为例：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.getOwnPropertyDescriptor(obj, <span class="string">&#x27;data&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">configurable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">enumerable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">writable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">value</span>: <span class="string">&quot;data&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>按照这种实现方式，每个对象属性都拥有自己的依赖收集器 <code>dep</code>。</p>
-<p>当然，实际的 <code>dep</code> 并不是那么简单的一个数组，为了减低代码的耦合性，Vue 中把它实现为一个类 <code>Dep</code>，下面是它的简单实现：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dep</span> </span>&#123;</span><br><span class="line">  <span class="title">constructor</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// 依赖，订阅者</span></span><br><span class="line">    <span class="built_in">this</span>.subs = []</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  addSub (sub) &#123;</span><br><span class="line">    <span class="built_in">this</span>.subs.push(sub)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  removeSub (sub) &#123;</span><br><span class="line">    remove(<span class="built_in">this</span>.subs, sub)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  depend () &#123;</span><br><span class="line">    <span class="comment">// 假设依赖对象保存在 window.target 中</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">window</span>.target) &#123;</span><br><span class="line">      <span class="built_in">this</span>.addSub(<span class="built_in">window</span>.target)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  notify () &#123;</span><br><span class="line">    <span class="keyword">const</span> subs = <span class="built_in">this</span>.subs.slice()</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, l = subd.length; i &lt; l; i++) &#123;</span><br><span class="line">      <span class="comment">// 通知依赖（订阅者）更新</span></span><br><span class="line">      subs[i].update()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">remove</span> (<span class="params">arr, item</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (arr.length) &#123;</span><br><span class="line">    <span class="keyword">const</span> index = arr.indexOf(item)</span><br><span class="line">    <span class="keyword">if</span> (index &gt; -<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> arr.splice(index, <span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过一般设置的对象属性，默认都是数据属性，而除了 <code>value</code> 特性以外，其他特性的值都是默认为 <code>true</code>。</p>
+<p>如果需要修改特性的值，必须使用方法 <code>Object.defineProperty(obj, key, option)</code>来修改。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.defineProperty(obj, <span class="string">&#x27;data&#x27;</span>, &#123;</span><br><span class="line">    <span class="attr">writable</span>: <span class="literal">false</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
-<p>根据新的 <code>dep</code>，修改 <code>defineReactive</code> 实现：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">defineReactive</span> (<span class="params">obj, key, val</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> dep = <span class="keyword">new</span> Dep(); <span class="comment">// 修改1</span></span><br><span class="line">  <span class="built_in">Object</span>.defineProperty(obj, key, &#123;</span><br><span class="line">    <span class="attr">enumerable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">configurable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveGetter</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="comment">// 收集依赖</span></span><br><span class="line">      dep.depend(); <span class="comment">// 修改2</span></span><br><span class="line">      <span class="keyword">return</span> val</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveSetter</span> (<span class="params">newVal</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (newVal === val) &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">      &#125;</span><br><span class="line">      val = newVal;</span><br><span class="line">      <span class="comment">// 触发依赖</span></span><br><span class="line">      dep.notify(); <span class="comment">// 修改3</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再查看属性的特性，此时 <code>writable</code> 特性的值就已经发生变化了。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.getOwnPropertyDescriptor(obj, <span class="string">&#x27;data&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">configurable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">enumerable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">writable</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="attr">value</span>: <span class="string">&quot;data&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>至此，收集依赖的工作基本完成了。</p>
-<p>等等，还有一件重要的事，究竟什么是依赖呢？它到底从哪来的？虽然在前面的代码里，假设依赖是一个函数，并且已经设置到了 <code>window.target</code> 中， 但是并没有具体说明它是从哪里来的，是什么时候设置到 <code>window.target</code> 的。下面详细说明一下它。</p>
+<p><code>writable=false</code> 表示属性不能修改，因此修改属性值是不生效的。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">alert(obj.data)  <span class="comment">// &quot;data&quot;</span></span><br><span class="line">obj.data = <span class="string">&quot;123&quot;</span> <span class="comment">// 此时修改的话也不生效</span></span><br><span class="line">alert(obj.data)  <span class="comment">// &quot;data&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>可以多次调用 <code>Object.defineProperty</code> 来修改属性特性。</p>
+<p>接下来看一下特性 <code>configurable</code> 的作用：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.defineProperty(obj, <span class="string">&#x27;data&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">configurable</span>: <span class="literal">false</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><code>configurable=false</code> 表示属性无法通过 <code>delete</code> 删除，再重新定义属性。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">alert(obj.data)  <span class="comment">// &quot;data&quot;</span></span><br><span class="line"><span class="keyword">delete</span> obj.data  <span class="comment">// 无法删除</span></span><br><span class="line">alert(obj.data)  <span class="comment">// &quot;data&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>而且，还有一个比较重要的点，那就是一旦把 <code>configurable</code> 设置为 <code>false</code> 之后，就不能再把它重新恢复为 <code>true</code> 了。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.defineProperty(obj, <span class="string">&#x27;data&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">configurable</span>: <span class="literal">false</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置失败，抛出错误</span></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(obj, <span class="string">&#x27;data&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">configurable</span>: <span class="literal">true</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-访问属性"><a href="#1-2-访问属性" class="headerlink" title="1.2 访问属性"></a>1.2 访问属性</h3><p>访问属性不包括数据，实际上是通过一对函数 <code>setter</code> 和 <code>getter</code> 进行属性的读取访问和设置。</p>
+<p>访问属性不能通过一般的对象属性进行定义，必须使用 <code>Object.defineProperty(obj, key, option)</code> 进行定义。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 数据属性</span></span><br><span class="line"><span class="keyword">var</span> obj = &#123;&#125;;</span><br><span class="line">obj.data = <span class="string">&#x27;data&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 访问属性</span></span><br><span class="line"><span class="keyword">var</span> objProxy = &#123;&#125;;</span><br><span class="line"><span class="built_in">Object</span>.defineProperty(objProxy, <span class="string">&#x27;access&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> obj.data;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</span><br><span class="line">    obj.data = val;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">alert(obj.data)        <span class="comment">// &quot;data&quot;</span></span><br><span class="line">alert(objProxy.access) <span class="comment">// &quot;data&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>属性 <code>access</code> 就是所谓的访问属性，它和一般的数据属性 <code>data</code> 一样，它也有 4 个特性：</p>
 <ul>
-<li>依赖对象</li>
+<li>[[Configureable]]：表示能否通过 <code>delete</code> 删除属性从而重新定义属性，能否修改属性的特性，或者能否把属性修改为访问属性。</li>
+<li>[[Enumerable]]：表示能否通过 for-in 循环返回属性。</li>
+<li>[[Get]]：在读取属性时调用的函数。</li>
+<li>[[Set]]：在设置属性时调用的函数。</li>
 </ul>
-<p>前面说过，依赖实际上是用到对象属性的地方，但是用到对象属性的地方太多了，而且类型可能不一样，环境也不一样。这个时候为了能够统一处理依赖对象，需要将其抽象成一个依赖对象，这个依赖对象就称为观察者 <code>Watcher</code>，它就像是一直在观察对象属性的变化一样，当对象属性发生变化后，它就可以通过“观察”发现，从而进行相应的动作。</p>
-<p>在 Vue 中，<code>Watcher</code> 是一个中介对象，当数据发生变化时，会通知到观察者 <code>Watcher</code>，然后 <code>Watcher</code> 再通知其他地方。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Watcher</span> </span>&#123;</span><br><span class="line">  <span class="title">constructor</span> (<span class="params">vm, expOrFn, cb</span>) &#123;</span><br><span class="line">    <span class="built_in">this</span>.vm = vm;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> expOrFn === <span class="string">&#x27;function&#x27;</span>) &#123;</span><br><span class="line">        <span class="built_in">this</span>.getter = expOrFn;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.getter = parsePath(expOrFn);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">this</span>.cb = cb;</span><br><span class="line">    <span class="built_in">this</span>.value = <span class="built_in">this</span>.get();</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  get () &#123;</span><br><span class="line">    <span class="comment">// 先把this设置到window.target中，然后再读取对象属性</span></span><br><span class="line">    <span class="built_in">window</span>.target = <span class="built_in">this</span>;</span><br><span class="line">    <span class="comment">// 这时候被读到的对象属性就会把当前this收集到它的依赖集合里面</span></span><br><span class="line">    <span class="keyword">let</span> value = <span class="built_in">this</span>.getter.call(<span class="built_in">this</span>.vm, <span class="built_in">this</span>.vm);</span><br><span class="line">    <span class="built_in">window</span>.target = <span class="literal">undefined</span>;</span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  update () &#123;</span><br><span class="line">    <span class="keyword">const</span> oldValue = <span class="built_in">this</span>.value;</span><br><span class="line">    <span class="built_in">this</span>.value = <span class="built_in">this</span>.get();</span><br><span class="line">    <span class="built_in">this</span>.cb(<span class="built_in">this</span>.vm, <span class="built_in">this</span>.value, oldValue);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中特性 <code>Configureable</code> 和 <code>Enumerable</code> 和数据属性中的是一样的。</p>
+<p>获取属性特性的值也和数据属性的一样，通过方法 <code>Object.getOwnPropertyDescriptor(obj, key)</code> 来获取：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.getOwnPropertyDescriptor(objProxy, <span class="string">&#x27;access&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">configurable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">enumerable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">get</span>: [<span class="function"><span class="keyword">function</span> (<span class="params"></span>)],</span></span><br><span class="line"><span class="function">    <span class="title">set</span>: [<span class="function"><span class="keyword">function</span> (<span class="params"></span>)]</span></span></span><br><span class="line"><span class="function"><span class="function">&#125;</span></span></span><br></pre></td></tr></table></figure>
 
-<p>收集依赖的过程实际上就在 <code>getter</code> 函数被调用的时候，那么 <code>getter</code> 函数具体是什么呢？也就是 <code>parsePath</code> 的实现是怎么样的呢？</p>
-<p>其实 <code>parsePath</code> 的参数 <code>path</code> 是类似 <code>a.b.c</code> 这样的形式，如果用过 Vue 的话，就应该知道 Vue 中可以利用 <code>vm.$watch(&#39;a,b.c&#39;, function()&#123;&#125;)</code> 这种形式来监听对象属性的变化。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">parsePath</span> (<span class="params">path</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> segments = path.split(<span class="string">&#x27;.&#x27;</span>)</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">obj</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; segments.length; i++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!obj) <span class="keyword">return</span></span><br><span class="line">      obj = obj[segments[i]]</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> obj</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>访问属性比较特别，可以通过在访问函数 <code>setter</code> 和 <code>getter</code><br>中做一些中间操作，获得其他的效果：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> readTimes = <span class="number">0</span></span><br><span class="line"><span class="keyword">var</span> writeTimes = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(objProxy, <span class="string">&#x27;access&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    readTimes++;</span><br><span class="line">    <span class="keyword">return</span> obj.data;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</span><br><span class="line">    writeTimes++;</span><br><span class="line">    obj.data = val;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">objProxy.access</span><br><span class="line">objProxy.access</span><br><span class="line">alert(readTimes)  <span class="comment">// 2</span></span><br><span class="line">alert(writeTimes) <span class="comment">// 0</span></span><br><span class="line"></span><br><span class="line">objProxy.access = <span class="string">&#x27;111&#x27;</span></span><br><span class="line">alert(readTimes)  <span class="comment">// 2</span></span><br><span class="line">alert(writeTimes) <span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
 
-<p>实际原理很简单，<code>parsePath</code> 只是按照分隔符 <code>.</code> 来逐层地访问对象属性。</p>
-<p>而前面说过，当读取对象的访问属性时，会触发依赖收集。所以当 <code>getter</code> 函数执行时，它其实就是在读取对象的访问属性，这个时候就会触发依赖收集的逻辑。</p>
-<h3 id="2-3-监测所有属性"><a href="#2-3-监测所有属性" class="headerlink" title="2.3 监测所有属性"></a>2.3 监测所有属性</h3><p>对于每个属性，如果需要监测它的变化，必须经过 <code>defineReactive</code> 来处理，这样它才能像访问属性那样收集依赖，实现响应式侦听。</p>
-<p>为了提高代码的封装，Vue 中封装了一个监听类 <code>Observer</code> 类，用于监听对象的所有属性。</p>
-<p>类 <code>Observer</code> 的作用就是将对象的所有属性都转换成访问属性，通过访问属性的 <code>setter</code> 和 <code>getter</code> 来实现变化追踪：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Observer</span> </span>&#123;</span><br><span class="line">  <span class="title">constructor</span> (<span class="params">value</span>) &#123;</span><br><span class="line">    <span class="built_in">this</span>.value = value</span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">Array</span>.isArray(value)) &#123;</span><br><span class="line">      <span class="built_in">this</span>.walk(value)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  walk (obj) &#123;</span><br><span class="line">    <span class="keyword">const</span> keys = <span class="built_in">Object</span>.keys(obj)</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; keys.length; i++) &#123;</span><br><span class="line">      defineReactive(obj, keys[i])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">defineReactive</span> (<span class="params">obj, key, val</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 递归子属性</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> val === <span class="string">&#x27;object&#x27;</span>) &#123;</span><br><span class="line">    <span class="keyword">new</span> Observer(val)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> dep = <span class="keyword">new</span> Dep();</span><br><span class="line">  <span class="built_in">Object</span>.defineProperty(obj, key, &#123;</span><br><span class="line">    <span class="attr">enumerable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">configurable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveGetter</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="comment">// 收集依赖</span></span><br><span class="line">      dep.depend();</span><br><span class="line">      <span class="keyword">return</span> val</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveSetter</span> (<span class="params">newVal</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (newVal === val) &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">      &#125;</span><br><span class="line">      val = newVal;</span><br><span class="line">      <span class="comment">// 触发依赖</span></span><br><span class="line">      dep.notify();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>类 <code>Observer</code> 的实现原理很简单，就是把所有属性都遍历一遍，利用 <code>defineReactive</code> 将属性都转成可追踪的访问属性。</p>
-<h3 id="2-4-存在问题"><a href="#2-4-存在问题" class="headerlink" title="2.4 存在问题"></a>2.4 存在问题</h3><p>Object 类型数据的变化侦听，其原理是通过访问属性 <code>setter/getter</code> 方法来实现的。</p>
-<p>但是这种方式还存在一些问题，比如添加新属性、删除新属性时，<code>setter/getter</code> 是不会触发的，这些情况就没办法追踪属性的变化了。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> isStateChange = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(objProxy, <span class="string">&#x27;access&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    isStateChange = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">return</span> obj.data;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</span><br><span class="line">    obj.data = val;</span><br><span class="line">    isStateChange = <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 删除属性不会触发set/get</span></span><br><span class="line"><span class="keyword">delete</span> objProxy.access</span><br><span class="line">alert(isStateChange)  <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 新增属性也不会触发set/get</span></span><br><span class="line">objProxy.name = <span class="string">&#x27;newProp&#x27;</span></span><br><span class="line">alert(isStateChange)  <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
-
-<p><code>setter/getter</code> 只能跟踪属性值是否发生修改，但是没办法侦测到新增属性和删除属性。</p>
+<p>这种利用访问函数的方式，其实就是 <code>Vue</code> 定义响应式属性所用的方法，通过利用访问属性的 <code>setter</code> 和 <code>getter</code> 来收集和通知属性发生了变更，就可以实现响应式属性。</p>
+<p>也许，访问属性叫访问方法更好，虽然操作上和数据属性类似，但是它本身并不算一个属性，只是通过方法 <code>setter</code> 和 <code>getter</code> 进行了定义，然后拿的还是其他数据属性的值。</p>
+<p>定义 <code>setter</code> 和 <code>getter</code> 实际上就是在定义 <code>objProxy.access=</code> 和 <code>objProxy.access</code>。调用 <code>objProxy.access</code> 就是在调用 <code>getter</code> 函数，调用 <code>objProxy.access=</code> 就是在调用 <code>setter</code> 函数。</p>
 ]]></content>
       <tags>
         <tag>Vue</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>js如何处理错误</title>
+    <url>/lang/js/error/</url>
+    <content><![CDATA[<h1 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h1><p>在 Javascript 中，处理异常的方式一般有两种：</p>
+<ul>
+<li>try-catch 语句捕获异常</li>
+<li>onerror 事件捕获异常</li>
+</ul>
+<h2 id="一、try-catch-语句"><a href="#一、try-catch-语句" class="headerlink" title="一、try-catch 语句"></a>一、try-catch 语句</h2><span id="more"></span>
+
+<p>try-catch 语句是 Javascript 中处理异常的一种标准方式，基本语法如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 可能会导致错误的代码</span></span><br><span class="line">&#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">    <span class="comment">// 在错误发生时处理</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于 catch 捕获的异常对象 error，在不同浏览器中它包含的信息可能不太一样。一般来说，error 中通用的属性仅包括 message，也就是说，在跨浏览器编写代码时，最好只使用 message 属性。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 可能会导致错误的代码</span></span><br><span class="line">&#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">    <span class="comment">// 跨浏览器的通用属性仅有 message</span></span><br><span class="line">    alert(error.message);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实际上，try-catch 语句还包括了 finally 块，用于表示 finally 块内的语句一定会执行。</p>
+<p>无论代码怎么处理，下述代码最后返回的结果始终是 finally 块的 0：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 其他代码</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">    <span class="comment">// 错误处理代码</span></span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    <span class="comment">// 其他代码</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>另外需要注意的是，如果代码中包含了 finally 语句，那么 try 块和 catch 块内的 return 语句都将会被忽略，下述代码返回的既不是 1 也不是 -1,实际返回的是 finally 的代码结果，但是由于 finally 块内没有 return 语句，因此会默认返回 <code>undefined</code>：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 其他代码</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">    <span class="comment">// 错误处理代码</span></span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    <span class="comment">// 其他代码</span></span><br><span class="line">    <span class="comment">// 实际上这里会返回 undefined</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因此在使用 finally 块时，需要注意它的返回值。</p>
+<p>还有一点需要说的就是，IE7 以前的版本有一个 bug，如果没有 catch 语句，finally 也不会执行。因此在写 IE7 以前版本的代码时，使用 finally 语句时必须要先写 catch 语句。</p>
+<h3 id="1-1-错误类型"><a href="#1-1-错误类型" class="headerlink" title="1.1 错误类型"></a>1.1 错误类型</h3><p>ECMA-262 定义了7种错误类型：</p>
+<ul>
+<li>Error</li>
+<li>EvalError</li>
+<li>RangeError</li>
+<li>ReferenceError</li>
+<li>SyntaxError</li>
+<li>TypeError</li>
+<li>URIError</li>
+</ul>
+<h4 id="1-1-1-Error"><a href="#1-1-1-Error" class="headerlink" title="1.1.1 Error"></a>1.1.1 Error</h4><p><code>Error</code> 是基类型，其他错误类型均继承自该类型。</p>
+<h4 id="1-1-2-EvalError"><a href="#1-1-2-EvalError" class="headerlink" title="1.1.2 EvalError"></a>1.1.2 EvalError</h4><p><code>EvalError</code> 会在使用 <code>eval()</code> 函数时发生异常而被抛出，比如如果没有把 eval 当作函数来调用：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 这些会抛出异常</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">eval</span>();</span><br><span class="line"><span class="built_in">eval</span> = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-1-3-RangeError"><a href="#1-1-3-RangeError" class="headerlink" title="1.1.3 RangeError"></a>1.1.3 RangeError</h4><p><code>RangeError</code> 会在数值超出相应范围时触发。比如数组的大小超出了范围：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 非法范围会抛出异常</span></span><br><span class="line"><span class="keyword">var</span> arr1 = <span class="keyword">new</span> <span class="built_in">Array</span>(-<span class="number">10</span>);</span><br><span class="line"><span class="keyword">var</span> arr2 = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="built_in">Number</span>.MAX_VALUE);</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-1-4-ReferenceError"><a href="#1-1-4-ReferenceError" class="headerlink" title="1.1.4 ReferenceError"></a>1.1.4 ReferenceError</h4><p><code>ReferenceError</code> 会在访问不存在的变量时触发，比如把未声明的变量用来赋值：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// firstname 未定义时会抛出异常</span></span><br><span class="line"><span class="keyword">var</span> name = firstname;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-1-5-SyntaxError"><a href="#1-1-5-SyntaxError" class="headerlink" title="1.1.5 SyntaxError"></a>1.1.5 SyntaxError</h4><p><code>SyntaxError</code> 一般是因为语法错误引起，比如将语法错误的字符串传进 eval 中执行时：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 语法错误异常</span></span><br><span class="line"><span class="built_in">eval</span>(<span class="string">&quot;a ++ b&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-1-6-TypeError"><a href="#1-1-6-TypeError" class="headerlink" title="1.1.6 TypeError"></a>1.1.6 TypeError</h4><p><code>TypeError</code> 会在变量中保存着意外的类型，或者在访问不存在的方法时触发。比如传给函数的参数类型与预期的类型不相符：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">alert(<span class="string">&quot;name&quot;</span> <span class="keyword">in</span> <span class="literal">true</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-1-7-URIError"><a href="#1-1-7-URIError" class="headerlink" title="1.1.7 URIError"></a>1.1.7 URIError</h4><p><code>URIError</code> 一般会在使用 <code>encodeURI()</code> 或 <code>decodeURI()</code>，而 URI 格式不正确时触发。不过这两个方法的容错率比较高，不容易触发这个错误。</p>
+<h3 id="1-2-throw-抛出异常"><a href="#1-2-throw-抛出异常" class="headerlink" title="1.2 throw 抛出异常"></a>1.2 throw 抛出异常</h3><p>与 try-catch 语句相配的还有一个 throw 操作符，用于抛出自定义错误。</p>
+<p>使用 throw 抛出错误时，必须指定一个错误值，但是这个错误值的类型没有要求，可以是任意类型：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">throw</span> <span class="number">123</span>;</span><br><span class="line"><span class="keyword">throw</span> <span class="string">&quot;123&quot;</span></span><br><span class="line"><span class="keyword">throw</span> <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">throw</span> &#123; <span class="attr">name</span>: <span class="string">&#x27;zhangsan&#x27;</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是一般来说，抛出 Error 错误类型会更好一些，因为这样会比较方便 catch 处理该异常信息。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">EvalError</span>(<span class="string">&quot;eval error!&quot;</span>);</span><br><span class="line"><span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">&quot;type error!&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>也可以自定义错误，利用原型链继承 Error 来创建自定义的错误类型：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">CustomError</span> (<span class="params">message</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">this</span>.name = <span class="string">&quot;CustomError&quot;</span>;</span><br><span class="line">    <span class="built_in">this</span>.message = message;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">CustomError.prototype = <span class="keyword">new</span> <span class="built_in">Error</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">throw</span> <span class="keyword">new</span> CustomError(<span class="string">&quot;custom error!&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="二、onerror-事件"><a href="#二、onerror-事件" class="headerlink" title="二、onerror 事件"></a>二、onerror 事件</h2><p>任何没有通过 try-catch 语句处理的错误都会触发 window 对象的 error 事件（Opera、Safari 浏览器不支持 error 事件）。</p>
+<p>在任何 Web 浏览器中，onerror 事件处理程序都不会创建 event 对象，只会接收3个参数：</p>
+<ul>
+<li>错误信息</li>
+<li>错误所在的 URL</li>
+<li>错误所在行号</li>
+</ul>
+<p>只要发生错误，无论是不是浏览器生成的，都会触发 error 事件。</p>
+]]></content>
+      <tags>
+        <tag>javascript</tag>
       </tags>
   </entry>
   <entry>
@@ -723,81 +798,6 @@
       </tags>
   </entry>
   <entry>
-    <title>js如何处理错误</title>
-    <url>/lang/js/error/</url>
-    <content><![CDATA[<h1 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h1><p>在 Javascript 中，处理异常的方式一般有两种：</p>
-<ul>
-<li>try-catch 语句捕获异常</li>
-<li>onerror 事件捕获异常</li>
-</ul>
-<h2 id="一、try-catch-语句"><a href="#一、try-catch-语句" class="headerlink" title="一、try-catch 语句"></a>一、try-catch 语句</h2><span id="more"></span>
-
-<p>try-catch 语句是 Javascript 中处理异常的一种标准方式，基本语法如下：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 可能会导致错误的代码</span></span><br><span class="line">&#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">    <span class="comment">// 在错误发生时处理</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>对于 catch 捕获的异常对象 error，在不同浏览器中它包含的信息可能不太一样。一般来说，error 中通用的属性仅包括 message，也就是说，在跨浏览器编写代码时，最好只使用 message 属性。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 可能会导致错误的代码</span></span><br><span class="line">&#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">    <span class="comment">// 跨浏览器的通用属性仅有 message</span></span><br><span class="line">    alert(error.message);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>实际上，try-catch 语句还包括了 finally 块，用于表示 finally 块内的语句一定会执行。</p>
-<p>无论代码怎么处理，下述代码最后返回的结果始终是 finally 块的 0：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 其他代码</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">    <span class="comment">// 错误处理代码</span></span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    <span class="comment">// 其他代码</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>另外需要注意的是，如果代码中包含了 finally 语句，那么 try 块和 catch 块内的 return 语句都将会被忽略，下述代码返回的既不是 1 也不是 -1,实际返回的是 finally 的代码结果，但是由于 finally 块内没有 return 语句，因此会默认返回 <code>undefined</code>：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 其他代码</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">    <span class="comment">// 错误处理代码</span></span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    <span class="comment">// 其他代码</span></span><br><span class="line">    <span class="comment">// 实际上这里会返回 undefined</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>因此在使用 finally 块时，需要注意它的返回值。</p>
-<p>还有一点需要说的就是，IE7 以前的版本有一个 bug，如果没有 catch 语句，finally 也不会执行。因此在写 IE7 以前版本的代码时，使用 finally 语句时必须要先写 catch 语句。</p>
-<h3 id="1-1-错误类型"><a href="#1-1-错误类型" class="headerlink" title="1.1 错误类型"></a>1.1 错误类型</h3><p>ECMA-262 定义了7种错误类型：</p>
-<ul>
-<li>Error</li>
-<li>EvalError</li>
-<li>RangeError</li>
-<li>ReferenceError</li>
-<li>SyntaxError</li>
-<li>TypeError</li>
-<li>URIError</li>
-</ul>
-<h4 id="1-1-1-Error"><a href="#1-1-1-Error" class="headerlink" title="1.1.1 Error"></a>1.1.1 Error</h4><p><code>Error</code> 是基类型，其他错误类型均继承自该类型。</p>
-<h4 id="1-1-2-EvalError"><a href="#1-1-2-EvalError" class="headerlink" title="1.1.2 EvalError"></a>1.1.2 EvalError</h4><p><code>EvalError</code> 会在使用 <code>eval()</code> 函数时发生异常而被抛出，比如如果没有把 eval 当作函数来调用：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 这些会抛出异常</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">eval</span>();</span><br><span class="line"><span class="built_in">eval</span> = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
-
-<h4 id="1-1-3-RangeError"><a href="#1-1-3-RangeError" class="headerlink" title="1.1.3 RangeError"></a>1.1.3 RangeError</h4><p><code>RangeError</code> 会在数值超出相应范围时触发。比如数组的大小超出了范围：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 非法范围会抛出异常</span></span><br><span class="line"><span class="keyword">var</span> arr1 = <span class="keyword">new</span> <span class="built_in">Array</span>(-<span class="number">10</span>);</span><br><span class="line"><span class="keyword">var</span> arr2 = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="built_in">Number</span>.MAX_VALUE);</span><br></pre></td></tr></table></figure>
-
-<h4 id="1-1-4-ReferenceError"><a href="#1-1-4-ReferenceError" class="headerlink" title="1.1.4 ReferenceError"></a>1.1.4 ReferenceError</h4><p><code>ReferenceError</code> 会在访问不存在的变量时触发，比如把未声明的变量用来赋值：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// firstname 未定义时会抛出异常</span></span><br><span class="line"><span class="keyword">var</span> name = firstname;</span><br></pre></td></tr></table></figure>
-
-<h4 id="1-1-5-SyntaxError"><a href="#1-1-5-SyntaxError" class="headerlink" title="1.1.5 SyntaxError"></a>1.1.5 SyntaxError</h4><p><code>SyntaxError</code> 一般是因为语法错误引起，比如将语法错误的字符串传进 eval 中执行时：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 语法错误异常</span></span><br><span class="line"><span class="built_in">eval</span>(<span class="string">&quot;a ++ b&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-<h4 id="1-1-6-TypeError"><a href="#1-1-6-TypeError" class="headerlink" title="1.1.6 TypeError"></a>1.1.6 TypeError</h4><p><code>TypeError</code> 会在变量中保存着意外的类型，或者在访问不存在的方法时触发。比如传给函数的参数类型与预期的类型不相符：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">alert(<span class="string">&quot;name&quot;</span> <span class="keyword">in</span> <span class="literal">true</span>);</span><br></pre></td></tr></table></figure>
-
-<h4 id="1-1-7-URIError"><a href="#1-1-7-URIError" class="headerlink" title="1.1.7 URIError"></a>1.1.7 URIError</h4><p><code>URIError</code> 一般会在使用 <code>encodeURI()</code> 或 <code>decodeURI()</code>，而 URI 格式不正确时触发。不过这两个方法的容错率比较高，不容易触发这个错误。</p>
-<h3 id="1-2-throw-抛出异常"><a href="#1-2-throw-抛出异常" class="headerlink" title="1.2 throw 抛出异常"></a>1.2 throw 抛出异常</h3><p>与 try-catch 语句相配的还有一个 throw 操作符，用于抛出自定义错误。</p>
-<p>使用 throw 抛出错误时，必须指定一个错误值，但是这个错误值的类型没有要求，可以是任意类型：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">throw</span> <span class="number">123</span>;</span><br><span class="line"><span class="keyword">throw</span> <span class="string">&quot;123&quot;</span></span><br><span class="line"><span class="keyword">throw</span> <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">throw</span> &#123; <span class="attr">name</span>: <span class="string">&#x27;zhangsan&#x27;</span>&#125;</span><br></pre></td></tr></table></figure>
-
-<p>但是一般来说，抛出 Error 错误类型会更好一些，因为这样会比较方便 catch 处理该异常信息。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">EvalError</span>(<span class="string">&quot;eval error!&quot;</span>);</span><br><span class="line"><span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">&quot;type error!&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-<p>也可以自定义错误，利用原型链继承 Error 来创建自定义的错误类型：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">CustomError</span> (<span class="params">message</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">this</span>.name = <span class="string">&quot;CustomError&quot;</span>;</span><br><span class="line">    <span class="built_in">this</span>.message = message;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">CustomError.prototype = <span class="keyword">new</span> <span class="built_in">Error</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">throw</span> <span class="keyword">new</span> CustomError(<span class="string">&quot;custom error!&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-<h2 id="二、onerror-事件"><a href="#二、onerror-事件" class="headerlink" title="二、onerror 事件"></a>二、onerror 事件</h2><p>任何没有通过 try-catch 语句处理的错误都会触发 window 对象的 error 事件（Opera、Safari 浏览器不支持 error 事件）。</p>
-<p>在任何 Web 浏览器中，onerror 事件处理程序都不会创建 event 对象，只会接收3个参数：</p>
-<ul>
-<li>错误信息</li>
-<li>错误所在的 URL</li>
-<li>错误所在行号</li>
-</ul>
-<p>只要发生错误，无论是不是浏览器生成的，都会触发 error 事件。</p>
-]]></content>
-      <tags>
-        <tag>javascript</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>JSON数据格式</title>
     <url>/lang/js/json_data/</url>
     <content><![CDATA[<h1 id="JSON"><a href="#JSON" class="headerlink" title="JSON"></a>JSON</h1><p>JSON 是一种数据格式，不是一种编程语言。一般用于Web服务的前后端的数据交流格式。</p>
@@ -910,51 +910,6 @@
       </tags>
   </entry>
   <entry>
-    <title>注解@Enumerated</title>
-    <url>/lang/java/core/enumerated/</url>
-    <content><![CDATA[<h1 id="Enumerated"><a href="#Enumerated" class="headerlink" title="@Enumerated"></a>@Enumerated</h1><p><code>@Enumerated</code> 是JDK中 <code>javax.persistence</code> 包下的注解，用在持久化实体类属性或字段上，表示该属性或字段应该按照枚举类型 <code>Enum</code> 来持久化。例如：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">Gender</span> </span>&#123;</span><br><span class="line">    MALE,</span><br><span class="line">    FEMALE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Column</span></span><br><span class="line">    <span class="meta">@Enumerated</span></span><br><span class="line">    <span class="keyword">private</span> Gender gender;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 省略其他属性方法，后面也是</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>属性或字段按照枚举类型来持久化时，可以分为两种情况：原始类型和字符串类型。</p>
-<span id="more"></span>
-
-<p>枚举持久化类型可以在 <code>javax.persistence.EnumType</code> 类中找到，其中 <code>ORDINAL</code> 表示原始类型；<code>STRING</code> 表示字符串类型。例如字符串类型的写法如下：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Column</span></span><br><span class="line">    <span class="meta">@Enumerated(EnumType.STRING)</span></span><br><span class="line">    <span class="keyword">private</span> Gender gender;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>如果没有特别指定类型，枚举属性或字段默认按照 <code>ORDINAL</code> 来持久化。</p>
-<h2 id="1-原始类型"><a href="#1-原始类型" class="headerlink" title="1. 原始类型"></a>1. 原始类型</h2><p><code>ORDINAL</code> 表示将枚举类按照其原始类型，也就是整数，来持久化。比如：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Column</span></span><br><span class="line">    <span class="meta">@Enumerated(EnumType.ORDINAL)</span></span><br><span class="line">    <span class="keyword">private</span> Gender gender;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>如果按照上述的代码执行，枚举字段 <code>gender</code> 将被转成数据库的整型字段（以Mysql为例）：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">JAVA    &lt;---&gt;  Mysql</span><br><span class="line">gender  &lt;---&gt;  int(11)</span><br></pre></td></tr></table></figure>
-
-<p>也就是当 <code>Person</code> 对象被持久化到数据库时，枚举字段 <code>gender</code> 的值将按照其整数值来保存。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Gender  &lt;---&gt;  Mysql</span><br><span class="line">MALE    &lt;---&gt;  0</span><br><span class="line">FEMALE  &lt;---&gt;  1</span><br></pre></td></tr></table></figure>
-
-<h2 id="2-字符串类型"><a href="#2-字符串类型" class="headerlink" title="2. 字符串类型"></a>2. 字符串类型</h2><p><code>STRING</code> 表示将枚举类按照字符串类型持久化。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Column</span></span><br><span class="line">    <span class="meta">@Enumerated(EnumType.STRING)</span></span><br><span class="line">    <span class="keyword">private</span> Gender gender;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>如果按照上述的代码执行，枚举字段 <code>gender</code> 将被转成数据库的字符串字段（以Mysql为例）：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">JAVA    &lt;---&gt;  Mysql</span><br><span class="line">gender  &lt;---&gt;  varchar(255)</span><br></pre></td></tr></table></figure>
-
-<p>当 <code>Person</code> 对象被持久化到数据库时，枚举字段 <code>gender</code> 的值不再按照原始整数来保存，而是将按照其字符串值来保存。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Gender  &lt;---&gt;  Mysql</span><br><span class="line">MALE    &lt;---&gt;  MALE</span><br><span class="line">FEMALE  &lt;---&gt;  FEMALE</span><br></pre></td></tr></table></figure>
-
-<h2 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结"></a>3. 总结</h2><p>总的来说，<code>@Enumerated</code> 注解是用来标识枚举字段是按照什么方式来持久化的，也就是保存到数据库的数据类型：</p>
-<ol>
-<li><code>@Enumerated(EnumType.ORDINAL)</code> 就是保存枚举字段的的整数值（序号）；</li>
-<li><code>@Enumerated(EnumType.STRING)</code> 就是保存枚举字段的字符串值。</li>
-</ol>
-<p>另外，不指定类型的 <code>@Enumerated</code> 等于 <code>@Enumerated(EnumType.ORDINAL)</code> 。</p>
-]]></content>
-      <tags>
-        <tag>java</tag>
-        <tag>注解</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>关键字native</title>
     <url>/lang/java/core/native/</url>
     <content><![CDATA[<h1 id="native"><a href="#native" class="headerlink" title="native"></a>native</h1><h2 id="1-含义"><a href="#1-含义" class="headerlink" title="1. 含义"></a>1. 含义</h2><p>在 JDK 源代码中，有一些方法是被关键字 native 修饰的，就比如 <code>Object</code> 类：</p>
@@ -1014,12 +969,57 @@
       </tags>
   </entry>
   <entry>
+    <title>注解@Enumerated</title>
+    <url>/lang/java/core/enumerated/</url>
+    <content><![CDATA[<h1 id="Enumerated"><a href="#Enumerated" class="headerlink" title="@Enumerated"></a>@Enumerated</h1><p><code>@Enumerated</code> 是JDK中 <code>javax.persistence</code> 包下的注解，用在持久化实体类属性或字段上，表示该属性或字段应该按照枚举类型 <code>Enum</code> 来持久化。例如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">Gender</span> </span>&#123;</span><br><span class="line">    MALE,</span><br><span class="line">    FEMALE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Column</span></span><br><span class="line">    <span class="meta">@Enumerated</span></span><br><span class="line">    <span class="keyword">private</span> Gender gender;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 省略其他属性方法，后面也是</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>属性或字段按照枚举类型来持久化时，可以分为两种情况：原始类型和字符串类型。</p>
+<span id="more"></span>
+
+<p>枚举持久化类型可以在 <code>javax.persistence.EnumType</code> 类中找到，其中 <code>ORDINAL</code> 表示原始类型；<code>STRING</code> 表示字符串类型。例如字符串类型的写法如下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Column</span></span><br><span class="line">    <span class="meta">@Enumerated(EnumType.STRING)</span></span><br><span class="line">    <span class="keyword">private</span> Gender gender;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果没有特别指定类型，枚举属性或字段默认按照 <code>ORDINAL</code> 来持久化。</p>
+<h2 id="1-原始类型"><a href="#1-原始类型" class="headerlink" title="1. 原始类型"></a>1. 原始类型</h2><p><code>ORDINAL</code> 表示将枚举类按照其原始类型，也就是整数，来持久化。比如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Column</span></span><br><span class="line">    <span class="meta">@Enumerated(EnumType.ORDINAL)</span></span><br><span class="line">    <span class="keyword">private</span> Gender gender;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果按照上述的代码执行，枚举字段 <code>gender</code> 将被转成数据库的整型字段（以Mysql为例）：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">JAVA    &lt;---&gt;  Mysql</span><br><span class="line">gender  &lt;---&gt;  int(11)</span><br></pre></td></tr></table></figure>
+
+<p>也就是当 <code>Person</code> 对象被持久化到数据库时，枚举字段 <code>gender</code> 的值将按照其整数值来保存。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Gender  &lt;---&gt;  Mysql</span><br><span class="line">MALE    &lt;---&gt;  0</span><br><span class="line">FEMALE  &lt;---&gt;  1</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-字符串类型"><a href="#2-字符串类型" class="headerlink" title="2. 字符串类型"></a>2. 字符串类型</h2><p><code>STRING</code> 表示将枚举类按照字符串类型持久化。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Column</span></span><br><span class="line">    <span class="meta">@Enumerated(EnumType.STRING)</span></span><br><span class="line">    <span class="keyword">private</span> Gender gender;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果按照上述的代码执行，枚举字段 <code>gender</code> 将被转成数据库的字符串字段（以Mysql为例）：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">JAVA    &lt;---&gt;  Mysql</span><br><span class="line">gender  &lt;---&gt;  varchar(255)</span><br></pre></td></tr></table></figure>
+
+<p>当 <code>Person</code> 对象被持久化到数据库时，枚举字段 <code>gender</code> 的值不再按照原始整数来保存，而是将按照其字符串值来保存。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Gender  &lt;---&gt;  Mysql</span><br><span class="line">MALE    &lt;---&gt;  MALE</span><br><span class="line">FEMALE  &lt;---&gt;  FEMALE</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结"></a>3. 总结</h2><p>总的来说，<code>@Enumerated</code> 注解是用来标识枚举字段是按照什么方式来持久化的，也就是保存到数据库的数据类型：</p>
+<ol>
+<li><code>@Enumerated(EnumType.ORDINAL)</code> 就是保存枚举字段的的整数值（序号）；</li>
+<li><code>@Enumerated(EnumType.STRING)</code> 就是保存枚举字段的字符串值。</li>
+</ol>
+<p>另外，不指定类型的 <code>@Enumerated</code> 等于 <code>@Enumerated(EnumType.ORDINAL)</code> 。</p>
+]]></content>
+      <tags>
+        <tag>java</tag>
+        <tag>注解</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>01_命令行工具</title>
     <url>/lang/java/jvm/selfjvm/01_cmd/</url>
     <content><![CDATA[<h1 id="命令行工具"><a href="#命令行工具" class="headerlink" title="命令行工具"></a>命令行工具</h1><p>Java虚拟机启动时，需要指定类启动应用程序。</p>
 <p>但是Java虚拟机规范中并没有明确规定，怎么指定类启动应用程序，也就是主类（包含<code>main</code>方法的类）。</p>
 <p>Oracle的虚拟机实现是通过 java 命令来启动的，主类名由命令函参数指定。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">java [-options] class [args]</span><br><span class="line">java [-options] -jar jarfile  [args]</span><br><span class="line">javaw [-options] class [args]</span><br><span class="line">javaw [-options] -jar jarfile  [args]</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">java [-options] class [args]</span><br><span class="line">java [-options] -jar jarfile [args]</span><br><span class="line">javaw [-options] class [args]</span><br><span class="line">javaw [-options] -jar jarfile [args]</span><br></pre></td></tr></table></figure>
 
 <span id="more"></span>
 
@@ -1054,7 +1054,8 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CmdTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">parse</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String[] args = <span class="keyword">new</span> String[]&#123; <span class="string">&quot;com.wjd.cmd.Cmd&quot;</span>, <span class="string">&quot;-classpath&quot;</span>, <span class="string">&quot;/projects&quot;</span> &#125;;</span><br><span class="line">        Cmd cmd = <span class="keyword">new</span> Cmd();</span><br><span class="line">        cmd.parse(args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printHelp</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Cmd cmd = <span class="keyword">new</span> Cmd();</span><br><span class="line">        cmd.printHelp();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>测试的打印结果大概是这样子的：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># parse</span><br><span class="line">helpFlag = false</span><br><span class="line">versionFlag = false</span><br><span class="line">mainClass = com.wjd.cmd.Cmd</span><br><span class="line">classpath = /projects</span><br><span class="line"></span><br><span class="line"># printHelp</span><br><span class="line">usage: self-jvm</span><br><span class="line"> -?                 print help message</span><br><span class="line"> -classpath &lt;arg&gt;   classpath</span><br><span class="line"> -cp &lt;arg&gt;          classpath</span><br><span class="line"> -help              print help message</span><br><span class="line"> -version           print version and exit</span><br></pre></td></tr></table></figure>]]></content>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># parse</span><br><span class="line">helpFlag = false</span><br><span class="line">versionFlag = false</span><br><span class="line">mainClass = com.wjd.cmd.Cmd</span><br><span class="line">classpath = /projects</span><br><span class="line"></span><br><span class="line"># printHelp</span><br><span class="line">usage: self-jvm</span><br><span class="line"> -?                 print help message</span><br><span class="line"> -classpath &lt;arg&gt;   classpath</span><br><span class="line"> -cp &lt;arg&gt;          classpath</span><br><span class="line"> -help              print help message</span><br><span class="line"> -version           print version and exit</span><br></pre></td></tr></table></figure>
+]]></content>
       <tags>
         <tag>java</tag>
         <tag>JVM</tag>
@@ -1155,66 +1156,6 @@
       </tags>
   </entry>
   <entry>
-    <title>AbstractQueue</title>
-    <url>/lang/java/source/jdk8/collection/AbstractQueue/</url>
-    <content><![CDATA[<h1 id="AbstractQueue"><a href="#AbstractQueue" class="headerlink" title="AbstractQueue"></a>AbstractQueue</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractQueue</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">extends</span> <span class="title">AbstractCollection</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">Queue</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>AbstractQueue</code> 只是一个抽取类，其目的主要是为接口 <code>Queue</code> 的一些方法提供了基础的实现模板。</p>
-<span id="more"></span>
-
-<h2 id="二、实现"><a href="#二、实现" class="headerlink" title="二、实现"></a>二、实现</h2><p><code>AbstractQueue</code> 只是一个模板类，可以为子类在实现接口 <code>Queue</code> 时提供一些通用代码，减少子类实现时的代码量。</p>
-<p>比如：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (offer(e))</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">&quot;Queue full&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">remove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    E x = poll();</span><br><span class="line">    <span class="keyword">if</span> (x != <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>类似这种常用方法，<code>AbstractQueue</code> 直接就实现了，避免子类每次都要自己实现的麻烦。</p>
-<p>从代码上来说，<code>AbstractQueue</code> 没有什么特殊的代码，都是一些通用的基础代码。</p>
-<p>总之，<code>AbstractQueue</code> 就是提供了一个简易实现模板，减少子类在实现接口 <code>Queue</code> 时的代码，提高效率。</p>
-]]></content>
-      <tags>
-        <tag>java</tag>
-        <tag>集合</tag>
-        <tag>源码</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>AbstractSet</title>
-    <url>/lang/java/source/jdk8/collection/AbstractSet/</url>
-    <content><![CDATA[<h1 id="AbstractSet"><a href="#AbstractSet" class="headerlink" title="AbstractSet"></a>AbstractSet</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractSet</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractCollection</span>&lt;<span class="title">E</span>&gt; <span class="keyword">implements</span> <span class="title">Set</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>AbstractSet</code> 提供了接口 <code>Set</code> 的模板实现，也就是提供了 <code>Set</code> 中某些方法的实现，减少实现 <code>Set</code> 接口时的代码。</p>
-<h2 id="二、实现"><a href="#二、实现" class="headerlink" title="二、实现"></a>二、实现</h2><span id="more"></span>
-
-<p>主要实现了几个方法：</p>
-<p><strong>1）<code>equals</code></strong></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (o == <span class="keyword">this</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!(o <span class="keyword">instanceof</span> Set))</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    Collection&lt;?&gt; c = (Collection&lt;?&gt;) o;</span><br><span class="line">    <span class="keyword">if</span> (c.size() != size())</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> containsAll(c);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (ClassCastException unused)   &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (NullPointerException unused) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>比较两个集合是是否相等：</p>
-<ol>
-<li>是否是自己</li>
-<li>是否是Set集合</li>
-<li>大小size是否相等</li>
-<li>2个集合内的元素是否全等</li>
-</ol>
-<p>根据第4条规则，只要集合内的元素全等，就表明两个集合是相等的。</p>
-<p>但是有些集合是有序的，也就是说，如果一个有序集合和一个无序集合比较，是有可能相等的，因为第4条规则并不会判断集合内元素的顺序。</p>
-<p>当然，如果子类重写了 <code>equals</code> 方法，那就另外说了。</p>
-<p><strong>2）<code>hashCode</code></strong></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> h = <span class="number">0</span>;</span><br><span class="line">    Iterator&lt;E&gt; i = iterator();</span><br><span class="line">    <span class="keyword">while</span> (i.hasNext()) &#123;</span><br><span class="line">        E obj = i.next();</span><br><span class="line">        <span class="keyword">if</span> (obj != <span class="keyword">null</span>)</span><br><span class="line">            h += obj.hashCode();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>集合 <code>Set</code> 的 <code>hashCode</code> 就等于集合内所有元素的 <code>hashCode</code> 的总和。</p>
-<p><strong>3）<code>removeAll</code></strong></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">removeAll</span><span class="params">(Collection&lt;?&gt; c)</span> </span>&#123;</span><br><span class="line">    Objects.requireNonNull(c);</span><br><span class="line">    <span class="keyword">boolean</span> modified = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (size() &gt; c.size()) &#123;</span><br><span class="line">        <span class="keyword">for</span> (Iterator&lt;?&gt; i = c.iterator(); i.hasNext(); )</span><br><span class="line">            modified |= remove(i.next());</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (Iterator&lt;?&gt; i = iterator(); i.hasNext(); ) &#123;</span><br><span class="line">            <span class="keyword">if</span> (c.contains(i.next())) &#123;</span><br><span class="line">                i.remove();</span><br><span class="line">                modified = <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> modified;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>删除时，遍历集合数量较少的那个：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (size() &gt; c.size()) &#123;</span><br><span class="line">    <span class="comment">// 另一个集合元素数量少</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 当前集合元素数量少</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>java</tag>
-        <tag>集合</tag>
-        <tag>源码</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>ArrayDeque</title>
     <url>/lang/java/source/jdk8/collection/ArrayDeque/</url>
     <content><![CDATA[<h1 id="ArrayDeque"><a href="#ArrayDeque" class="headerlink" title="ArrayDeque"></a>ArrayDeque</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ArrayDeque</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractCollection</span>&lt;<span class="title">E</span>&gt; </span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">Deque</span>&lt;<span class="title">E</span>&gt;, <span class="title">Cloneable</span>, <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
@@ -1278,6 +1219,66 @@
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"> ___ ___ ___ ___ ___ ___ ___ ___</span><br><span class="line">| 6 |   |   |   | 1 | 2 | 3 | 5 |</span><br></pre></td></tr></table></figure>
 
 <p>反正不管怎么样，删除时总是移动元素少的一边。</p>
+]]></content>
+      <tags>
+        <tag>java</tag>
+        <tag>集合</tag>
+        <tag>源码</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>AbstractSet</title>
+    <url>/lang/java/source/jdk8/collection/AbstractSet/</url>
+    <content><![CDATA[<h1 id="AbstractSet"><a href="#AbstractSet" class="headerlink" title="AbstractSet"></a>AbstractSet</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractSet</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractCollection</span>&lt;<span class="title">E</span>&gt; <span class="keyword">implements</span> <span class="title">Set</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>AbstractSet</code> 提供了接口 <code>Set</code> 的模板实现，也就是提供了 <code>Set</code> 中某些方法的实现，减少实现 <code>Set</code> 接口时的代码。</p>
+<h2 id="二、实现"><a href="#二、实现" class="headerlink" title="二、实现"></a>二、实现</h2><span id="more"></span>
+
+<p>主要实现了几个方法：</p>
+<p><strong>1）<code>equals</code></strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (o == <span class="keyword">this</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!(o <span class="keyword">instanceof</span> Set))</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    Collection&lt;?&gt; c = (Collection&lt;?&gt;) o;</span><br><span class="line">    <span class="keyword">if</span> (c.size() != size())</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> containsAll(c);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (ClassCastException unused)   &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (NullPointerException unused) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>比较两个集合是是否相等：</p>
+<ol>
+<li>是否是自己</li>
+<li>是否是Set集合</li>
+<li>大小size是否相等</li>
+<li>2个集合内的元素是否全等</li>
+</ol>
+<p>根据第4条规则，只要集合内的元素全等，就表明两个集合是相等的。</p>
+<p>但是有些集合是有序的，也就是说，如果一个有序集合和一个无序集合比较，是有可能相等的，因为第4条规则并不会判断集合内元素的顺序。</p>
+<p>当然，如果子类重写了 <code>equals</code> 方法，那就另外说了。</p>
+<p><strong>2）<code>hashCode</code></strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> h = <span class="number">0</span>;</span><br><span class="line">    Iterator&lt;E&gt; i = iterator();</span><br><span class="line">    <span class="keyword">while</span> (i.hasNext()) &#123;</span><br><span class="line">        E obj = i.next();</span><br><span class="line">        <span class="keyword">if</span> (obj != <span class="keyword">null</span>)</span><br><span class="line">            h += obj.hashCode();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>集合 <code>Set</code> 的 <code>hashCode</code> 就等于集合内所有元素的 <code>hashCode</code> 的总和。</p>
+<p><strong>3）<code>removeAll</code></strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">removeAll</span><span class="params">(Collection&lt;?&gt; c)</span> </span>&#123;</span><br><span class="line">    Objects.requireNonNull(c);</span><br><span class="line">    <span class="keyword">boolean</span> modified = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (size() &gt; c.size()) &#123;</span><br><span class="line">        <span class="keyword">for</span> (Iterator&lt;?&gt; i = c.iterator(); i.hasNext(); )</span><br><span class="line">            modified |= remove(i.next());</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (Iterator&lt;?&gt; i = iterator(); i.hasNext(); ) &#123;</span><br><span class="line">            <span class="keyword">if</span> (c.contains(i.next())) &#123;</span><br><span class="line">                i.remove();</span><br><span class="line">                modified = <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> modified;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>删除时，遍历集合数量较少的那个：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (size() &gt; c.size()) &#123;</span><br><span class="line">    <span class="comment">// 另一个集合元素数量少</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 当前集合元素数量少</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>java</tag>
+        <tag>集合</tag>
+        <tag>源码</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>AbstractQueue</title>
+    <url>/lang/java/source/jdk8/collection/AbstractQueue/</url>
+    <content><![CDATA[<h1 id="AbstractQueue"><a href="#AbstractQueue" class="headerlink" title="AbstractQueue"></a>AbstractQueue</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractQueue</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">extends</span> <span class="title">AbstractCollection</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">Queue</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>AbstractQueue</code> 只是一个抽取类，其目的主要是为接口 <code>Queue</code> 的一些方法提供了基础的实现模板。</p>
+<span id="more"></span>
+
+<h2 id="二、实现"><a href="#二、实现" class="headerlink" title="二、实现"></a>二、实现</h2><p><code>AbstractQueue</code> 只是一个模板类，可以为子类在实现接口 <code>Queue</code> 时提供一些通用代码，减少子类实现时的代码量。</p>
+<p>比如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (offer(e))</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">&quot;Queue full&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">remove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    E x = poll();</span><br><span class="line">    <span class="keyword">if</span> (x != <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>类似这种常用方法，<code>AbstractQueue</code> 直接就实现了，避免子类每次都要自己实现的麻烦。</p>
+<p>从代码上来说，<code>AbstractQueue</code> 没有什么特殊的代码，都是一些通用的基础代码。</p>
+<p>总之，<code>AbstractQueue</code> 就是提供了一个简易实现模板，减少子类在实现接口 <code>Queue</code> 时的代码，提高效率。</p>
 ]]></content>
       <tags>
         <tag>java</tag>
@@ -1357,69 +1358,6 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ArrayList.<span class="keyword">this</span>.modCount</span><br><span class="line"></span><br><span class="line">ArrayList.<span class="keyword">this</span>.elementData</span><br><span class="line"></span><br><span class="line">ArrayList.<span class="keyword">this</span>.set(offset + lastRet, e)</span><br></pre></td></tr></table></figure>
 
 <p>由于内部类占用了 <code>this</code>，为了和外部类区分开来，就加上了外部类的类名前缀 <code>ArrayList.this</code>。</p>
-]]></content>
-      <tags>
-        <tag>java</tag>
-        <tag>集合</tag>
-        <tag>源码</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LinkedList</title>
-    <url>/lang/java/source/jdk8/collection/LinkedList/</url>
-    <content><![CDATA[<h1 id="LinkedList"><a href="#LinkedList" class="headerlink" title="LinkedList"></a>LinkedList</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LinkedList</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">extends</span> <span class="title">AbstractSequentialList</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">List</span>&lt;<span class="title">E</span>&gt;, <span class="title">Deque</span>&lt;<span class="title">E</span>&gt;, <span class="title">Cloneable</span>, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>LinkedList</code> 和 <code>ArrayList</code> 的定义有一些区别，<code>LinkedList</code> 是继承于 <code>AbstractSequentialList</code> 的，而 <code>ArrayList</code> 是直接继承于 <code>AbstractList</code>。</p>
-<p><code>LinkedList</code> 的继承链多了一层 <code>AbstractSequentialList</code>。</p>
-<span id="more"></span>
-
-<p>另外，<code>LinkedList</code> 还实现了另外一个双向队列的接口 <code>Deque</code>，表示 <code>LinkedList</code> 能够双向访问元素。</p>
-<h2 id="二、原理"><a href="#二、原理" class="headerlink" title="二、原理"></a>二、原理</h2><h3 id="2-1-数据结构"><a href="#2-1-数据结构" class="headerlink" title="2.1 数据结构"></a>2.1 数据结构</h3><p>底层的数据存储是采用双向链表来实现的，至于链表节点类型，是一个静态内部类 <code>Node</code>，有2个引用分别指向前一个和后一个节点：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    E item;</span><br><span class="line">    Node&lt;E&gt; next;</span><br><span class="line">    Node&lt;E&gt; prev;</span><br><span class="line"></span><br><span class="line">    Node(Node&lt;E&gt; prev, E element, Node&lt;E&gt; next) &#123;</span><br><span class="line">        <span class="keyword">this</span>.item = element;</span><br><span class="line">        <span class="keyword">this</span>.next = next;</span><br><span class="line">        <span class="keyword">this</span>.prev = prev;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-2-集合操作"><a href="#2-2-集合操作" class="headerlink" title="2.2 集合操作"></a>2.2 集合操作</h3><p><code>LinkedList</code> 的集合操作不外乎增删查改，底层数据结构是链表，实际上这些操作就是链表的操作。</p>
-<p>首先看一下查询，既然是链表，那么就有链头和链尾，在 <code>LinkedList</code> 内分别用2个成员变量表示，获取表头和表尾还是比较简单的：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">getFirst</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; f = first;</span><br><span class="line">    <span class="keyword">if</span> (f == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">    <span class="keyword">return</span> f.item;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">getLast</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; l = last;</span><br><span class="line">    <span class="keyword">if</span> (l == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">    <span class="keyword">return</span> l.item;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>至于查找链表中间的节点，没有别的办法，必须需要遍历链表才行：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">get</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    checkElementIndex(index);</span><br><span class="line">    <span class="keyword">return</span> node(index).item;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node&lt;E&gt; <span class="title">node</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// assert isElementIndex(index);</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (index &lt; (size &gt;&gt; <span class="number">1</span>)) &#123;</span><br><span class="line">        <span class="comment">// 链表前半段</span></span><br><span class="line">        Node&lt;E&gt; x = first;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; index; i++)</span><br><span class="line">            x = x.next;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 链表后半段</span></span><br><span class="line">        Node&lt;E&gt; x = last;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = size - <span class="number">1</span>; i &gt; index; i--)</span><br><span class="line">            x = x.prev;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>不过在查找时进行了一些优化，因为 <code>LinkedList</code> 是一个双向链表，所以可以从两边任意一边开始搜索。</p>
-<p>搜索指定索引的元素时，如果小于长度的一半，就从表头正向查找；如果大于长度的一半，就从表尾逆向查找。</p>
-<p>接下来是添加和删除，其实都是链表的基本操作：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> index, E element)</span> </span>&#123;</span><br><span class="line">    checkPositionIndex(index);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (index == size)</span><br><span class="line">        linkLast(element);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        linkBefore(element, node(index));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">linkLast</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; l = last;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; newNode = <span class="keyword">new</span> Node&lt;&gt;(l, e, <span class="keyword">null</span>);</span><br><span class="line">    last = newNode;</span><br><span class="line">    <span class="keyword">if</span> (l == <span class="keyword">null</span>)</span><br><span class="line">        first = newNode;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        l.next = newNode;</span><br><span class="line">    size++;</span><br><span class="line">    modCount++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">linkBefore</span><span class="params">(E e, Node&lt;E&gt; succ)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// assert succ != null;</span></span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; pred = succ.prev;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; newNode = <span class="keyword">new</span> Node&lt;&gt;(pred, e, succ);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 建立后链</span></span><br><span class="line">    succ.prev = newNode;</span><br><span class="line">    <span class="comment">// 建立前链</span></span><br><span class="line">    <span class="keyword">if</span> (pred == <span class="keyword">null</span>)</span><br><span class="line">        first = newNode;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        pred.next = newNode;</span><br><span class="line"></span><br><span class="line">    size++;</span><br><span class="line">    modCount++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>添加元素也没什么特别的，一般就是追加和插入指定位置。追加的话，直接链接到表尾就行；至于插入，则先需要需要前面的搜索，找到插入的位置，再执行插入，会多耗费一些。所以专门针对这2种情况分别进行了处理。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (o == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (Node&lt;E&gt; x = first; x != <span class="keyword">null</span>; x = x.next) &#123;</span><br><span class="line">            <span class="keyword">if</span> (x.item == <span class="keyword">null</span>) &#123;</span><br><span class="line">                unlink(x);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (Node&lt;E&gt; x = first; x != <span class="keyword">null</span>; x = x.next) &#123;</span><br><span class="line">            <span class="keyword">if</span> (o.equals(x.item)) &#123;</span><br><span class="line">                unlink(x);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">E <span class="title">unlink</span><span class="params">(Node&lt;E&gt; x)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// assert x != null;</span></span><br><span class="line">    <span class="keyword">final</span> E element = x.item;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; next = x.next;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; prev = x.prev;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 解开前链</span></span><br><span class="line">    <span class="keyword">if</span> (prev == <span class="keyword">null</span>) &#123;</span><br><span class="line">        first = next;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        prev.next = next;</span><br><span class="line">        x.prev = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 解开后链</span></span><br><span class="line">    <span class="keyword">if</span> (next == <span class="keyword">null</span>) &#123;</span><br><span class="line">        last = prev;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        next.prev = prev;</span><br><span class="line">        x.next = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    x.item = <span class="keyword">null</span>;</span><br><span class="line">    size--;</span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="keyword">return</span> element;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>删除元素也一样，添加元素是插入时建立节点链接，删除实际就是解除某个节点的链接。所以操作上都差不多。</p>
-<p>最后是更新，这个更简单了,先查找到需要更新的元素，然后直接就可以更新：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">set</span><span class="params">(<span class="keyword">int</span> index, E element)</span> </span>&#123;</span><br><span class="line">    checkElementIndex(index);</span><br><span class="line">    Node&lt;E&gt; x = node(index);</span><br><span class="line">    E oldVal = x.item;</span><br><span class="line">    x.item = element;</span><br><span class="line">    <span class="keyword">return</span> oldVal;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>总的来说，增删查改这几个操作，也就查找有点看头，其他的都是链表的基本操作。</p>
-<h3 id="2-3-迭代器"><a href="#2-3-迭代器" class="headerlink" title="2.3 迭代器"></a>2.3 迭代器</h3><p><code>LinkedList</code> 是一个双向链表，所以它的迭代器也一样，可以双向遍历，然后我就发现了一个有意思的地方。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">ListItr</span> <span class="keyword">implements</span> <span class="title">ListIterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Node&lt;E&gt; lastReturned;</span><br><span class="line">    <span class="keyword">private</span> Node&lt;E&gt; next;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> nextIndex;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> expectedModCount = modCount;</span><br><span class="line"></span><br><span class="line">    ListItr(<span class="keyword">int</span> index) &#123;</span><br><span class="line">        <span class="comment">// assert isPositionIndex(index);</span></span><br><span class="line">        next = (index == size) ? <span class="keyword">null</span> : node(index);</span><br><span class="line">        nextIndex = index;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> E <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        checkForComodification();</span><br><span class="line">        <span class="keyword">if</span> (!hasNext())</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line"></span><br><span class="line">        lastReturned = next;</span><br><span class="line">        next = next.next;</span><br><span class="line">        nextIndex++;</span><br><span class="line">        <span class="keyword">return</span> lastReturned.item;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> E <span class="title">previous</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        checkForComodification();</span><br><span class="line">        <span class="keyword">if</span> (!hasPrevious())</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line"></span><br><span class="line">        lastReturned = next = (next == <span class="keyword">null</span>) ? last : next.prev;</span><br><span class="line">        nextIndex--;</span><br><span class="line">        <span class="keyword">return</span> lastReturned.item;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        checkForComodification();</span><br><span class="line">        <span class="keyword">if</span> (lastReturned == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException();</span><br><span class="line"></span><br><span class="line">        Node&lt;E&gt; lastNext = lastReturned.next;</span><br><span class="line">        unlink(lastReturned);</span><br><span class="line">        <span class="keyword">if</span> (next == lastReturned)</span><br><span class="line">            next = lastNext;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            nextIndex--;</span><br><span class="line">        lastReturned = <span class="keyword">null</span>;</span><br><span class="line">        expectedModCount++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>有意思的是迭代器中的2个成员变量 <code>next</code> 和 <code>lastReturned</code>。</p>
-<p>在 <code>next()</code> 方法中可以看到，一般情况下， <code>next</code> 和 <code>lastReturned</code> 是指向不同的元素的，<code>next</code> 正常是 <code>lastReturned</code> 的下一个元素：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">lastReturned = next;</span><br><span class="line">next = next.next;</span><br></pre></td></tr></table></figure>
-
-<p>但是如果执行过 <code>previous()</code> 方法，它们的指向就发生变化了：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">lastReturned = next = (next == <span class="keyword">null</span>) ? last : next.prev;</span><br></pre></td></tr></table></figure>
-
-<p>这个时候，<code>next</code> 和 <code>lastReturned</code> 都指向同一个元素，也就是当前 <code>next</code> 的前一个元素。</p>
-<p>由于 <code>next()</code> 和 <code>previous()</code> 的不同情况，其他方法在处理时，也需要考虑这两种情况，就比如上面的 <code>remove()</code> 方法：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (next == lastReturned)</span><br><span class="line">    <span class="comment">// previous()的情况</span></span><br><span class="line">    next = lastNext;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="comment">// next()的情况</span></span><br><span class="line">    nextIndex--;</span><br></pre></td></tr></table></figure>
-
-<p>一开始看到这里，貌似是有点别扭的，因为感觉代码写起来有点不太统一。</p>
-<p>后来仔细相想想，可能是因为只用了 <code>next</code> 变量来遍历，如果再加上一个 <code>previous</code> 变量可能会更好理解：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">ListItr</span> <span class="keyword">implements</span> <span class="title">ListIterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> E <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        checkForComodification();</span><br><span class="line">        <span class="keyword">if</span> (!hasNext())</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">            </span><br><span class="line">        <span class="comment">// 添加previous指向前一个元素</span></span><br><span class="line">        lastReturned = previous = next;</span><br><span class="line">        next = next.next;</span><br><span class="line"></span><br><span class="line">        nextIndex++;</span><br><span class="line">        <span class="keyword">return</span> lastReturned.item;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> E <span class="title">previous</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        checkForComodification();</span><br><span class="line">        <span class="keyword">if</span> (!hasPrevious())</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">            </span><br><span class="line">        <span class="comment">// 添加previous指向前一个元素</span></span><br><span class="line">        lastReturned = next = previous;</span><br><span class="line">        previous = previous.prev;</span><br><span class="line">        </span><br><span class="line">        nextIndex--;</span><br><span class="line">        <span class="keyword">return</span> lastReturned.item;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这样貌似好理解一些，不过多了一个变量 <code>previous</code>，维护起来可能麻烦一些吧？所以源码实现并没有添加？</p>
-<p>由于 <code>LinkedList</code> 是双向的，所以也还有另一个迭代器，逆向迭代器：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">DescendingIterator</span> <span class="keyword">implements</span> <span class="title">Iterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ListItr itr = <span class="keyword">new</span> ListItr(size());</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> itr.hasPrevious();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> E <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> itr.previous();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        itr.remove();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>不过在实现上，实际是直接用的正向迭代器，在它外面包装了一层，真正遍历时就调用正向迭代器中相反的接口。</p>
 ]]></content>
       <tags>
         <tag>java</tag>
@@ -1556,6 +1494,89 @@
       </tags>
   </entry>
   <entry>
+    <title>LinkedList</title>
+    <url>/lang/java/source/jdk8/collection/LinkedList/</url>
+    <content><![CDATA[<h1 id="LinkedList"><a href="#LinkedList" class="headerlink" title="LinkedList"></a>LinkedList</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LinkedList</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">extends</span> <span class="title">AbstractSequentialList</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">List</span>&lt;<span class="title">E</span>&gt;, <span class="title">Deque</span>&lt;<span class="title">E</span>&gt;, <span class="title">Cloneable</span>, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>LinkedList</code> 和 <code>ArrayList</code> 的定义有一些区别，<code>LinkedList</code> 是继承于 <code>AbstractSequentialList</code> 的，而 <code>ArrayList</code> 是直接继承于 <code>AbstractList</code>。</p>
+<p><code>LinkedList</code> 的继承链多了一层 <code>AbstractSequentialList</code>。</p>
+<span id="more"></span>
+
+<p>另外，<code>LinkedList</code> 还实现了另外一个双向队列的接口 <code>Deque</code>，表示 <code>LinkedList</code> 能够双向访问元素。</p>
+<h2 id="二、原理"><a href="#二、原理" class="headerlink" title="二、原理"></a>二、原理</h2><h3 id="2-1-数据结构"><a href="#2-1-数据结构" class="headerlink" title="2.1 数据结构"></a>2.1 数据结构</h3><p>底层的数据存储是采用双向链表来实现的，至于链表节点类型，是一个静态内部类 <code>Node</code>，有2个引用分别指向前一个和后一个节点：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    E item;</span><br><span class="line">    Node&lt;E&gt; next;</span><br><span class="line">    Node&lt;E&gt; prev;</span><br><span class="line"></span><br><span class="line">    Node(Node&lt;E&gt; prev, E element, Node&lt;E&gt; next) &#123;</span><br><span class="line">        <span class="keyword">this</span>.item = element;</span><br><span class="line">        <span class="keyword">this</span>.next = next;</span><br><span class="line">        <span class="keyword">this</span>.prev = prev;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-集合操作"><a href="#2-2-集合操作" class="headerlink" title="2.2 集合操作"></a>2.2 集合操作</h3><p><code>LinkedList</code> 的集合操作不外乎增删查改，底层数据结构是链表，实际上这些操作就是链表的操作。</p>
+<p>首先看一下查询，既然是链表，那么就有链头和链尾，在 <code>LinkedList</code> 内分别用2个成员变量表示，获取表头和表尾还是比较简单的：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">getFirst</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; f = first;</span><br><span class="line">    <span class="keyword">if</span> (f == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">    <span class="keyword">return</span> f.item;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">getLast</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; l = last;</span><br><span class="line">    <span class="keyword">if</span> (l == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">    <span class="keyword">return</span> l.item;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>至于查找链表中间的节点，没有别的办法，必须需要遍历链表才行：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">get</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    checkElementIndex(index);</span><br><span class="line">    <span class="keyword">return</span> node(index).item;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node&lt;E&gt; <span class="title">node</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// assert isElementIndex(index);</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (index &lt; (size &gt;&gt; <span class="number">1</span>)) &#123;</span><br><span class="line">        <span class="comment">// 链表前半段</span></span><br><span class="line">        Node&lt;E&gt; x = first;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; index; i++)</span><br><span class="line">            x = x.next;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 链表后半段</span></span><br><span class="line">        Node&lt;E&gt; x = last;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = size - <span class="number">1</span>; i &gt; index; i--)</span><br><span class="line">            x = x.prev;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不过在查找时进行了一些优化，因为 <code>LinkedList</code> 是一个双向链表，所以可以从两边任意一边开始搜索。</p>
+<p>搜索指定索引的元素时，如果小于长度的一半，就从表头正向查找；如果大于长度的一半，就从表尾逆向查找。</p>
+<p>接下来是添加和删除，其实都是链表的基本操作：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> index, E element)</span> </span>&#123;</span><br><span class="line">    checkPositionIndex(index);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (index == size)</span><br><span class="line">        linkLast(element);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        linkBefore(element, node(index));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">linkLast</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; l = last;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; newNode = <span class="keyword">new</span> Node&lt;&gt;(l, e, <span class="keyword">null</span>);</span><br><span class="line">    last = newNode;</span><br><span class="line">    <span class="keyword">if</span> (l == <span class="keyword">null</span>)</span><br><span class="line">        first = newNode;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        l.next = newNode;</span><br><span class="line">    size++;</span><br><span class="line">    modCount++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">linkBefore</span><span class="params">(E e, Node&lt;E&gt; succ)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// assert succ != null;</span></span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; pred = succ.prev;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; newNode = <span class="keyword">new</span> Node&lt;&gt;(pred, e, succ);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 建立后链</span></span><br><span class="line">    succ.prev = newNode;</span><br><span class="line">    <span class="comment">// 建立前链</span></span><br><span class="line">    <span class="keyword">if</span> (pred == <span class="keyword">null</span>)</span><br><span class="line">        first = newNode;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        pred.next = newNode;</span><br><span class="line"></span><br><span class="line">    size++;</span><br><span class="line">    modCount++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>添加元素也没什么特别的，一般就是追加和插入指定位置。追加的话，直接链接到表尾就行；至于插入，则先需要需要前面的搜索，找到插入的位置，再执行插入，会多耗费一些。所以专门针对这2种情况分别进行了处理。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (o == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (Node&lt;E&gt; x = first; x != <span class="keyword">null</span>; x = x.next) &#123;</span><br><span class="line">            <span class="keyword">if</span> (x.item == <span class="keyword">null</span>) &#123;</span><br><span class="line">                unlink(x);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (Node&lt;E&gt; x = first; x != <span class="keyword">null</span>; x = x.next) &#123;</span><br><span class="line">            <span class="keyword">if</span> (o.equals(x.item)) &#123;</span><br><span class="line">                unlink(x);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">E <span class="title">unlink</span><span class="params">(Node&lt;E&gt; x)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// assert x != null;</span></span><br><span class="line">    <span class="keyword">final</span> E element = x.item;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; next = x.next;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; prev = x.prev;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 解开前链</span></span><br><span class="line">    <span class="keyword">if</span> (prev == <span class="keyword">null</span>) &#123;</span><br><span class="line">        first = next;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        prev.next = next;</span><br><span class="line">        x.prev = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 解开后链</span></span><br><span class="line">    <span class="keyword">if</span> (next == <span class="keyword">null</span>) &#123;</span><br><span class="line">        last = prev;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        next.prev = prev;</span><br><span class="line">        x.next = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    x.item = <span class="keyword">null</span>;</span><br><span class="line">    size--;</span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="keyword">return</span> element;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>删除元素也一样，添加元素是插入时建立节点链接，删除实际就是解除某个节点的链接。所以操作上都差不多。</p>
+<p>最后是更新，这个更简单了,先查找到需要更新的元素，然后直接就可以更新：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">set</span><span class="params">(<span class="keyword">int</span> index, E element)</span> </span>&#123;</span><br><span class="line">    checkElementIndex(index);</span><br><span class="line">    Node&lt;E&gt; x = node(index);</span><br><span class="line">    E oldVal = x.item;</span><br><span class="line">    x.item = element;</span><br><span class="line">    <span class="keyword">return</span> oldVal;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>总的来说，增删查改这几个操作，也就查找有点看头，其他的都是链表的基本操作。</p>
+<h3 id="2-3-迭代器"><a href="#2-3-迭代器" class="headerlink" title="2.3 迭代器"></a>2.3 迭代器</h3><p><code>LinkedList</code> 是一个双向链表，所以它的迭代器也一样，可以双向遍历，然后我就发现了一个有意思的地方。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">ListItr</span> <span class="keyword">implements</span> <span class="title">ListIterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Node&lt;E&gt; lastReturned;</span><br><span class="line">    <span class="keyword">private</span> Node&lt;E&gt; next;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> nextIndex;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> expectedModCount = modCount;</span><br><span class="line"></span><br><span class="line">    ListItr(<span class="keyword">int</span> index) &#123;</span><br><span class="line">        <span class="comment">// assert isPositionIndex(index);</span></span><br><span class="line">        next = (index == size) ? <span class="keyword">null</span> : node(index);</span><br><span class="line">        nextIndex = index;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> E <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        checkForComodification();</span><br><span class="line">        <span class="keyword">if</span> (!hasNext())</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line"></span><br><span class="line">        lastReturned = next;</span><br><span class="line">        next = next.next;</span><br><span class="line">        nextIndex++;</span><br><span class="line">        <span class="keyword">return</span> lastReturned.item;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> E <span class="title">previous</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        checkForComodification();</span><br><span class="line">        <span class="keyword">if</span> (!hasPrevious())</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line"></span><br><span class="line">        lastReturned = next = (next == <span class="keyword">null</span>) ? last : next.prev;</span><br><span class="line">        nextIndex--;</span><br><span class="line">        <span class="keyword">return</span> lastReturned.item;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        checkForComodification();</span><br><span class="line">        <span class="keyword">if</span> (lastReturned == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException();</span><br><span class="line"></span><br><span class="line">        Node&lt;E&gt; lastNext = lastReturned.next;</span><br><span class="line">        unlink(lastReturned);</span><br><span class="line">        <span class="keyword">if</span> (next == lastReturned)</span><br><span class="line">            next = lastNext;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            nextIndex--;</span><br><span class="line">        lastReturned = <span class="keyword">null</span>;</span><br><span class="line">        expectedModCount++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有意思的是迭代器中的2个成员变量 <code>next</code> 和 <code>lastReturned</code>。</p>
+<p>在 <code>next()</code> 方法中可以看到，一般情况下， <code>next</code> 和 <code>lastReturned</code> 是指向不同的元素的，<code>next</code> 正常是 <code>lastReturned</code> 的下一个元素：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">lastReturned = next;</span><br><span class="line">next = next.next;</span><br></pre></td></tr></table></figure>
+
+<p>但是如果执行过 <code>previous()</code> 方法，它们的指向就发生变化了：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">lastReturned = next = (next == <span class="keyword">null</span>) ? last : next.prev;</span><br></pre></td></tr></table></figure>
+
+<p>这个时候，<code>next</code> 和 <code>lastReturned</code> 都指向同一个元素，也就是当前 <code>next</code> 的前一个元素。</p>
+<p>由于 <code>next()</code> 和 <code>previous()</code> 的不同情况，其他方法在处理时，也需要考虑这两种情况，就比如上面的 <code>remove()</code> 方法：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (next == lastReturned)</span><br><span class="line">    <span class="comment">// previous()的情况</span></span><br><span class="line">    next = lastNext;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="comment">// next()的情况</span></span><br><span class="line">    nextIndex--;</span><br></pre></td></tr></table></figure>
+
+<p>一开始看到这里，貌似是有点别扭的，因为感觉代码写起来有点不太统一。</p>
+<p>后来仔细相想想，可能是因为只用了 <code>next</code> 变量来遍历，如果再加上一个 <code>previous</code> 变量可能会更好理解：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">ListItr</span> <span class="keyword">implements</span> <span class="title">ListIterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> E <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        checkForComodification();</span><br><span class="line">        <span class="keyword">if</span> (!hasNext())</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">            </span><br><span class="line">        <span class="comment">// 添加previous指向前一个元素</span></span><br><span class="line">        lastReturned = previous = next;</span><br><span class="line">        next = next.next;</span><br><span class="line"></span><br><span class="line">        nextIndex++;</span><br><span class="line">        <span class="keyword">return</span> lastReturned.item;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> E <span class="title">previous</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        checkForComodification();</span><br><span class="line">        <span class="keyword">if</span> (!hasPrevious())</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">            </span><br><span class="line">        <span class="comment">// 添加previous指向前一个元素</span></span><br><span class="line">        lastReturned = next = previous;</span><br><span class="line">        previous = previous.prev;</span><br><span class="line">        </span><br><span class="line">        nextIndex--;</span><br><span class="line">        <span class="keyword">return</span> lastReturned.item;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样貌似好理解一些，不过多了一个变量 <code>previous</code>，维护起来可能麻烦一些吧？所以源码实现并没有添加？</p>
+<p>由于 <code>LinkedList</code> 是双向的，所以也还有另一个迭代器，逆向迭代器：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">DescendingIterator</span> <span class="keyword">implements</span> <span class="title">Iterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ListItr itr = <span class="keyword">new</span> ListItr(size());</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> itr.hasPrevious();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> E <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> itr.previous();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        itr.remove();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不过在实现上，实际是直接用的正向迭代器，在它外面包装了一层，真正遍历时就调用正向迭代器中相反的接口。</p>
+]]></content>
+      <tags>
+        <tag>java</tag>
+        <tag>集合</tag>
+        <tag>源码</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Stack</title>
+    <url>/lang/java/source/jdk8/collection/Stack/</url>
+    <content><![CDATA[<h1 id="Stack"><a href="#Stack" class="headerlink" title="Stack"></a>Stack</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Stack</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">Vector</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>Stack</code> 继承自 <code>Vector</code> 类，因此拥有 <code>Vector</code> 的所有特性。</p>
+<h2 id="二、原理"><a href="#二、原理" class="headerlink" title="二、原理"></a>二、原理</h2><p><code>Stack</code> 除了增加几个栈特用的方法以外，其他的和 <code>Vector</code> 都一样，而增加的这几个方法，内部实际上也是调用的 <code>Vector</code> 的方法。</p>
+<span id="more"></span>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">push</span><span class="params">(E item)</span> </span>&#123;</span><br><span class="line">    addElement(item);</span><br><span class="line">    <span class="keyword">return</span> item;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> E <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    E obj;</span><br><span class="line">    <span class="keyword">int</span> len = size();</span><br><span class="line">    obj = peek();</span><br><span class="line">    removeElementAt(len - <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> obj;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> E <span class="title">peek</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> len = size();</span><br><span class="line">    <span class="keyword">if</span> (len == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> EmptyStackException();</span><br><span class="line">    <span class="keyword">return</span> elementAt(len - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>和 <code>Vector</code> 的保持一致，<code>Stack</code> 添加的方法也加上了同步锁 <code>synchronized</code>，避免并发问题。</p>
+<p>不过 <code>push</code> 方法并没有加上同步锁，这个倒是有点出乎意料，或许是因为它内部调用的方法 <code>addElement</code> 已经加锁的原因吧。</p>
+]]></content>
+      <tags>
+        <tag>java</tag>
+        <tag>集合</tag>
+        <tag>源码</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>PriorityQueue</title>
     <url>/lang/java/source/jdk8/collection/PriorityQueue/</url>
     <content><![CDATA[<h1 id="PriorityQueue"><a href="#PriorityQueue" class="headerlink" title="PriorityQueue"></a>PriorityQueue</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PriorityQueue</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractQueue</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PriorityQueue</span><span class="params">(<span class="keyword">int</span> initialCapacity,</span></span></span><br><span class="line"><span class="params"><span class="function">                         Comparator&lt;? <span class="keyword">super</span> E&gt; comparator)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// Note: This restriction of at least one is not actually needed,</span></span><br><span class="line">        <span class="comment">// but continues for 1.5 compatibility</span></span><br><span class="line">        <span class="keyword">if</span> (initialCapacity &lt; <span class="number">1</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</span><br><span class="line">        <span class="keyword">this</span>.queue = <span class="keyword">new</span> Object[initialCapacity];</span><br><span class="line">        <span class="keyword">this</span>.comparator = comparator;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -1678,26 +1699,6 @@
 <p>可以看到，删除后可能会影响实际遍历的顺序。</p>
 <p>其实我有一点不明白的是，删除时删除元素交换的始终都是末尾元素，它本来就是最后遍历的，而 <code>forgetMeNot</code> 保存的就是移动的元素，实际上也就是末尾元素，所以 <code>forgetMeNot</code> 是倒着放入末尾元素的，为什么不是用 <code>Stack</code> ，而是用队列 <code>ArrayDeque</code> 呢？</p>
 <p>这点还没有搞明白，还是说反正都是遍历，顺序什么的都不是啥大问题？？</p>
-]]></content>
-      <tags>
-        <tag>java</tag>
-        <tag>集合</tag>
-        <tag>源码</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Stack</title>
-    <url>/lang/java/source/jdk8/collection/Stack/</url>
-    <content><![CDATA[<h1 id="Stack"><a href="#Stack" class="headerlink" title="Stack"></a>Stack</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Stack</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">Vector</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>Stack</code> 继承自 <code>Vector</code> 类，因此拥有 <code>Vector</code> 的所有特性。</p>
-<h2 id="二、原理"><a href="#二、原理" class="headerlink" title="二、原理"></a>二、原理</h2><p><code>Stack</code> 除了增加几个栈特用的方法以外，其他的和 <code>Vector</code> 都一样，而增加的这几个方法，内部实际上也是调用的 <code>Vector</code> 的方法。</p>
-<span id="more"></span>
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">push</span><span class="params">(E item)</span> </span>&#123;</span><br><span class="line">    addElement(item);</span><br><span class="line">    <span class="keyword">return</span> item;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> E <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    E obj;</span><br><span class="line">    <span class="keyword">int</span> len = size();</span><br><span class="line">    obj = peek();</span><br><span class="line">    removeElementAt(len - <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> obj;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> E <span class="title">peek</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> len = size();</span><br><span class="line">    <span class="keyword">if</span> (len == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> EmptyStackException();</span><br><span class="line">    <span class="keyword">return</span> elementAt(len - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>和 <code>Vector</code> 的保持一致，<code>Stack</code> 添加的方法也加上了同步锁 <code>synchronized</code>，避免并发问题。</p>
-<p>不过 <code>push</code> 方法并没有加上同步锁，这个倒是有点出乎意料，或许是因为它内部调用的方法 <code>addElement</code> 已经加锁的原因吧。</p>
 ]]></content>
       <tags>
         <tag>java</tag>
