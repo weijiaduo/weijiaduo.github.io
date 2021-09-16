@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="查找class文件加载允许一个类，必须把它相关的依赖类也加载进来，比如父类、成员类等。 Java虚拟机规范并没有规定去哪里寻找类，所以不同虚拟机可以采用不同的方法。 一、类加载路径Oracle的Java虚拟机是根据类路径（classpath）来搜索类，按照搜索顺序可分为3类：  启动类路径（bootstrasp classpath）：默认目录是 jre\lib，即Java标准库（大部分在rt.ja">
+<meta property="og:type" content="article">
+<meta property="og:title" content="02_查找class文件">
+<meta property="og:url" content="http://example.com/lang/java/jvm/selfjvm/02_classpath/index.html">
+<meta property="og:site_name" content="Strive">
+<meta property="og:description" content="查找class文件加载允许一个类，必须把它相关的依赖类也加载进来，比如父类、成员类等。 Java虚拟机规范并没有规定去哪里寻找类，所以不同虚拟机可以采用不同的方法。 一、类加载路径Oracle的Java虚拟机是根据类路径（classpath）来搜索类，按照搜索顺序可分为3类：  启动类路径（bootstrasp classpath）：默认目录是 jre\lib，即Java标准库（大部分在rt.ja">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-16T17:06:23.000Z">
+<meta property="article:modified_time" content="2021-09-16T17:24:27.295Z">
+<meta property="article:author" content="jiaduo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="JVM">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/lang/java/jvm/selfjvm/02_classpath/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>02_查找class文件 | Strive</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Strive</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Rome was not built in one day</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/jvm/selfjvm/02_classpath/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          02_查找class文件
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-17 01:06:23 / 修改时间：01:24:27" itemprop="dateCreated datePublished" datetime="2021-09-17T01:06:23+08:00">2021-09-17</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>12k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>11 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="查找class文件"><a href="#查找class文件" class="headerlink" title="查找class文件"></a>查找class文件</h1><p>加载允许一个类，必须把它相关的依赖类也加载进来，比如父类、成员类等。</p>
+<p>Java虚拟机规范并没有规定去哪里寻找类，所以不同虚拟机可以采用不同的方法。</p>
+<h2 id="一、类加载路径"><a href="#一、类加载路径" class="headerlink" title="一、类加载路径"></a>一、类加载路径</h2><p>Oracle的Java虚拟机是根据类路径（classpath）来搜索类，按照搜索顺序可分为3类：</p>
+<ol>
+<li>启动类路径（bootstrasp classpath）：默认目录是 <code>jre\lib</code>，即Java标准库（大部分在rt.jar里）所在位置</li>
+<li>扩展类路径（extension classpath）：默认目录是 <code>jre\lib\ext</code>，即Java扩展机制的类所在位置</li>
+<li>用户类路径（user classpath）：默认当前目录，即自己实现的类、以及第三方类库所在位置</li>
+</ol>
+<span id="more"></span>
+
+<p>可以通过参数 <code>-Xbootclasspath</code> 来修改启动类路径。</p>
+<p>可以设置环境变量 <code>CLASSPATH</code> 来修改用户类路径，也可以使用参数 <code>-classpath/-cp</code> 来设置用户类路径。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">java -cp path\classes ...</span><br><span class="line">java -cp path\lib1.jar ...</span><br><span class="line">java -cp path\lib2.zip ...</span><br></pre></td></tr></table></figure>
+
+<p><code>-classpath/-cp</code> 既可以使用目录，也可以指向 jar 文件或者 zip 文件，可以同时指定多个目录或文件。</p>
+<p>指定多个路径，需要分隔符分开，不同操作系统的分隔符不一样，在 windows 下是分号 <code>;</code>，在类 Unix 下是冒号 <code>:</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -cp path\classes;path\lib1.jar;path\lib2.zip ...</span><br></pre></td></tr></table></figure>
+
+<p>从 Java 6 开始，还可以使用通配符（*）指定某个目录下的所有 jar 文件（注意，不会递归子目录的 jar 文件）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -cp path\classes;path\lib\* ...</span><br></pre></td></tr></table></figure>
+
+<h2 id="二、类文件查找"><a href="#二、类文件查找" class="headerlink" title="二、类文件查找"></a>二、类文件查找</h2><h3 id="2-1-添加jre参数"><a href="#2-1-添加jre参数" class="headerlink" title="2.1 添加jre参数"></a>2.1 添加jre参数</h3><p>首先在命令行 <code>Cmd</code> 类中增加一个非标准参数 <code>Xjre</code>，表示 jre 所在的目录路径。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">options.addOption(Option.builder(<span class="string">&quot;Xjre&quot;</span>)</span><br><span class="line">                .hasArg().desc(<span class="string">&quot;jre directory&quot;</span>)</span><br><span class="line">                .type(String.class)</span><br><span class="line">                .build());</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> String jreOption;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// jre路径</span></span><br><span class="line"><span class="keyword">if</span> (line.hasOption(<span class="string">&quot;Xjre&quot;</span>)) &#123;</span><br><span class="line">    jreOption = line.getOptionValue(<span class="string">&quot;Xjre&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-查找入口类"><a href="#2-2-查找入口类" class="headerlink" title="2.2 查找入口类"></a>2.2 查找入口类</h3><p>其次，要实现不同类加载路径的入口类，接口定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Entry</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 读取class文件</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> className class的完整名称（java/lang/Object）</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 文件字节</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">byte</span>[] readClass(String className) <span class="keyword">throws</span> IOException;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 路径</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">String <span class="title">string</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后有4种入口实现，分别对应上面几种类加载路径的写法：</p>
+<ul>
+<li>DirEntry：查找 class 的目录</li>
+<li>ZipEntry：查找 class 的 zip 或 jar 文件</li>
+<li>CompositeEntry：多种查找路径的组合，比如目录，或 zip，或 jar</li>
+<li>WildcardEntry：通配符路径，指定某个目录下的所有子 zip 或 jar 文件</li>
+</ul>
+<p>各自的实现代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 目录入口</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DirEntry</span> <span class="keyword">implements</span> <span class="title">Entry</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 目录绝对路径</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String absPath;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DirEntry</span><span class="params">(String path)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.absPath = Paths.get(path).toAbsolutePath().toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">byte</span>[] readClass(String className) <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        Path path = Paths.get(absPath, className);</span><br><span class="line">        <span class="keyword">if</span> (Files.exists(path)) &#123;</span><br><span class="line">            System.out.println(className + <span class="string">&quot; found in &quot;</span> + string());</span><br><span class="line">            <span class="keyword">return</span> Files.readAllBytes(path);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">string</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> absPath;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * zip或jar入口</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZipEntry</span> <span class="keyword">implements</span> <span class="title">Entry</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 文件绝对路径</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String absPath;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ZipEntry</span><span class="params">(String path)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.absPath = Paths.get(path).toAbsolutePath().toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">byte</span>[] readClass(String className) <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="keyword">try</span> (FileInputStream fis = <span class="keyword">new</span> FileInputStream(absPath);</span><br><span class="line">             BufferedInputStream buf = <span class="keyword">new</span> BufferedInputStream(fis);</span><br><span class="line">             ArchiveInputStream in = <span class="keyword">new</span> ArchiveStreamFactory().createArchiveInputStream(buf)) &#123;</span><br><span class="line">            ArchiveEntry entry;</span><br><span class="line">            <span class="keyword">while</span> ((entry = in.getNextEntry()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (!in.canReadEntryData(entry)) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// 转成路径格式一样的才能对比得上完整名称</span></span><br><span class="line">                String entryPath = Paths.get(entry.getName()).toString();</span><br><span class="line">                <span class="keyword">if</span> (entryPath.equals(className)) &#123;</span><br><span class="line">                    System.out.println(className + <span class="string">&quot; found in &quot;</span> + string());</span><br><span class="line">                    ByteArrayOutputStream out = <span class="keyword">new</span> ByteArrayOutputStream();</span><br><span class="line">                    IOUtils.copy(in, out);</span><br><span class="line">                    <span class="keyword">return</span> out.toByteArray();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ArchiveException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">string</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> absPath;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 组合入口</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CompositeEntry</span> <span class="keyword">implements</span> <span class="title">Entry</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 路径选项</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String pathOptions;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 子入口列表</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;Entry&gt; entries;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CompositeEntry</span><span class="params">(String pathOptions)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.pathOptions = pathOptions;</span><br><span class="line">        <span class="keyword">this</span>.initEntries();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">byte</span>[] readClass(String className) <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="keyword">if</span> (entries == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (Entry e : entries) &#123;</span><br><span class="line">            <span class="keyword">byte</span>[] bytes = e.readClass(className);</span><br><span class="line">            <span class="keyword">if</span> (bytes != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> bytes;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">string</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (entries == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> pathOptions;</span><br><span class="line">        &#125;</span><br><span class="line">        StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        sb.append(<span class="string">&quot;CompositeEntry [&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span> (Entry e : entries) &#123;</span><br><span class="line">            sb.append(e.string()).append(<span class="string">&quot;, &quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        sb.delete(sb.length() - <span class="number">2</span>, sb.length());</span><br><span class="line">        sb.append(<span class="string">&quot;]&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 初始化Entries列表</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initEntries</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String[] paths = pathOptions.split(File.pathSeparator);</span><br><span class="line">        entries = <span class="keyword">new</span> ArrayList&lt;&gt;(paths.length);</span><br><span class="line">        <span class="keyword">for</span> (String path : paths) &#123;</span><br><span class="line">            entries.add(EntryFactory.newEntry(path));</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(string());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 通配符入口</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WildcardEntry</span> <span class="keyword">implements</span> <span class="title">Entry</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 绝对路径</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String absPath;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 子入口列表</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;Entry&gt; entries;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">WildcardEntry</span><span class="params">(String path)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 去掉后面的通配符</span></span><br><span class="line">        String p = path.substring(<span class="number">0</span>, path.length() - <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">this</span>.absPath = Paths.get(p).toAbsolutePath().toString();</span><br><span class="line">        initEntries();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">byte</span>[] readClass(String className) <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="keyword">if</span> (entries == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (Entry e : entries) &#123;</span><br><span class="line">            <span class="keyword">byte</span>[] bytes = e.readClass(className);</span><br><span class="line">            <span class="keyword">if</span> (bytes != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> bytes;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">string</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (entries == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> absPath;</span><br><span class="line">        &#125;</span><br><span class="line">        StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        sb.append(<span class="string">&quot;WildcardEntry [&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span> (Entry e : entries) &#123;</span><br><span class="line">            sb.append(e.string()).append(<span class="string">&quot;, &quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        sb.delete(sb.length() - <span class="number">2</span>, sb.length());</span><br><span class="line">        sb.append(<span class="string">&quot;]&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 初始化Entries列表</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initEntries</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        File dir = <span class="keyword">new</span> File(absPath);</span><br><span class="line">        <span class="keyword">if</span> (!dir.isDirectory()) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 获取目录下所有的zip或jar文件</span></span><br><span class="line">        File[] files = dir.listFiles((dir1, name) -&gt; &#123;</span><br><span class="line">            String lowerName = name.toLowerCase();</span><br><span class="line">            <span class="keyword">return</span> lowerName.endsWith(<span class="string">&quot;.zip&quot;</span>) || lowerName.endsWith(<span class="string">&quot;.jar&quot;</span>);</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">if</span> (files == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 生成所有子入口实例</span></span><br><span class="line">        entries = <span class="keyword">new</span> ArrayList&lt;&gt;(files.length);</span><br><span class="line">        <span class="keyword">for</span> (File file : files) &#123;</span><br><span class="line">            String filePath = file.getAbsolutePath();</span><br><span class="line">            entries.add(EntryFactory.newEntry(filePath));</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(string());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-类查找实现"><a href="#2-3-类查找实现" class="headerlink" title="2.3 类查找实现"></a>2.3 类查找实现</h3><p>查找入口搞定后，接下来就是真正的类查找实现了。</p>
+<p>首先，对命令行参数进行解析，包括设置 jre 目录、启动类路径、用户类路径等，并创建对应的入口。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 类路径</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Classpath</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 启动类路径</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Entry bootEntry;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 扩展类路径</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Entry extEntry;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 用户类路径</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Entry userEntry;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 启动路径选项</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String jreOption;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 用户类路径选项</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String cpOptions;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Classpath</span><span class="params">(String jreOption, String cpOptions)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.jreOption = jreOption;</span><br><span class="line">        <span class="keyword">this</span>.cpOptions = cpOptions;</span><br><span class="line">        initOptions();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * classpath</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">string</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> cpOptions;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 初始化选项</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initOptions</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        parseBootAndExtClasspath();</span><br><span class="line">        parseUserClasspath();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 解析启动类路径和扩展类路径</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">parseBootAndExtClasspath</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String jrePath = getJrePath();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 启动类路径（jre/lib/*）</span></span><br><span class="line">        Path bootPath = Paths.get(jrePath, <span class="string">&quot;lib&quot;</span>);</span><br><span class="line">        String bootDir = bootPath.toAbsolutePath() + File.separator + <span class="string">&quot;*&quot;</span>;</span><br><span class="line">        bootEntry = EntryFactory.newEntry(bootDir);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 扩展类路径（jre/lib/ext/*）</span></span><br><span class="line">        Path extPath = Paths.get(jrePath, <span class="string">&quot;lib&quot;</span>, <span class="string">&quot;ext&quot;</span>);</span><br><span class="line">        String extDir = extPath.toAbsolutePath() + File.separator + <span class="string">&quot;*&quot;</span>;</span><br><span class="line">        extEntry = EntryFactory.newEntry(extDir);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 解析用户类路径</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">parseUserClasspath</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (cpOptions == <span class="keyword">null</span> || <span class="string">&quot;&quot;</span>.equals(cpOptions)) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 用户类路径（-classpath/-cp）</span></span><br><span class="line">        userEntry = EntryFactory.newEntry(cpOptions);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取jre文件夹路径</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> jre文件夹路径</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">getJrePath</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Path path;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 用户自定义路径</span></span><br><span class="line">        <span class="keyword">if</span> (jreOption != <span class="keyword">null</span>) &#123;</span><br><span class="line">            path = Paths.get(jreOption);</span><br><span class="line">            <span class="keyword">if</span> (Files.exists(path)) &#123;</span><br><span class="line">                <span class="keyword">return</span> path.toString();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 系统环境变量</span></span><br><span class="line">        String jdkPath = System.getenv(<span class="string">&quot;JAVA_HOME&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (jdkPath != <span class="keyword">null</span>) &#123;</span><br><span class="line">            path = Paths.get(jdkPath, <span class="string">&quot;jre&quot;</span>);</span><br><span class="line">            <span class="keyword">if</span> (Files.exists(path)) &#123;</span><br><span class="line">                <span class="keyword">return</span> path.toString();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 最后尝试在当前路径下寻找jre目录</span></span><br><span class="line">        path = Paths.get(<span class="string">&quot;.&quot;</span>, <span class="string">&quot;jre&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (Files.exists(path)) &#123;</span><br><span class="line">            <span class="keyword">return</span> path.toString();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 找不到jre的路径</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">&quot;Can not found jre folder!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后，就是实际的类查找流程实现了，它是按照 <code>启动类路径 -&gt; 扩展类路径 -&gt; 用户类路径</code> 去查找的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 类路径</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Classpath</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 读取class文件</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> className class的完整名称（java/lang/Object）</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 文件字节</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">byte</span>[] readClass(String className) <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="keyword">byte</span>[] bytes = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 转换成文件路径</span></span><br><span class="line">        String classPath = Paths.get(className).toString();</span><br><span class="line">        String classFileName = classPath + <span class="string">&quot;.class&quot;</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 启动类加载</span></span><br><span class="line">        <span class="keyword">if</span> (bootEntry != <span class="keyword">null</span>) &#123;</span><br><span class="line">            bytes = bootEntry.readClass(classFileName);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 扩展类加载</span></span><br><span class="line">        <span class="keyword">if</span> (bytes == <span class="keyword">null</span> &amp;&amp; extEntry != <span class="keyword">null</span>) &#123;</span><br><span class="line">            bytes = extEntry.readClass(classFileName);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 用户类加载</span></span><br><span class="line">        <span class="keyword">if</span> (bytes == <span class="keyword">null</span> &amp;&amp; userEntry != <span class="keyword">null</span>) &#123;</span><br><span class="line">            bytes = userEntry.readClass(classFileName);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (bytes == <span class="keyword">null</span>) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;not found class &quot;</span> + className);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> bytes;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>另外，创建入口实例的方法统一放到了一个工厂类里面，为了方便查看和修改：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EntryFactory</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 根据参数生成指定的Entry类</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> entryOption 选项参数</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 具体的Entry实例</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Entry <span class="title">newEntry</span><span class="params">(String entryOption)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 多选项路径</span></span><br><span class="line">        <span class="keyword">if</span> (entryOption.contains(File.pathSeparator)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> CompositeEntry(entryOption);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 通配符路径</span></span><br><span class="line">        <span class="keyword">if</span> (entryOption.endsWith(<span class="string">&quot;*&quot;</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> WildcardEntry(entryOption);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// zip或者jar</span></span><br><span class="line">        String lowName = entryOption.toLowerCase();</span><br><span class="line">        <span class="keyword">if</span> (lowName.endsWith(<span class="string">&quot;.zip&quot;</span>) || lowName.endsWith(<span class="string">&quot;.jar&quot;</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> ZipEntry(entryOption);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 文件夹路径</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> DirEntry(entryOption);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>完整的类查找代码差不多就是这样了，后面就是要测试实际的效果了。</p>
+<h3 id="2-4-单元测试"><a href="#2-4-单元测试" class="headerlink" title="2.4 单元测试"></a>2.4 单元测试</h3><p>下面就是单元测试的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClasspathTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readClass</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        String jreOption = <span class="keyword">null</span>;</span><br><span class="line">        String cpOption = <span class="string">&quot;C:\\IdeaProjects\\self-jvm\\target;C:\\IdeaProjects\\self-jvm\\target\\classes&quot;</span>;</span><br><span class="line">        String bootClassName = <span class="string">&quot;java\\lang\\Object&quot;</span>;</span><br><span class="line">        String userClassName = <span class="string">&quot;com\\wjd\\cmd\\Cmd&quot;</span>;</span><br><span class="line">        Classpath classpath = <span class="keyword">new</span> Classpath(jreOption, cpOption);</span><br><span class="line">        Assert.assertNotNull(<span class="string">&quot;Object is null&quot;</span>, classpath.readClass(bootClassName));</span><br><span class="line">        Assert.assertNotNull(<span class="string">&quot;Cmd is null&quot;</span>, classpath.readClass(userClassName));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>它的输出结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">WildcardEntry [D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\charsets.jar, D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\deploy.jar, D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\javaws.jar, D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\jce.jar, D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\jfr.jar, D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\jfxswt.jar, D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\jsse.jar, D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\management-agent.jar, D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\plugin.jar, D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\resources.jar, D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\rt.jar]</span><br><span class="line"></span><br><span class="line">WildcardEntry [D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\ext\access-bridge-64.jar, D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\ext\cldrdata.jar, D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\ext\dnsns.jar, D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\ext\jaccess.jar, D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\ext\jfxrt.jar, D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\ext\localedata.jar, D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\ext\nashorn.jar, D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\ext\sunec.jar, D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\ext\sunjce_provider.jar, D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\ext\sunmscapi.jar, D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\ext\sunpkcs11.jar, D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\ext\zipfs.jar]</span><br><span class="line"></span><br><span class="line">CompositeEntry [C:\IdeaProjects\self-jvm\target, C:\IdeaProjects\self-jvm\target\classes]</span><br><span class="line"></span><br><span class="line">java\lang\Object.class found in D:\Program Files\JDK\jdk1.8.0_25_x64\jre\lib\rt.jar</span><br><span class="line"></span><br><span class="line">com\wjd\cmd\Cmd.class found in C:\IdeaProjects\self-jvm\target\classes</span><br></pre></td></tr></table></figure>
+
+<p>看起来，实际加载的包和最后查找到的类路径都是对的。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><p>Oracle的Java虚拟机是根据类路径（classpath）来搜索类，按照搜索顺序可分为3类：</p>
+<ol>
+<li>启动类路径（bootstrasp classpath）：默认目录是 <code>jre\lib</code>，即Java标准库（大部分在rt.jar里）所在位置</li>
+<li>扩展类路径（extension classpath）：默认目录是 <code>jre\lib\ext</code>，即Java扩展机制的类所在位置</li>
+<li>用户类路径（user classpath）：默认当前目录，即自己实现的类、以及第三方类库所在位置</li>
+</ol>
+</li>
+<li><p><code>-classpath/-cp</code> 既可以使用目录，也可以指向 jar 文件或者 zip 文件，可以同时指定多个目录或文件。</p>
+</li>
+<li><p>指定多个路径，需要分隔符分开，不同操作系统的分隔符不一样，在 windows 下是分号 <code>;</code>，在类 Unix 下是冒号 <code>:</code></p>
+</li>
+<li><p>从 Java 6 开始，还可以使用通配符（*）指定某个目录下的所有 jar 文件（注意，不会递归子目录的 jar 文件）</p>
+</li>
+<li><p>具体代码实现，有4种入口类，分别对应几种类加载路径的写法：</p>
+<ul>
+<li>DirEntry：查找 class 的目录</li>
+<li>ZipEntry：查找 class 的 zip 或 jar 文件</li>
+<li>CompositeEntry：多种查找路径的组合，比如目录，或 zip，或 jar</li>
+<li>WildcardEntry：通配符路径，指定某个目录下的所有子 zip 或 jar 文件</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>ps：上面的代码实现，为了简单，有些地方没做参数校验，默认传入参数的格式都是正确的（好吧。。实际是我懒得写了，先把功能实现了再说~~）</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/JVM/" rel="tag"># JVM</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/lang/java/jvm/selfjvm/01_cmd/" rel="prev" title="01_命令行工具">
+      <i class="fa fa-chevron-left"></i> 01_命令行工具
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E6%89%BEclass%E6%96%87%E4%BB%B6"><span class="nav-text">查找class文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%B7%AF%E5%BE%84"><span class="nav-text">一、类加载路径</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E7%B1%BB%E6%96%87%E4%BB%B6%E6%9F%A5%E6%89%BE"><span class="nav-text">二、类文件查找</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E6%B7%BB%E5%8A%A0jre%E5%8F%82%E6%95%B0"><span class="nav-text">2.1 添加jre参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E6%9F%A5%E6%89%BE%E5%85%A5%E5%8F%A3%E7%B1%BB"><span class="nav-text">2.2 查找入口类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E7%B1%BB%E6%9F%A5%E6%89%BE%E5%AE%9E%E7%8E%B0"><span class="nav-text">2.3 类查找实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="nav-text">2.4 单元测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jiaduo"
+      src="/images/lufei.jpeg">
+  <p class="site-author-name" itemprop="name">jiaduo</p>
+  <div class="site-description" itemprop="description">不积跬步，无以至千里</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021/08 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiaduo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">122k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:51</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
