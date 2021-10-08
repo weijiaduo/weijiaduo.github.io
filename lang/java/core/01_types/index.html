@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="基本类型一、类型大小在 Java 中，通过 new 生成的对象数据是存储在“堆”中，而基本类型则是直接把“值”保存在栈中。 Java 中每种基本类型所占用的存储空间大小都是确定的，不会随着机器硬件架构变化而变化。  存储空间大小不变性，为Java的可移植性提供了很大的帮助">
+<meta property="og:type" content="article">
+<meta property="og:title" content="01_基本类型">
+<meta property="og:url" content="http://example.com/lang/java/core/01_types/index.html">
+<meta property="og:site_name" content="Strive">
+<meta property="og:description" content="基本类型一、类型大小在 Java 中，通过 new 生成的对象数据是存储在“堆”中，而基本类型则是直接把“值”保存在栈中。 Java 中每种基本类型所占用的存储空间大小都是确定的，不会随着机器硬件架构变化而变化。  存储空间大小不变性，为Java的可移植性提供了很大的帮助">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-10-08T13:34:00.000Z">
+<meta property="article:modified_time" content="2021-10-08T14:03:26.328Z">
+<meta property="article:author" content="jiaduo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="基本类型">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/lang/java/core/01_types/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>01_基本类型 | Strive</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Strive</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Rome was not built in one day</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/core/01_types/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          01_基本类型
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-10-08 21:34:00 / 修改时间：22:03:26" itemprop="dateCreated datePublished" datetime="2021-10-08T21:34:00+08:00">2021-10-08</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="基本类型"><a href="#基本类型" class="headerlink" title="基本类型"></a>基本类型</h1><h2 id="一、类型大小"><a href="#一、类型大小" class="headerlink" title="一、类型大小"></a>一、类型大小</h2><p>在 Java 中，通过 <code>new</code> 生成的对象数据是存储在“堆”中，而基本类型则是直接把“值”保存在栈中。</p>
+<p>Java 中每种基本类型所占用的存储空间大小都是确定的，不会随着机器硬件架构变化而变化。</p>
+<ul>
+<li>存储空间大小不变性，为Java的可移植性提供了很大的帮助</li>
+</ul>
+<span id="more"></span>
+
+<p>Java 中各种基本类型的空间大小如下：</p>
+<table>
+<thead>
+<tr>
+<th align="left">基本类型</th>
+<th align="left">包装器类型</th>
+<th align="left">大小（bit）</th>
+<th align="left">最小值</th>
+<th align="left">最大值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">boolean</td>
+<td align="left">Boolean</td>
+<td align="left">-</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+<tr>
+<td align="left">byte</td>
+<td align="left">Byte</td>
+<td align="left">8</td>
+<td align="left">-128</td>
+<td align="left">+127</td>
+</tr>
+<tr>
+<td align="left">char</td>
+<td align="left">Character</td>
+<td align="left">16</td>
+<td align="left">Unicode 0</td>
+<td align="left">Unicode $ 2 ^ 16 - 1 $</td>
+</tr>
+<tr>
+<td align="left">short</td>
+<td align="left">Short</td>
+<td align="left">16</td>
+<td align="left">$ -2 ^ 15 $</td>
+<td align="left">$ 2 ^ 15 - 1 $</td>
+</tr>
+<tr>
+<td align="left">int</td>
+<td align="left">Integer</td>
+<td align="left">32</td>
+<td align="left">$ -2 ^ 31 $</td>
+<td align="left">$ 2 ^ 31 - 1 $</td>
+</tr>
+<tr>
+<td align="left">long</td>
+<td align="left">Long</td>
+<td align="left">64</td>
+<td align="left">$ -2 ^ 63 $</td>
+<td align="left">$ 2 ^ 63 - 1 $</td>
+</tr>
+<tr>
+<td align="left">float</td>
+<td align="left">Float</td>
+<td align="left">32</td>
+<td align="left">IEEE754</td>
+<td align="left">IEEE754</td>
+</tr>
+<tr>
+<td align="left">double</td>
+<td align="left">Double</td>
+<td align="left">64</td>
+<td align="left">IEEE754</td>
+<td align="left">IEEE754</td>
+</tr>
+<tr>
+<td align="left">void</td>
+<td align="left">Void</td>
+<td align="left">-</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+</tbody></table>
+<p>在 Java 中，基本类型有以下几个特点：</p>
+<ul>
+<li>所有数值类型都是有正负号的，不存在无符号数值类型</li>
+<li>boolean 类型的存储大小没有明确规定，仅定义为能够取字面值 <code>true</code> 和 <code>false</code></li>
+<li>基本类型都有对应的包装器类型</li>
+</ul>
+<p>Java SE5 中的自动包箱功能可以自动将基本类型转换为包装器类型。</p>
+<h2 id="二、类型转换"><a href="#二、类型转换" class="headerlink" title="二、类型转换"></a>二、类型转换</h2><p>在适当的时候，Java 会把一种数据类型转换为另一种数据类型，这个就称为类型转换。</p>
+<p>例如，执行以下语句时，编译器会适当地转换数据类型来完成操作：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">double</span> d = a + <span class="number">1.0</span>; <span class="comment">// 此处a会自动转换为double类型</span></span><br></pre></td></tr></table></figure>
+
+<p>但是，有时候不能自动进行转换，则需要手动强制转换类型，例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> j = <span class="number">100</span>;</span><br><span class="line"><span class="keyword">int</span> i = (<span class="keyword">int</span>) j + <span class="number">10</span>; <span class="comment">// 这种必须显式地进行强制类型转换</span></span><br></pre></td></tr></table></figure>
+
+<p>对于类型转换，有如下几个特点：</p>
+<ul>
+<li>布尔基本类型（boolean）不允许进行任何类型转换</li>
+<li>除布尔基本类型外，其他基本类型之间可以任意转换，不过进行转换时可能会丢失部分信息</li>
+<li>没有血缘关系（继承）的“类”之间不允许进行类型转换</li>
+</ul>
+<p>比较特殊的就是布尔基本类型（boolean），它不允许进行任何的类型转换。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">boolean</span> b = <span class="keyword">true</span>;</span><br><span class="line"><span class="keyword">int</span> i = (<span class="keyword">int</span>) b; <span class="comment">// 不允许转换</span></span><br><span class="line">b = (<span class="keyword">boolean</span>) i; <span class="comment">// 不允许转换</span></span><br></pre></td></tr></table></figure>
+
+<p>这2种转换操作，在 Java 中都是不允许的，编译器也不会通过这些语句。</p>
+<p>根据转换的实际情况，可以分为2种转换类型：</p>
+<ul>
+<li>窄化转换（narrowing conversion）：将大数据类型转换为小数据类型了，可能会丢失部分信息，比如 long 转换为 int，int 转换为 short 等</li>
+<li>扩展转换（widening conversion）：将小数据类型转换为大数据类型，不会丢失任何信息，比如 short 转换为 int，int 转换为 long 等</li>
+</ul>
+<p>对于窄化转换，必须显式地进行强制类型转换，否则编译器会直接报错。而对于扩展转换，则不必显式地进行类型转换，它会自动转换。</p>
+<p>对于窄化转换，它是怎么转换的呢？是直接截取？还是舍入？举个例子来看一下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> t = <span class="number">0x0FF0FF00F0F0F0F0L</span>;</span><br><span class="line">System.out.println(t);</span><br><span class="line">System.out.println(Long.toBinaryString(t));</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> i = (<span class="keyword">int</span>) t;</span><br><span class="line">System.out.println(i);</span><br><span class="line">System.out.println(Integer.toBinaryString(i));</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1148698284486881520</span><br><span class="line">111111110000111111110000000011110000111100001111000011110000</span><br><span class="line">-252645136</span><br><span class="line">11110000111100001111000011110000</span><br></pre></td></tr></table></figure>
+
+<p>很明显，long 窄化转换为 int，它是直接进行的截尾操作。也就是说，64位的 long 窄化转换为32位的 int 时，是直接截取的 long 的低32位。</p>
+<p>类似地，其他大类型转换为小类型时，也是直接截取的低位数。</p>
+<p>还需要注意的一点就是，窄化转换后，数值符号可能会发生变化，比如从正数变负数，或者从负数变正数，因为它是直接截尾转换的。</p>
+<p>而对于扩展转换，它的实际情况如何呢？也举个例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> i = <span class="number">0xF0F0F0F0</span>;</span><br><span class="line">System.out.println(i);</span><br><span class="line">System.out.println(Integer.toBinaryString(i));</span><br><span class="line"></span><br><span class="line"><span class="keyword">long</span> t = i;</span><br><span class="line">System.out.println(t);</span><br><span class="line">System.out.println(Long.toBinaryString(t));</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-252645136</span><br><span class="line">11110000111100001111000011110000</span><br><span class="line">-252645136</span><br><span class="line">1111111111111111111111111111111111110000111100001111000011110000</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，扩展转换的数据信息是不会丢失的，它是用符号位进行扩充来填补高位，从而保持了数值的符号不变。</p>
+<p>总之，扩展转换是不需要关心的，主要还是大数据类型转小数据类型的窄化转换，它可能会导致部分信息丢失，需要特别留意。</p>
+<h2 id="三、高精度数值类型"><a href="#三、高精度数值类型" class="headerlink" title="三、高精度数值类型"></a>三、高精度数值类型</h2><p>另外，除了上面的基本数据类型，Java还提供了2种高精度数值类型：</p>
+<ul>
+<li><code>BigInteger</code>：支持任意精度的整数</li>
+<li><code>BigDecimal</code>：支持任意精度的定点数</li>
+</ul>
+<p>这2种类型分别对应的是 <code>int</code> 和 <code>float</code> 基本类型，它们所能执行的操作相似。</p>
+<p>也就是说，<code>int</code> 和 <code>float</code> 能做的事，都可以用 <code>BigInteger</code> 和 <code>BigDecimal</code> 来做，而且精度更高。</p>
+<p>但是 <code>BigInteger</code> 和 <code>BigDecimal</code> 毕竟不是基本类型，而是一种对象类型，所以运算速度会比较慢。</p>
+<p>实际上基本类型也是用精度换取了速度。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>基本类型：</p>
+<ul>
+<li><p>在 Java 中，通过 <code>new</code> 生成的对象数据是存储在“堆”中，而基本类型则是直接把“值”保存在栈中</p>
+</li>
+<li><p>Java 中每种基本类型所占用的存储空间大小都是确定的，不会随着机器硬件架构变化而变化。</p>
+</li>
+<li><p>存储空间大小不变性，为Java的可移植性提供了很大的帮助</p>
+</li>
+<li><p>所有数值类型都是有正负号的，不存在无符号数值类型</p>
+</li>
+<li><p>boolean 类型的存储大小没有明确规定，仅定义为能够取字面值 <code>true</code> 和 <code>false</code></p>
+</li>
+<li><p>基本类型都有对应的包装器类型</p>
+</li>
+<li><p>Java SE5 中的自动包箱功能可以自动将基本类型转换为包装器类型</p>
+</li>
+</ul>
+<p>类型转换：</p>
+<ul>
+<li>根据转换的实际情况，可以分为2种转换类型：<ul>
+<li>窄化转换（narrowing conversion）：将大数据类型转换为小数据类型了，可能会丢失部分信息，比如 long 转换为 int，int 转换为 short 等</li>
+<li>扩展转换（widening conversion）：将小数据类型转换为大数据类型，不会丢失任何信息，比如 short 转换为 int，int 转换为 long 等</li>
+</ul>
+</li>
+<li>对于窄化转换，必须显式地进行强制类型转换，否则编译器会直接报错。而对于扩展转换，则不必显式地进行类型转换，它会自动转换</li>
+<li>窄化转换，采用的是截尾实现，也就是截取大数据类型的低位</li>
+<li>窄化转换后，数值符号可能会发生变化，比如从正数变负数，或者从负数变正数</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/" rel="tag"># 基本类型</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/lang/java/jvm/selfjvm/03_classfile/" rel="prev" title="03_解析class文件">
+      <i class="fa fa-chevron-left"></i> 03_解析class文件
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B"><span class="nav-text">基本类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E7%B1%BB%E5%9E%8B%E5%A4%A7%E5%B0%8F"><span class="nav-text">一、类型大小</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="nav-text">二、类型转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E9%AB%98%E7%B2%BE%E5%BA%A6%E6%95%B0%E5%80%BC%E7%B1%BB%E5%9E%8B"><span class="nav-text">三、高精度数值类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jiaduo"
+      src="/images/lufei.jpeg">
+  <p class="site-author-name" itemprop="name">jiaduo</p>
+  <div class="site-description" itemprop="description">不积跬步，无以至千里</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021/08 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiaduo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">144k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:11</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
