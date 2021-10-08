@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="解析class文件Java 虚拟机规范中所指的 class 文件，并非特指位于磁盘中的 .class 文件，而是泛指任何格式符合规范的 class 数据。它实际上可以通过网络下载，从数据库加载，甚至是在运行中直接生成等方式来获取 class 文件。  构成 class 文件的基本数据单位是字节，可以把整个 class 文件当成一个字节流来处理 数据由连续多个字节构成，这些数据在 class 文件中">
+<meta property="og:type" content="article">
+<meta property="og:title" content="03_解析class文件">
+<meta property="og:url" content="http://example.com/lang/java/jvm/selfjvm/03_classfile/index.html">
+<meta property="og:site_name" content="Strive">
+<meta property="og:description" content="解析class文件Java 虚拟机规范中所指的 class 文件，并非特指位于磁盘中的 .class 文件，而是泛指任何格式符合规范的 class 数据。它实际上可以通过网络下载，从数据库加载，甚至是在运行中直接生成等方式来获取 class 文件。  构成 class 文件的基本数据单位是字节，可以把整个 class 文件当成一个字节流来处理 数据由连续多个字节构成，这些数据在 class 文件中">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-10-08T01:10:21.000Z">
+<meta property="article:modified_time" content="2021-10-08T11:10:45.305Z">
+<meta property="article:author" content="jiaduo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="JVM">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/lang/java/jvm/selfjvm/03_classfile/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>03_解析class文件 | Strive</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Strive</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Rome was not built in one day</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/jvm/selfjvm/03_classfile/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          03_解析class文件
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-10-08 09:10:21 / 修改时间：19:10:45" itemprop="dateCreated datePublished" datetime="2021-10-08T09:10:21+08:00">2021-10-08</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>19k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>18 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="解析class文件"><a href="#解析class文件" class="headerlink" title="解析class文件"></a>解析class文件</h2><p>Java 虚拟机规范中所指的 class 文件，并非特指位于磁盘中的 .class 文件，而是泛指任何格式符合规范的 class 数据。它实际上可以通过网络下载，从数据库加载，甚至是在运行中直接生成等方式来获取 class 文件。</p>
+<ul>
+<li>构成 class 文件的基本数据单位是字节，可以把整个 class 文件当成一个字节流来处理</li>
+<li>数据由连续多个字节构成，这些数据在 class 文件中以大端（big-endian）方式存储</li>
+</ul>
+<p>为了描述 class 文件格式，Java 虚拟机规范定义了 u1、u2 和 u4 三种数据类型来表示1、2和4字节无符号整数。</p>
+<span id="more"></span>
+
+<ul>
+<li>相同类型的多条数据一般按表（table）的形式存储在 class 文件中</li>
+<li>表由表头和表项（item）构成，表头是 u2 或 u4 整数</li>
+</ul>
+<p>整个 class 文件被描述为一个 ClassFile 结构，如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">ClassFile &#123;</span><br><span class="line">    u4                 magic;</span><br><span class="line">    u2                 minor_version;</span><br><span class="line">    u2                 major_version;</span><br><span class="line">    u2                 constant_pool_count;</span><br><span class="line">    cp_info            constant_pool[constant_pool_count<span class="number">-1</span>];</span><br><span class="line">    u2                 access_flags;</span><br><span class="line">    u2                 this_class;</span><br><span class="line">    u2                 super_class;</span><br><span class="line">    u2                 interfaces_count;</span><br><span class="line">    u2                 interfaces[interfaces_count];</span><br><span class="line">    u2                 fields_count;</span><br><span class="line">    field_info         fields[fields_count];</span><br><span class="line">    u2                 methods_count;</span><br><span class="line">    method_info        methods[methods_count];</span><br><span class="line">    u2                 attributes_count;</span><br><span class="line">    attribute_info     attributes[attributes_count];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="一、前期准备"><a href="#一、前期准备" class="headerlink" title="一、前期准备"></a>一、前期准备</h2><h3 id="1-1-自定义数据类型"><a href="#1-1-自定义数据类型" class="headerlink" title="1.1 自定义数据类型"></a>1.1 自定义数据类型</h3><p>Java 虚拟机规范定义了 u1、u2 和 u4 三种数据类型来表示1、2和4字节无符号整数。</p>
+<p>但是 Java 中都是有符号整数，没有无符号整数，所以这里先定义几种无符号整数类型，实际上它们是由更大范围的整数值来保存的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 8比特无符号整数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Uint8</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> val;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Uint8</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.val = val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 16比特无符号整数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Uint16</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> val;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Uint16</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.val = val;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 32比特无符号整数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Uint32</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> val;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Uint32</span><span class="params">(<span class="keyword">long</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.val = val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用自定义类型的原因是，方便在定义 ClassFile 类时，各个成员变量的类型能更清晰一些，不然都是 int、long 这些类型的话，都不知道 ClassFile 中实际保存的字节数量。</p>
+<p>这样增加自定义类型后，下面的 ClassFile 结构就稍微好看一点了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClassFile</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 魔数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Uint32 magic;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 次版本号</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Uint16 minorVersion;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 主版本号</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Uint16 majorVersion;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 常量池常量数量</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Uint16 constantCount;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 常量池</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> ConstantPoolInfo constantPool;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 类访问标志</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Uint16 accessFlags;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 类名</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Uint16 className;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 父类名</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Uint16 superClassName;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 接口数量</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Uint16 interfaceCount;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 接口定义</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Uint16[] interfaces;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 字段数量</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Uint16 fieldCount;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 字段定义</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> FieldInfo[] fields;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 方法数量</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Uint16 methodCount;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 方法定义</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> MethodInfo[] methods;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 属性数量</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Uint16 attributesCount;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 属性定义</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> AttributeInfo[] attributes;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-类型数据读取"><a href="#1-2-类型数据读取" class="headerlink" title="1.2 类型数据读取"></a>1.2 类型数据读取</h3><p>现在是把 class 文件当成字节流来处理，但是如果直接操作字节是很不方便的。而且前面增加了自定义数据类型，把数据读出来后，还要再转成对应的数据类型，相当麻烦。</p>
+<p>所以定义了一个工具类 <code>ClassReader</code> 来帮助读取数据：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClassReader</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> ByteBuffer buf;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> offset;</span><br><span class="line"></span><br><span class="line">    ClassReader (<span class="keyword">byte</span>[] bytes) &#123;</span><br><span class="line">        buf = ByteBuffer.wrap(bytes);</span><br><span class="line">        buf.order(ByteOrder.BIG_ENDIAN); <span class="comment">// 大端</span></span><br><span class="line">        offset = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">readInt</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> buf.getInt();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">readLong</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> buf.getLong();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">readFloat</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> buf.getFloat();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">readDouble</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> buf.getDouble();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Uint8 <span class="title">readUint8</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> val = buf.get();</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Uint8(val);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Uint16 <span class="title">readUint16</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">short</span> s = buf.getShort();</span><br><span class="line">        <span class="keyword">int</span> val = <span class="number">0x0FFFF</span> &amp; s;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Uint16(val);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Uint32 <span class="title">readUint32</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i = buf.getInt();</span><br><span class="line">        <span class="keyword">long</span> val = <span class="number">0x0FFFFFFFFL</span> &amp; i;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Uint32(val);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Uint16[] readUint16s(Uint16 length) &#123;</span><br><span class="line">        Uint16[] table = <span class="keyword">new</span> Uint16[length.value()];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; table.length; i++) &#123;</span><br><span class="line">            table[i] = readUint16();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> table;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">byte</span>[] readBytes(<span class="keyword">int</span> length) &#123;</span><br><span class="line">        <span class="keyword">byte</span>[] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[length];</span><br><span class="line">        buf.get(bytes);</span><br><span class="line">        offset += length;</span><br><span class="line">        <span class="keyword">return</span> bytes;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>工具类底层是用 <code>ByteBuffer</code> 来实现的，它提供了很多有用的方法来读取指定类型的数据，基本上可以直接使用。</p>
+<h2 id="二、类文件数据结构"><a href="#二、类文件数据结构" class="headerlink" title="二、类文件数据结构"></a>二、类文件数据结构</h2><h3 id="2-1-魔数"><a href="#2-1-魔数" class="headerlink" title="2.1 魔数"></a>2.1 魔数</h3><p>很多文件格式都会规定满足该格式的文件必须以某几个固定字节开头，这几个字节主要起标识作用，叫作魔数（magic number）。</p>
+<p>class 文件的魔数是 <code>0xCAFEBABE</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">magic = reader.readUint32();</span><br></pre></td></tr></table></figure>
+
+<p>Java 虚拟机规范规定，如果加载的 class 文件不符合要求的格式，Java 虚拟机实现就抛出 <code>java.lang.ClassFormatError</code> 异常。</p>
+<h3 id="2-2-版本号"><a href="#2-2-版本号" class="headerlink" title="2.2 版本号"></a>2.2 版本号</h3><p>魔数之后是 class 文件的次版本号和主版本号，都是u2类型。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">minorVersion = reader.readUint16();</span><br><span class="line">majorVersion = reader.readUint16();</span><br></pre></td></tr></table></figure>
+
+<p>次版本号只在 J2SE 1.2 之前用过，从1.2开始基本上就没什么用了（都是0）。</p>
+<p>主版本号在 J2SE 1.2 之前是45，从1.2开始，每次有大的 Java 版本发布，都会加1。</p>
+<table>
+<thead>
+<tr>
+<th align="center">Java 版本</th>
+<th align="center">class 文件版本号</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">JDK 1.0.2</td>
+<td align="center">45.0 ~ 45.3</td>
+</tr>
+<tr>
+<td align="center">JDK 1.1</td>
+<td align="center">45.0 ~ 45.65535</td>
+</tr>
+<tr>
+<td align="center">J2SE 1.2</td>
+<td align="center">46.0</td>
+</tr>
+<tr>
+<td align="center">J2SE 1.3</td>
+<td align="center">47.0</td>
+</tr>
+<tr>
+<td align="center">J2SE 1.4</td>
+<td align="center">48.0</td>
+</tr>
+<tr>
+<td align="center">Java SE 5.0</td>
+<td align="center">49.0</td>
+</tr>
+<tr>
+<td align="center">Java SE 6</td>
+<td align="center">50.0</td>
+</tr>
+<tr>
+<td align="center">Java SE 7</td>
+<td align="center">51.0</td>
+</tr>
+<tr>
+<td align="center">Java SE 8</td>
+<td align="center">52.0</td>
+</tr>
+</tbody></table>
+<p>特定的 Java 虚拟机实现只能支持版本号在某个范围内的 class 文件。</p>
+<p>例如，Java 8 支持版本号为 45.0 ~ 52.0 的 class 文件。</p>
+<p>如果版本号不在支持的范围内，Java 虚拟机实现就抛出 <code>java.lang.UnsupportedClassVersionError</code> 异常。</p>
+<h3 id="2-3-类访问标志"><a href="#2-3-类访问标志" class="headerlink" title="2.3 类访问标志"></a>2.3 类访问标志</h3><p>类访问标志，这是一个16位的 <code>bitmask</code>，用于指出 class 文件定义的是类还是接口，访问级别是 <code>public</code> 还是 <code>private</code> 等。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">accessFlags = reader.readUint16();</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-4-类和超类"><a href="#2-4-类和超类" class="headerlink" title="2.4 类和超类"></a>2.4 类和超类</h3><p>类访问标志之后是两个u2类型的常量池索引，分别给出类名和超类名。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">className = reader.readUint16();</span><br><span class="line">superClassName = reader.readUint16();</span><br></pre></td></tr></table></figure>
+
+<p>class 文件存储的类名类似完全限定名，但是把点（<code>.</code>）换成了斜线（<code>/</code>），这种名字叫作二进制名（binary names）。</p>
+<p>比如，<code>java.lang.Object</code> 在 class 文件中存储的名称为 <code>java/lang/Object</code>。</p>
+<p>每个类都要有名字，所以 <code>className</code> 必须是有效的常量池索引。</p>
+<p>除 <code>java.lang.Object</code> 之外，其他类都有超类，所以除了 <code>Object.class</code> 以外，其他 class 文件中的 <code>superClassName</code> 必须是有效的常量池索引。</p>
+<p>而 <code>java.lang.Object</code> 的 class 文件中，<code>superClassName</code> 的值是0。</p>
+<h3 id="2-5-类接口"><a href="#2-5-类接口" class="headerlink" title="2.5 类接口"></a>2.5 类接口</h3><p>类和超类索引后面是接口索引表，表中存放的也是常量池索引，给出该类实现的所有接口的名字。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">interfaceCount = reader.readUint16();</span><br><span class="line">interfaces = reader.readUint16s(interfaceCount);</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-6-字段、方法"><a href="#2-6-字段、方法" class="headerlink" title="2.6 字段、方法"></a>2.6 字段、方法</h3><p>接口索引表之后是字段表和方法表，分别存储字段和方法信息。字段和方法的基本结构大致相同，差别仅在于属性表。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">field_info &#123;</span><br><span class="line">    u2                     access_flags;</span><br><span class="line">    u2                     name_index;</span><br><span class="line">    u2                     descriptor_index;</span><br><span class="line">    u2                     attributes_count;</span><br><span class="line">    attribute_info         attributes[attributes_count];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>和类一样，字段和方法也有自己的访问标志。</p>
+<p>访问标志之后是一个常量池索引，给出字段名或方法名。</p>
+<p>然后又是一个常量池索引，给出字段或方法的描述符。</p>
+<p>最后是属性表。</p>
+<p>字段和方法的结构基本一致，所以它们的解析过程也差不多：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 成员变量</span></span><br><span class="line">fieldCount = reader.readUint16();</span><br><span class="line">fields = <span class="keyword">new</span> FieldInfo[fieldCount.value()];</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; fields.length; i++) &#123;</span><br><span class="line">    fields[i] = <span class="keyword">new</span> FieldInfo();</span><br><span class="line">    fields[i].readFrom(reader);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 成员方法</span></span><br><span class="line">methodCount = reader.readUint16();</span><br><span class="line">methods = <span class="keyword">new</span> MethodInfo[methodCount.value()];</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; methods.length; i++) &#123;</span><br><span class="line">    methods[i] = <span class="keyword">new</span> MethodInfo();</span><br><span class="line">    methods[i].readFrom(reader);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="三、常量池"><a href="#三、常量池" class="headerlink" title="三、常量池"></a>三、常量池</h2><p>常量池里面存放着各式各样的常量信息，包括数字和字符串常量、类和接口名、字段和方法名等等。</p>
+<p>常量池实际上也是一个表。表头给出的常量池大小比实际大1。</p>
+<p>假设表头给出的值是n，那么常量池的实际大小是n–1。也就是说，常量池的有效的常量池索引是1~n–1。0是无效索引，表示不指向任何常量。</p>
+<p><code>CONSTANT_Long_info</code> 和 <code>CONSTANT_Double_info</code> 各占两个位置。也就是说，如果常量池中存在这两种常量，实际的常量数量比n–1还要少，而且1~n–1的某些数也会变成无效索引。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">constantCount = reader.readUint16();</span><br><span class="line">constantPool = <span class="keyword">new</span> ConstantInfo[constantCount.value()];</span><br><span class="line"><span class="comment">// 常量池的索引从1开始</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; constantPool.length; i++) &#123;</span><br><span class="line">    constantPool[i] = readConstantInfo(reader);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 双字类型（即8字节）占2个位置</span></span><br><span class="line">    <span class="keyword">if</span> (constantPool[i] <span class="keyword">instanceof</span> LongConstantInfo</span><br><span class="line">            || constantPool[i] <span class="keyword">instanceof</span> DoubleConstantInfo) &#123;</span><br><span class="line">        constantPool[++i] = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>常量的第一个字节是 tag 值，用于指明常量的类型。</p>
+<p>Java 虚拟机规范定义了14种常量，各个常量值对应的 tag 如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Constant</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ConstantUtf8 = <span class="number">1</span>;                <span class="comment">// Java 1.0.2</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ConstantInteger = <span class="number">3</span>;             <span class="comment">// Java 1.0.2</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ConstantFloat = <span class="number">4</span>;               <span class="comment">// Java 1.0.2</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ConstantLong = <span class="number">5</span>;                <span class="comment">// Java 1.0.2</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ConstantDouble = <span class="number">6</span>;              <span class="comment">// Java 1.0.2</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ConstantClass = <span class="number">7</span>;               <span class="comment">// Java 1.0.2</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ConstantString = <span class="number">8</span>;              <span class="comment">// Java 1.0.2</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ConstantFieldRef = <span class="number">9</span>;            <span class="comment">// Java 1.0.2</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ConstantMethodRef = <span class="number">10</span>;          <span class="comment">// Java 1.0.2</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ConstantInterfaceMethodRef = <span class="number">11</span>; <span class="comment">// Java 1.0.2</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ConstantNameAndType = <span class="number">12</span>;        <span class="comment">// Java 1.0.2</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ConstantMethodHandle = <span class="number">15</span>;       <span class="comment">// Java 7</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ConstantMethodType = <span class="number">16</span>;         <span class="comment">// Java 7</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ConstantInvokeDynamic = <span class="number">18</span>;      <span class="comment">// Java 7</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ConstantModule = <span class="number">19</span>;             <span class="comment">// Java 9</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ConstantPackage = <span class="number">20</span>;            <span class="comment">// Java 9</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ConstantDynamic = <span class="number">17</span>;            <span class="comment">// Java 11</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>按照结构，常量池的常量可以分为2种，一种是存放有数据的字面常量，一种是存放索引的引用常量。</p>
+<p>像整数、浮点数、UTF8字节等，都属于字面常量；而像字符串、类型、方法等都是引用常量。</p>
+<p>就比如，整数常量的结构是这样的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CONSTANT_Integer_info &#123;</span><br><span class="line">    3 (u1 tag);</span><br><span class="line">    101 (u4 Integer);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>整数常量的 <code>u4 Integer</code> 的值 101 就是这个整数常量的值，也就是它是直接保存数据的。</p>
+<p>而字符串常量的结构是这样的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CONSTANT_String_info &#123;</span><br><span class="line">    8 (u1 tag);</span><br><span class="line">    34 (u2 string_index);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>字符串常量里面的 <code>string_index</code> 就只是一个索引，指向了另外的常量，并不直接保存数据。</p>
+<p>下面分别详细介绍这些常量的结构定义。</p>
+<h3 id="3-1-字面常量"><a href="#3-1-字面常量" class="headerlink" title="3.1 字面常量"></a>3.1 字面常量</h3><p>字面常量，和 Java 中的基本类型概念差不多，是实际拥有数据的常量。</p>
+<h4 id="3-1-1-CONSTANT-Utf8"><a href="#3-1-1-CONSTANT-Utf8" class="headerlink" title="3.1.1 CONSTANT_Utf8"></a>3.1.1 CONSTANT_Utf8</h4><p><code>CONSTANT_Utf8</code> 是一个变长的数据结构，里面存放的是 MUTF-8 编码的字符串，结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CONSTANT_Utf8_info &#123;</span><br><span class="line">    u1 tag;</span><br><span class="line">    u2 length;</span><br><span class="line">    u1 bytes[length];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>tag</code> 等于 1。</p>
+<p><code>length</code> 是它的长度，u2 是2个字节，所以它的最大值为 65536。</p>
+<p>这也就意味着，Java 中允许的最大字符串长度为 65536 字节。也就是能够放 65536 个 ASCII 字符，或者 65536/3 个中文字符。</p>
+<p>它的读取比较直接，按照字节长度读取即可：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readFrom</span><span class="params">(ClassReader reader)</span> </span>&#123;</span><br><span class="line">    length = reader.readUint16();</span><br><span class="line">    val = reader.readBytes(length);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-1-2-CONSTANT-Integer"><a href="#3-1-2-CONSTANT-Integer" class="headerlink" title="3.1.2 CONSTANT_Integer"></a>3.1.2 CONSTANT_Integer</h4><p><code>CONSTANT_Integer</code> 是整型常量，使用4字节存储数值，结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CONSTANT_Integer_info &#123;</span><br><span class="line">    u1 tag;</span><br><span class="line">    u4 bytes;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>tag</code> 等于 3。</p>
+<p>整型常量，对应的就是 Java 中的 Integer 整型，所以直接按照读取 Integer 的方式读取即可。</p>
+<p>刚好 <code>ByteBuffer</code> 也提供了相应的基本类型读取方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">readInt</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> buf.getInt();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所以在解析整型常量时，可以直接解析：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readFrom</span><span class="params">(ClassReader reader)</span> </span>&#123;</span><br><span class="line">    val = reader.readInt();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-1-3-CONSTANT-Float"><a href="#3-1-3-CONSTANT-Float" class="headerlink" title="3.1.3 CONSTANT_Float"></a>3.1.3 CONSTANT_Float</h4><p><code>CONSTANT_Float</code> 是 IEEE754 单精度浮点数常量，使用4字节存储数值，结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CONSTANT_Float_info &#123;</span><br><span class="line">    u1 tag;</span><br><span class="line">    u4 bytes;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>tag</code> 等于 4。</p>
+<p>单精度浮点数常量，对应的就是 Java 中的 Float 单精度浮点数。</p>
+<p><code>ByteBuffer</code> 也提供了相应的读取方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">readFloat</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> buf.getFloat();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后就可以直接解析浮点数了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readFrom</span><span class="params">(ClassReader reader)</span> </span>&#123;</span><br><span class="line">    val = reader.readFloat();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-1-4-CONSTANT-Long"><a href="#3-1-4-CONSTANT-Long" class="headerlink" title="3.1.4 CONSTANT_Long"></a>3.1.4 CONSTANT_Long</h4><p><code>CONSTANT_Long</code> 是8字节长整型常量，结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CONSTANT_Long_info &#123;</span><br><span class="line">    u1 tag;</span><br><span class="line">    u4 high_bytes;</span><br><span class="line">    u4 low_bytes;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>tag</code> 等于 5。</p>
+<p>注意，在长整型常量定义中，8字节是被拆分成高位4字节和低位4字节来存放的。</p>
+<p>长整型常量，对应的就是 Java 中的 Long 长整型。</p>
+<p><code>ByteBuffer</code> 也提供了相应的读取方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">readLong</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> buf.getLong();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>直接解析即可：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readFrom</span><span class="params">(ClassReader reader)</span> </span>&#123;</span><br><span class="line">    val = reader.readLong();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-1-5-CONSTANT-Double"><a href="#3-1-5-CONSTANT-Double" class="headerlink" title="3.1.5 CONSTANT_Double"></a>3.1.5 CONSTANT_Double</h4><p><code>CONSTANT_Double</code> 是 IEEE754 双精度浮点数常量，使用8字节存储数值，结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CONSTANT_Double_info &#123;</span><br><span class="line">    u1 tag;</span><br><span class="line">    u4 high_bytes;</span><br><span class="line">    u4 low_bytes;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>tag</code> 等于 6。</p>
+<p>注意，在双精度浮点数常量定义中，8字节也是被拆分成高位4字节和低位4字节来存放的。</p>
+<p>双精度浮点数常量，对应的是 Java 中的 Double 双精度浮点数。</p>
+<p><code>ByteBuffer</code> 也提供了相应的读取方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">readDouble</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> buf.getDouble();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>直接解析即可：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readFrom</span><span class="params">(ClassReader reader)</span> </span>&#123;</span><br><span class="line">    val = reader.readDouble();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-引用常量"><a href="#3-2-引用常量" class="headerlink" title="3.2 引用常量"></a>3.2 引用常量</h3><p>引用常量比较简单，它们不直接保存数据，只保存了索引，所以结构上可能会比字面常量稍微复杂一些。</p>
+<p>下面简单介绍其中几种常见的引用常量。</p>
+<h4 id="3-2-1-CONSTANT-String"><a href="#3-2-1-CONSTANT-String" class="headerlink" title="3.2.1 CONSTANT_String"></a>3.2.1 CONSTANT_String</h4><p><code>CONSTANT_String_info</code> 常量表示 <code>java.lang.String</code> 字面量，结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CONSTANT_String_info &#123;</span><br><span class="line">    u1 tag;</span><br><span class="line">    u2 string_index;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>tag</code> 等于 8。</p>
+<p><code>string_index</code> 是常量池索引，指向一个 <code>CONSTANT_Utf8_info</code> 常量。</p>
+<h4 id="3-2-2-CONSTANT-Class"><a href="#3-2-2-CONSTANT-Class" class="headerlink" title="3.2.2 CONSTANT_Class"></a>3.2.2 CONSTANT_Class</h4><p><code>CONSTANT_Class</code> 常量表示类或者接口的符号引用，结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CONSTANT_Class_info &#123;</span><br><span class="line">    u1 tag;</span><br><span class="line">    u2 name_index;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>tag</code> 等于 7。</p>
+<p><code>name_index</code> 是常量池索引，指向一个 <code>CONSTANT_Utf8_info</code> 常量。</p>
+<h4 id="3-2-3-CONSTANT-Fieldref"><a href="#3-2-3-CONSTANT-Fieldref" class="headerlink" title="3.2.3 CONSTANT_Fieldref"></a>3.2.3 CONSTANT_Fieldref</h4><p><code>CONSTANT_Fieldref_info</code> 表示字段符号引用，结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CONSTANT_Fieldref_info &#123;</span><br><span class="line">    u1 tag;</span><br><span class="line">    u2 class_index;</span><br><span class="line">    u2 name_and_type_index;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>tag</code> 等于 9。</p>
+<p><code>class_index</code> 是所在类索引，指向一个 <code>CONSTANT_Class_info</code> 常量。</p>
+<p><code>name_and_type_index</code> 是名称和类型定义索引，指向一个 <code>CONSTANT_NameAndType_info</code> 常量。</p>
+<h4 id="3-2-4-CONSTANT-Methodref"><a href="#3-2-4-CONSTANT-Methodref" class="headerlink" title="3.2.4 CONSTANT_Methodref"></a>3.2.4 CONSTANT_Methodref</h4><p><code>CONSTANT_Methodref_info</code> 表示普通（非接口）方法符号引用，结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CONSTANT_Methodref_info &#123;</span><br><span class="line">    u1 tag;</span><br><span class="line">    u2 class_index;</span><br><span class="line">    u2 name_and_type_index;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>tag</code> 等于 10。</p>
+<p><code>class_index</code> 是所在类索引，指向一个 <code>CONSTANT_Class_info</code> 常量。</p>
+<p><code>name_and_type_index</code> 是名称和类型定义索引，指向一个 <code>CONSTANT_NameAndType_info</code> 常量。</p>
+<h4 id="3-2-5-CONSTANT-InterfaceMethodref"><a href="#3-2-5-CONSTANT-InterfaceMethodref" class="headerlink" title="3.2.5 CONSTANT_InterfaceMethodref"></a>3.2.5 CONSTANT_InterfaceMethodref</h4><p><code>CONSTANT_InterfaceMethodref_info</code> 表示接口方法符号引用，结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CONSTANT_InterfaceMethodref_info &#123;</span><br><span class="line">    u1 tag;</span><br><span class="line">    u2 class_index;</span><br><span class="line">    u2 name_and_type_index;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>tag</code> 等于 11。</p>
+<p><code>class_index</code> 是所在接口索引，指向一个 <code>CONSTANT_Class_info</code> 常量。</p>
+<p><code>name_and_type_index</code> 是名称和类型定义索引，指向一个 <code>CONSTANT_NameAndType_info</code> 常量。</p>
+<h4 id="3-2-6-CONSTANT-NameAndType"><a href="#3-2-6-CONSTANT-NameAndType" class="headerlink" title="3.2.6 CONSTANT_NameAndType"></a>3.2.6 CONSTANT_NameAndType</h4><p><code>CONSTANT_NameAndType_info</code> 给出字段或方法的名称和描述符，结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CONSTANT_NameAndType_info &#123;</span><br><span class="line">    u1 tag;</span><br><span class="line">    u2 name_index;</span><br><span class="line">    u2 descriptor_index;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>tag</code> 等于 12。</p>
+<p><code>name_index</code> 是名称索引，指向一个 <code>CONSTANT_Utf8_info</code> 常量。</p>
+<p><code>descriptor_index</code> 是字段或方法的描述符索引，也是指向一个 <code>CONSTANT_Utf8_info</code> 常量。</p>
+<p><code>CONSTANT_Class_info</code> 和 <code>CONSTANT_NameAndType_info</code> 加在一起可以唯一确定一个字段或者方法。</p>
+<p>描述符的作用是用来描述字段的数据类型、方法的参数列表（包括数量、类型以及顺序）和返回值。</p>
+<p>不过这里的描述符，不是常见的完整的字段或者函数定义，而是一种缩写形式，它的规则有以下几个：</p>
+<ul>
+<li>类型描述符<ul>
+<li>基本类型byte、short、char、int、long、float和double的描述符是单个字母，分别对应B、S、C、I、J、F和D（注意，long的描述符是J而不是L）</li>
+<li>引用类型的描述符是“L + 类的完全限定名 + 分号”</li>
+<li>数组类型的描述符是“[ + 数组元素类型描述符”</li>
+</ul>
+</li>
+<li>字段描述符<ul>
+<li>字段描述符就是字段类型的描述符</li>
+</ul>
+</li>
+<li>方法描述符<ul>
+<li>方法描述符是“（分号分隔的参数类型描述符）+ 返回值类型描述符”，其中void返回值由单个字母V表示</li>
+</ul>
+</li>
+</ul>
+<p>这里直接举几个例子来说明：</p>
+<table>
+<thead>
+<tr>
+<th align="center">描述符</th>
+<th align="center">类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">B</td>
+<td align="center">byte</td>
+</tr>
+<tr>
+<td align="center">S</td>
+<td align="center">short</td>
+</tr>
+<tr>
+<td align="center">Ljava/lang/Object;</td>
+<td align="center">java.lang.Object</td>
+</tr>
+<tr>
+<td align="center">[I</td>
+<td align="center">int[]</td>
+</tr>
+<tr>
+<td align="center">[[Ljava/lang/String;</td>
+<td align="center">String[][]</td>
+</tr>
+<tr>
+<td align="center">()V</td>
+<td align="center">void method()</td>
+</tr>
+<tr>
+<td align="center">(Ljava/lang/String;)Ljava/lang/String;</td>
+<td align="center">String method(String)</td>
+</tr>
+<tr>
+<td align="center">([JJ)J</td>
+<td align="center">long method(long[], long)</td>
+</tr>
+<tr>
+<td align="center">(Ljava/lang/String;Ljava/lang/String;)V</td>
+<td align="center">void method(String, String)</td>
+</tr>
+</tbody></table>
+<p>为了减少描述符在 ClassFile 文件中占用的空间，它只保留了必要的属性，一些不必要的属性如方法名称，并没有直接保存在描述符中。</p>
+<p>Java语言支持方法重载（override），不同的方法可以有相同的名字，只要参数列表不同即可。这就是为什么<code>CONSTANT_NameAndType_info</code>结构要同时包含名称和描述符的原因。</p>
+<p>那么字段呢？Java是不能定义多个同名字段的，哪怕它们的类型各不相同。这只是Java语法的限制而已，从class文件的层面来看，是完全可以支持这点的。</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>常量池中的常量分为两类：字面量（literal）和符号引用（symbolic reference）。</p>
+<p>字面量包括数字常量和字符串常量，符号引用包括类和接口名、字段和方法信息等。</p>
+<p>除了字面量，其他引用常量都是通过索引直接或间接指向 <code>CONSTANT_Utf8_info</code> 常量。</p>
+<h2 id="四、属性表"><a href="#四、属性表" class="headerlink" title="四、属性表"></a>四、属性表</h2><p>属性表可谓是个大杂烩，里面存储了各式各样的信息，如方法的字节码等。</p>
+<p>常量是由Java虚拟机规范严格定义的，共有14种。但属性是可以扩展的，不同的虚拟机实现可以定义自己的属性类型。</p>
+<p>由于这个原因，Java虚拟机规范没有使用tag，而是使用属性名来区别不同的属性。</p>
+<p>属性数据放在属性名之后的u1表中，这样Java虚拟机实现就可以跳过自己无法识别的属性。</p>
+<p>属性的结构定义如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">attribute_info &#123;</span><br><span class="line">    u2 attribute_name_index;</span><br><span class="line">    u4 attribute_length;</span><br><span class="line">    u1 info[attribute_length];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>属性表中存放的属性名实际上并不是编码后的字符串，而是常量池索引 <code>attribute_name_index</code>，指向常量池中的 <code>CONSTANT_Utf8_info</code> 常量。</p>
+<p>按照这个定义，定义了一个属性接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">AttributeInfo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">readFrom</span><span class="params">(ClassReader reader)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>具体属性只要实现 <code>readFrom</code> 方法即可。</p>
+<h3 id="4-1-属性类型"><a href="#4-1-属性类型" class="headerlink" title="4.1 属性类型"></a>4.1 属性类型</h3><p>Java虚拟机规范预定义了23种属性，按照用途可以分为三组：</p>
+<ul>
+<li>实现Java虚拟机所必需的，共有5种</li>
+<li>Java类库所必需的，共有12种</li>
+<li>提供给工具使用，共有6种，这组属性是可选的</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">属性名</th>
+<th align="center">所在位置</th>
+<th align="center">分组</th>
+<th align="center">增加版本</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">ConstantValue</td>
+<td align="center">field_info</td>
+<td align="center">1</td>
+<td align="center">1.0.2</td>
+</tr>
+<tr>
+<td align="center">Code</td>
+<td align="center">meghod_info</td>
+<td align="center">1</td>
+<td align="center">1.0.2</td>
+</tr>
+<tr>
+<td align="center">Exceptions</td>
+<td align="center">method_info</td>
+<td align="center">1</td>
+<td align="center">1.0.2</td>
+</tr>
+<tr>
+<td align="center">SourceFile</td>
+<td align="center">ClassFile</td>
+<td align="center">3</td>
+<td align="center">1.0.2</td>
+</tr>
+<tr>
+<td align="center">LineNumberTable</td>
+<td align="center">Code</td>
+<td align="center">3</td>
+<td align="center">1.0.2</td>
+</tr>
+<tr>
+<td align="center">LocalVariableTable</td>
+<td align="center">Code</td>
+<td align="center">3</td>
+<td align="center">1.0.2</td>
+</tr>
+<tr>
+<td align="center">InnerClasses</td>
+<td align="center">ClassFile</td>
+<td align="center">2</td>
+<td align="center">1.1</td>
+</tr>
+<tr>
+<td align="center">Synthetic</td>
+<td align="center">ClassFile,field_info,method_info</td>
+<td align="center">2</td>
+<td align="center">1.1</td>
+</tr>
+<tr>
+<td align="center">Deprecated</td>
+<td align="center">ClassFile,field_info,method_info</td>
+<td align="center">3</td>
+<td align="center">1.1</td>
+</tr>
+<tr>
+<td align="center">EnclosingMethod</td>
+<td align="center">ClassFile</td>
+<td align="center">2</td>
+<td align="center">5.0</td>
+</tr>
+<tr>
+<td align="center">Signature</td>
+<td align="center">ClassFile,field_info,method_info</td>
+<td align="center">2</td>
+<td align="center">5.0</td>
+</tr>
+<tr>
+<td align="center">SourceDebugExtension</td>
+<td align="center">ClassFile</td>
+<td align="center">3</td>
+<td align="center">5.0</td>
+</tr>
+<tr>
+<td align="center">LocalVariableTypeTable</td>
+<td align="center">Code</td>
+<td align="center">3</td>
+<td align="center">5.0</td>
+</tr>
+<tr>
+<td align="center">RunttimeVisibleAnnotations</td>
+<td align="center">ClassFile,field_info,method_info</td>
+<td align="center">2</td>
+<td align="center">5.0</td>
+</tr>
+<tr>
+<td align="center">RunttimeInvisibleAnnotations</td>
+<td align="center">ClassFile,field_info,method_info</td>
+<td align="center">2</td>
+<td align="center">5.0</td>
+</tr>
+<tr>
+<td align="center">RunttimeVisibleParameterAnnotations</td>
+<td align="center">method_info</td>
+<td align="center">2</td>
+<td align="center">5.0</td>
+</tr>
+<tr>
+<td align="center">RunttimeInvisibleParameterAnnotations</td>
+<td align="center">method_info</td>
+<td align="center">2</td>
+<td align="center">5.0</td>
+</tr>
+<tr>
+<td align="center">AnnotationDefault</td>
+<td align="center">method_info</td>
+<td align="center">2</td>
+<td align="center">5.0</td>
+</tr>
+<tr>
+<td align="center">StackMapTable</td>
+<td align="center">Code</td>
+<td align="center">1</td>
+<td align="center">6</td>
+</tr>
+<tr>
+<td align="center">BootstrapMethods</td>
+<td align="center">ClassFile</td>
+<td align="center">1</td>
+<td align="center">7</td>
+</tr>
+<tr>
+<td align="center">RunttimeVisibleTypeAnnotations</td>
+<td align="center">ClassFile,field_info,method_info,Code</td>
+<td align="center">2</td>
+<td align="center">8</td>
+</tr>
+<tr>
+<td align="center">RunttimeInvisibleTypeAnnotations</td>
+<td align="center">ClassFile,field_info,method_info,Code</td>
+<td align="center">2</td>
+<td align="center">8</td>
+</tr>
+<tr>
+<td align="center">MethodParameters</td>
+<td align="center">method_info</td>
+<td align="center">2</td>
+<td align="center">8</td>
+</tr>
+</tbody></table>
+<h3 id="4-2-属性定义"><a href="#4-2-属性定义" class="headerlink" title="4.2 属性定义"></a>4.2 属性定义</h3><h4 id="4-2-1-Deprecated和Synthetic属性"><a href="#4-2-1-Deprecated和Synthetic属性" class="headerlink" title="4.2.1 Deprecated和Synthetic属性"></a>4.2.1 Deprecated和Synthetic属性</h4><p><code>Deprecated</code> 是最简单的两种属性之一，仅起标记作用，不包含任何数据。</p>
+<p>它的结构定义如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Deprecated_attribute &#123;</span><br><span class="line">    u2 attribute_name_index;</span><br><span class="line">    u4 attribute_length;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于不包含任何数据，所以attribute_length的值必须是0。</p>
+<p><code>Deprecated</code> 属性用于指出类、接口、字段或方法已经不建议使用，编译器等工具可以根据Deprecated属性输出警告信息。</p>
+<p>J2SE 5.0之前,可以使用 Javadoc 提供的 <code>@deprecated</code> 标签指示编译器给类、接口、字段或方法添加 <code>Deprecated</code> 属性。</p>
+<p>从J2SE 5.0开始，可以使用 <code>@Deprecated</code> 注解。</p>
+<p><code>Deprecated</code> 属性不包含数据，所以它的 <code>readFrom</code> 实现为空就行了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readFrom</span><span class="params">(ClassReader reader)</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-2-2-Synthetic"><a href="#4-2-2-Synthetic" class="headerlink" title="4.2.2 Synthetic"></a>4.2.2 Synthetic</h4><p><code>Synthetic</code> 是最简单的两种属性之一，仅起标记作用，不包含任何数据。</p>
+<p>它的结构定义如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Synthetic_attribute &#123;</span><br><span class="line">    u2 attribute_name_index;</span><br><span class="line">    u4 attribute_length;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>Synthetic</code> 属性用来标记源文件中不存在、由编译器生成的类成员，引入 <code>Synthetic</code> 属性主要是为了支持嵌套类和嵌套接口。</p>
+<p><code>Synthetic</code> 属性不包含数据，所以它的 <code>readFrom</code> 也是为空：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readFrom</span><span class="params">(ClassReader reader)</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-2-3-SourceFile"><a href="#4-2-3-SourceFile" class="headerlink" title="4.2.3 SourceFile"></a>4.2.3 SourceFile</h4><p><code>SourceFile</code> 是可选定长属性，只会出现在 <code>ClassFile</code> 结构中，用于指出源文件名。</p>
+<p>其结构定义如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SourceFile_attribute &#123;</span><br><span class="line">    u2 attribute_name_index;</span><br><span class="line">    u4 attribute_length;</span><br><span class="line">    u2 sourcefile_index;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>attribute_length</code> 的值必须是2。</p>
+<p><code>sourcefile_index</code> 是常量池索引，指向一个 <code>CONSTANT_Utf8_info</code> 常量。</p>
+<p><code>SourceFile</code> 属性读取很简单，直接读就行了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readFrom</span><span class="params">(ClassReader reader)</span> </span>&#123;</span><br><span class="line">    length = reader.readUint32();</span><br><span class="line">    nameIndex = reader.readUint16();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-2-4-ConstantValue"><a href="#4-2-4-ConstantValue" class="headerlink" title="4.2.4 ConstantValue"></a>4.2.4 ConstantValue</h4><p><code>ConstantValue</code> 是定长属性，只会出现在 <code>field_info</code> 结构中，用于表示常量表达式的值。</p>
+<p>其结构定义如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ConstantValue_attribute &#123;</span><br><span class="line">    u2 attribute_name_index;</span><br><span class="line">    u4 attribute_length;</span><br><span class="line">    u2 constantvalue_index;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>attribute_length</code> 的值必须是2。</p>
+<p><code>constantvalue_index</code> 是常量池索引，指向某一个类型定义，但具体指向哪种常量因字段类型而异。</p>
+<p><code>ConstantValue</code> 属性读取也很简单，也是直接读就行了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readFrom</span><span class="params">(ClassReader reader)</span> </span>&#123;</span><br><span class="line">    length = reader.readUint32();</span><br><span class="line">    constantIndex = reader.readUint16();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-2-5-Code"><a href="#4-2-5-Code" class="headerlink" title="4.2.5 Code"></a>4.2.5 Code</h4><p><code>Code</code> 是变长属性，只存在于 <code>method_info</code> 结构中。<code>Code</code> 属性中存放字节码等方法相关信息。</p>
+<p>其结构定义如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Code_attribute &#123;</span><br><span class="line">    u2 attribute_name_index;</span><br><span class="line">    u4 attribute_length;</span><br><span class="line">    u2 max_stack;</span><br><span class="line">    u2 max_locals;</span><br><span class="line">    u4 code_length;</span><br><span class="line">    u1 code[code_length];</span><br><span class="line">    u2 exception_table_length;</span><br><span class="line">    &#123;   u2 start_pc;</span><br><span class="line">        u2 end_pc;</span><br><span class="line">        u2 handler_pc;</span><br><span class="line">        u2 catch_type;</span><br><span class="line">    &#125; exception_table[exception_table_length];</span><br><span class="line">    u2 attributes_count;</span><br><span class="line">    attribute_info attributes[attributes_count];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>max_stack</code> 给出操作数栈的最大深度；<code>max_locals</code>给出局部变量表大小；</p>
+<p>接着是字节码，存在u1表中；最后是异常处理表和属性表。</p>
+<p><code>Code</code> 属性结构相对复杂一些，有几层结构，读取起来有点麻烦：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readFrom</span><span class="params">(ClassReader reader)</span> </span>&#123;</span><br><span class="line">    length = reader.readUint32();</span><br><span class="line">    maxStack = reader.readUint16();</span><br><span class="line">    maxLocals = reader.readUint16();</span><br><span class="line">    codeLength = reader.readUint32();</span><br><span class="line">    codes = reader.readBytes(codeLength);</span><br><span class="line">    exceptionLength = reader.readUint16();</span><br><span class="line">    exceptionEntries = <span class="keyword">new</span> ExceptionTableEntry[exceptionLength.value()];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; exceptionEntries.length; i++) &#123;</span><br><span class="line">        exceptionEntries[i] = readExceptionEntry(reader);</span><br><span class="line">    &#125;</span><br><span class="line">    attributeInfoTable = <span class="keyword">new</span> AttributeInfoTable();</span><br><span class="line">    attributeInfoTable.readFrom(reader);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> ExceptionTableEntry <span class="title">readExceptionEntry</span><span class="params">(ClassReader reader)</span> </span>&#123;</span><br><span class="line">    ExceptionTableEntry entry = <span class="keyword">new</span> ExceptionTableEntry();</span><br><span class="line">    entry.setStartPC(reader.readUint16());</span><br><span class="line">    entry.setEndPC(reader.readUint16());</span><br><span class="line">    entry.setHandlerPC(reader.readUint16());</span><br><span class="line">    entry.setCatchPC(reader.readUint16());</span><br><span class="line">    <span class="keyword">return</span> entry;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-2-6-Exceptions"><a href="#4-2-6-Exceptions" class="headerlink" title="4.2.6 Exceptions"></a>4.2.6 Exceptions</h4><p><code>Exceptions</code> 是变长属性，记录方法抛出的异常表。</p>
+<p>其结构定义如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Exceptions_attribute &#123;</span><br><span class="line">    u2 attribute_name_index;</span><br><span class="line">    u4 attribute_length;</span><br><span class="line">    u2 number_of_exceptions;</span><br><span class="line">    u2 exception_index_table[number_of_exceptions];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>Exceptions</code> 属性简单，直接读取即可：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readFrom</span><span class="params">(ClassReader reader)</span> </span>&#123;</span><br><span class="line">    length = reader.readUint32();</span><br><span class="line">    numberOfExceptions = reader.readUint16();</span><br><span class="line">    exceptionIndexTable = reader.readUint16s(numberOfExceptions);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-2-7-LineNumberTable"><a href="#4-2-7-LineNumberTable" class="headerlink" title="4.2.7 LineNumberTable"></a>4.2.7 LineNumberTable</h4><p><code>LineNumberTable</code> 属性表存放方法的行号信息。</p>
+<p>结构定义如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">LineNumberTable_attribute &#123;</span><br><span class="line">    u2 attribute_name_index;</span><br><span class="line">    u4 attribute_length;</span><br><span class="line">    u2 line_number_table_length;</span><br><span class="line">    &#123;   u2 start_pc;</span><br><span class="line">        u2 line_number;</span><br><span class="line">    &#125; line_number_table[line_number_table_length];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>LineNumberTable</code> 属性表不算复杂，可以直接读取：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readFrom</span><span class="params">(ClassReader reader)</span> </span>&#123;</span><br><span class="line">    length = reader.readUint32();</span><br><span class="line">    lineNumberLength = reader.readUint16();</span><br><span class="line">    lineNumberEntries = <span class="keyword">new</span> LineNumberTableEntry[lineNumberLength.value()];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; lineNumberEntries.length; i++) &#123;</span><br><span class="line">        lineNumberEntries[i] = readLineNumberTableEntry(reader);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> LineNumberTableEntry <span class="title">readLineNumberTableEntry</span><span class="params">(ClassReader reader)</span> </span>&#123;</span><br><span class="line">    LineNumberTableEntry entry = <span class="keyword">new</span> LineNumberTableEntry();</span><br><span class="line">    entry.setStartPC(reader.readUint16());</span><br><span class="line">    entry.setLineNumber(reader.readUint16());</span><br><span class="line">    <span class="keyword">return</span> entry;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="小结-1"><a href="#小结-1" class="headerlink" title="小结"></a>小结</h3><p>相对于常量来说，属性的结构要稍微复杂一些，毕竟是可以扩展的，不像常量池常量那样基本都是固定的。</p>
+<p>虽然属性的机构稍微复杂一些，但是层次还是比较清晰的。</p>
+<h2 id="五、单元测试"><a href="#五、单元测试" class="headerlink" title="五、单元测试"></a>五、单元测试</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClassFileStructureTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">byte</span> bt = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> b = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">char</span> c = <span class="string">&#x27;A&#x27;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">short</span> s = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> i = <span class="number">3</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> l = <span class="number">4L</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">float</span> f = <span class="number">5.0F</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">double</span> d = <span class="number">6.0</span>;</span><br><span class="line">    <span class="keyword">private</span> String str = <span class="string">&quot;test&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">short</span> s = -<span class="number">10</span>;</span><br><span class="line">        <span class="keyword">int</span> i = s;</span><br><span class="line">        <span class="keyword">int</span> ii = s &amp; <span class="number">0xFFFF</span>;</span><br><span class="line">        <span class="keyword">long</span> ss = <span class="number">0L</span>;</span><br><span class="line">        <span class="keyword">long</span> si = ss | i;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">4</span>; j++) &#123;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;Class File Test&quot;</span> + i + <span class="string">&quot; &quot;</span> + ii + <span class="string">&quot; &quot;</span> + si);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClassFileTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getClassName</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        String jreOption = <span class="keyword">null</span>;</span><br><span class="line">        String cpOption = <span class="string">&quot;C:\\Users\\weijiaduo\\IdeaProjects\\self-jvm\\target;C:\\Users\\weijiaduo\\IdeaProjects\\self-jvm\\target\\classes&quot;</span>;</span><br><span class="line">        String bootClassName = <span class="string">&quot;java\\lang\\Object&quot;</span>;</span><br><span class="line">        String userClassName = <span class="string">&quot;com\\wjd\\classfile\\ClassFileStructureTest&quot;</span>;</span><br><span class="line">        Classpath classpath = <span class="keyword">new</span> Classpath(jreOption, cpOption);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">byte</span>[] bootClassBytes = classpath.readClass(bootClassName);</span><br><span class="line">        ClassReader bootReader = <span class="keyword">new</span> ClassReader(bootClassBytes);</span><br><span class="line">        ClassFile bootClassFile = ClassFile.parse(bootReader);</span><br><span class="line">        assertEquals(<span class="string">&quot;Class name error&quot;</span>, <span class="string">&quot;java/lang/Object&quot;</span>, bootClassFile.getClassName());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">byte</span>[] userClassBytes = classpath.readClass(userClassName);</span><br><span class="line">        ClassReader userReader = <span class="keyword">new</span> ClassReader(userClassBytes);</span><br><span class="line">        ClassFile userClassFile = ClassFile.parse(userReader);</span><br><span class="line">        assertEquals(<span class="string">&quot;Class name error&quot;</span>, <span class="string">&quot;com/wjd/classfile/ClassFileStructureTest&quot;</span>, userClassFile.getClassName());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>class 文件：</p>
+<ul>
+<li>Java 虚拟机规范中所指的 class 文件，并非特指位于磁盘中的 .class 文件，而是泛指任何格式符合规范的 class 数据。它实际上可以通过网络下载，从数据库加载，甚至是在运行中直接生成等方式来获取 class 文件<ul>
+<li>构成 class 文件的基本数据单位是字节，可以把整个 class 文件当成一个字节流来处理</li>
+<li>数据由连续多个字节构成，这些数据在 class 文件中以大端（big-endian）方式存储</li>
+</ul>
+</li>
+<li>为了描述 class 文件格式，Java 虚拟机规范定义了 u1、u2 和 u4 三种数据类型来表示1、2和4字节无符号整数</li>
+<li>相同类型的多条数据一般按表（table）的形式存储在 class 文件中</li>
+<li>表由表头和表项（item）构成，表头是 u2 或 u4 整数</li>
+</ul>
+<p>常量池：</p>
+<ul>
+<li>常量池里面存放着各式各样的常量信息，包括数字和字符串常量、类和接口名、字段和方法名等等</li>
+<li>常量池实际上也是一个表。表头给出的常量池大小比实际大1<ul>
+<li>假设表头给出的值是n，那么常量池的实际大小是n–1。也就是说，常量池的有效的常量池索引是1~n–1。0是无效索引，表示不指向任何常量</li>
+<li><code>long</code> 和 <code>double</code> 各占两个位置。也就是说，如果常量池中存在这两种常量，实际的常量数量比n–1还要少，而且1~n–1的某些数也会变成无效索引</li>
+</ul>
+</li>
+<li>按照结构，常量池的常量可以分为2种，一种是存放有数据的字面常量（literal），一种是存放索引的符号引用常量（symbolic reference）<ul>
+<li>字面量包括数字常量和字符串常量，符号引用包括类和接口名、字段和方法信息等</li>
+<li>像整数、浮点数、UTF8字节等，都属于字面常量，直接存放数据</li>
+<li>而像字符串、类型、方法等都是引用常量，不直接存放数据，只保存指向数据的索引</li>
+<li>除了字面量，其他引用常量都是通过索引直接或间接指向 <code>CONSTANT_Utf8_info</code> 常量</li>
+</ul>
+</li>
+</ul>
+<p>属性：</p>
+<ul>
+<li>Java虚拟机规范没有使用tag，而是使用属性名来区别不同的属性</li>
+<li>常量是由Java虚拟机规范严格定义的，共有14种。但属性是可以扩展的，不同的虚拟机实现可以定义自己的属性类型</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/JVM/" rel="tag"># JVM</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/lang/java/jvm/selfjvm/02_classpath/" rel="prev" title="02_查找class文件">
+      <i class="fa fa-chevron-left"></i> 02_查找class文件
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90class%E6%96%87%E4%BB%B6"><span class="nav-text">解析class文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%89%8D%E6%9C%9F%E5%87%86%E5%A4%87"><span class="nav-text">一、前期准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-text">1.1 自定义数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E7%B1%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E8%AF%BB%E5%8F%96"><span class="nav-text">1.2 类型数据读取</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E7%B1%BB%E6%96%87%E4%BB%B6%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-text">二、类文件数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E9%AD%94%E6%95%B0"><span class="nav-text">2.1 魔数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E7%89%88%E6%9C%AC%E5%8F%B7"><span class="nav-text">2.2 版本号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E7%B1%BB%E8%AE%BF%E9%97%AE%E6%A0%87%E5%BF%97"><span class="nav-text">2.3 类访问标志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-%E7%B1%BB%E5%92%8C%E8%B6%85%E7%B1%BB"><span class="nav-text">2.4 类和超类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-%E7%B1%BB%E6%8E%A5%E5%8F%A3"><span class="nav-text">2.5 类接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-%E5%AD%97%E6%AE%B5%E3%80%81%E6%96%B9%E6%B3%95"><span class="nav-text">2.6 字段、方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="nav-text">三、常量池</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E5%AD%97%E9%9D%A2%E5%B8%B8%E9%87%8F"><span class="nav-text">3.1 字面常量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-1-CONSTANT-Utf8"><span class="nav-text">3.1.1 CONSTANT_Utf8</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-2-CONSTANT-Integer"><span class="nav-text">3.1.2 CONSTANT_Integer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-3-CONSTANT-Float"><span class="nav-text">3.1.3 CONSTANT_Float</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-4-CONSTANT-Long"><span class="nav-text">3.1.4 CONSTANT_Long</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-5-CONSTANT-Double"><span class="nav-text">3.1.5 CONSTANT_Double</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E5%BC%95%E7%94%A8%E5%B8%B8%E9%87%8F"><span class="nav-text">3.2 引用常量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-1-CONSTANT-String"><span class="nav-text">3.2.1 CONSTANT_String</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-2-CONSTANT-Class"><span class="nav-text">3.2.2 CONSTANT_Class</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-3-CONSTANT-Fieldref"><span class="nav-text">3.2.3 CONSTANT_Fieldref</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-4-CONSTANT-Methodref"><span class="nav-text">3.2.4 CONSTANT_Methodref</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-5-CONSTANT-InterfaceMethodref"><span class="nav-text">3.2.5 CONSTANT_InterfaceMethodref</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-6-CONSTANT-NameAndType"><span class="nav-text">3.2.6 CONSTANT_NameAndType</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E5%B1%9E%E6%80%A7%E8%A1%A8"><span class="nav-text">四、属性表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E5%B1%9E%E6%80%A7%E7%B1%BB%E5%9E%8B"><span class="nav-text">4.1 属性类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E5%B1%9E%E6%80%A7%E5%AE%9A%E4%B9%89"><span class="nav-text">4.2 属性定义</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-1-Deprecated%E5%92%8CSynthetic%E5%B1%9E%E6%80%A7"><span class="nav-text">4.2.1 Deprecated和Synthetic属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-2-Synthetic"><span class="nav-text">4.2.2 Synthetic</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-3-SourceFile"><span class="nav-text">4.2.3 SourceFile</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-4-ConstantValue"><span class="nav-text">4.2.4 ConstantValue</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-5-Code"><span class="nav-text">4.2.5 Code</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-6-Exceptions"><span class="nav-text">4.2.6 Exceptions</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-7-LineNumberTable"><span class="nav-text">4.2.7 LineNumberTable</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93-1"><span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="nav-text">五、单元测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jiaduo"
+      src="/images/lufei.jpeg">
+  <p class="site-author-name" itemprop="name">jiaduo</p>
+  <div class="site-description" itemprop="description">不积跬步，无以至千里</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021/08 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiaduo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">141k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:08</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
