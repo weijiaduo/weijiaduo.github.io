@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="操作符Java 中的操作符有很多，大概可以分成以下几种：  关系操作符：&gt;、&lt;、&gt;&#x3D;、&lt;&#x3D;、&#x3D;&#x3D;、!&#x3D; 逻辑操作符：!、&amp;、|、&amp;&amp;、|| 条件操作符：?: 算术操作符：-、++、–、+、-、*、&#x2F;、% 位操作符：~、&amp;、|、^、&lt;&lt;、&gt;&gt;、&gt;&gt;&gt; 赋值操作符：&#x3D;、+&#x3D;、-&#x3D;、*&#x3D;、&#x2F;&#x3D;、&amp;&#x3D;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="02_操作符">
+<meta property="og:url" content="http://example.com/lang/java/core/basic/02_operators/index.html">
+<meta property="og:site_name" content="Strive">
+<meta property="og:description" content="操作符Java 中的操作符有很多，大概可以分成以下几种：  关系操作符：&gt;、&lt;、&gt;&#x3D;、&lt;&#x3D;、&#x3D;&#x3D;、!&#x3D; 逻辑操作符：!、&amp;、|、&amp;&amp;、|| 条件操作符：?: 算术操作符：-、++、–、+、-、*、&#x2F;、% 位操作符：~、&amp;、|、^、&lt;&lt;、&gt;&gt;、&gt;&gt;&gt; 赋值操作符：&#x3D;、+&#x3D;、-&#x3D;、*&#x3D;、&#x2F;&#x3D;、&amp;&#x3D;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-10-14T16:09:33.000Z">
+<meta property="article:modified_time" content="2021-10-14T16:10:38.424Z">
+<meta property="article:author" content="jiaduo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="基础">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/lang/java/core/basic/02_operators/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>02_操作符 | Strive</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Strive</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Rome was not built in one day</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/core/basic/02_operators/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          02_操作符
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-10-15 00:09:33 / 修改时间：00:10:38" itemprop="dateCreated datePublished" datetime="2021-10-15T00:09:33+08:00">2021-10-15</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="操作符"><a href="#操作符" class="headerlink" title="操作符"></a>操作符</h1><p>Java 中的操作符有很多，大概可以分成以下几种：</p>
+<ul>
+<li>关系操作符：&gt;、&lt;、&gt;=、&lt;=、==、!=</li>
+<li>逻辑操作符：!、&amp;、|、&amp;&amp;、||</li>
+<li>条件操作符：?:</li>
+<li>算术操作符：-、++、–、+、-、*、/、%</li>
+<li>位操作符：~、&amp;、|、^、&lt;&lt;、&gt;&gt;、&gt;&gt;&gt;</li>
+<li>赋值操作符：=、+=、-=、*=、/=、&amp;=、|=、^=、&lt;&lt;=、&gt;&gt;=、&gt;&gt;&gt;=</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="一、操作符优先级"><a href="#一、操作符优先级" class="headerlink" title="一、操作符优先级"></a>一、操作符优先级</h2><p>当一个表达式存在多个操作符时，操作符的优先级就决定了各部分的计算顺序。</p>
+<p>Java 中操作符的优先级共分为 14 级，其中 1 级最高，14 级最低。在表达式中操作符优先级高的优先执行。</p>
+<p>下面是各种操作符的优先级和结合性：</p>
+<table>
+<thead>
+<tr>
+<th align="center">优先级</th>
+<th align="left">操作符</th>
+<th align="left">结合性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="left">()、[]、{}</td>
+<td align="left">从左至右</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="left">!、+、-、~、++、–</td>
+<td align="left">从右至左</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="left">*、/、%</td>
+<td align="left">从左至右</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="left">+、-</td>
+<td align="left">从左至右</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td align="left">&lt;&lt;、&gt;&gt;、&gt;&gt;&gt;</td>
+<td align="left">从左至右</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td align="left">&lt;、&lt;=、&gt;、&gt;=、instanceof</td>
+<td align="left">从左至右</td>
+</tr>
+<tr>
+<td align="center">7</td>
+<td align="left">==、!=</td>
+<td align="left">从左至右</td>
+</tr>
+<tr>
+<td align="center">8</td>
+<td align="left">&amp;</td>
+<td align="left">从左至右</td>
+</tr>
+<tr>
+<td align="center">9</td>
+<td align="left">^</td>
+<td align="left">从左至右</td>
+</tr>
+<tr>
+<td align="center">10</td>
+<td align="left">|</td>
+<td align="left">从左至右</td>
+</tr>
+<tr>
+<td align="center">11</td>
+<td align="left">&amp;&amp;</td>
+<td align="left">从左至右</td>
+</tr>
+<tr>
+<td align="center">12</td>
+<td align="left">||</td>
+<td align="left">从左至右</td>
+</tr>
+<tr>
+<td align="center">13</td>
+<td align="left">?:</td>
+<td align="left">从右至左</td>
+</tr>
+<tr>
+<td align="center">14</td>
+<td align="left">=、+=、-=、*=、/=、&amp;=、|=、^=、~=、&lt;&lt;=、&gt;&gt;=、&gt;&gt;&gt;=</td>
+<td align="left">从右至左</td>
+</tr>
+</tbody></table>
+<p>比如说，下面的表达式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">--a &gt; <span class="number">0</span> || ++b &lt;= <span class="number">1</span> &amp;&amp; c * d &gt; <span class="number">100</span></span><br></pre></td></tr></table></figure>
+
+<p>然后根据表中的优先级，它的实际计算顺序应该是这样的：</p>
+<ol>
+<li>先计算a的自减，即 <code>--a</code></li>
+<li>再计算 <code>--a &gt; 0</code> 的结果</li>
+<li>再计算b的自增，即 <code>++b</code></li>
+<li>接着计算 <code>++b &lt;= 1</code> 的结果</li>
+<li>然后计算c、d的乘法，即 <code>c * d</code></li>
+<li>再计算 <code>c * d &gt; 100</code> 的结果</li>
+<li>由于 <code>&amp;&amp;</code> 优先级比 <code>||</code> 高，所以再接着是计算 <code>++b &lt;= 1 &amp;&amp; c * d &gt; 100</code> 的结果</li>
+<li>最后则是将2的结果和7的结果进行逻辑或（<code>||</code>）运算，即计算 <code>--a &gt; 0 || ++b &lt;= 1 &amp;&amp; c * d &gt; 100</code> 的结果</li>
+</ol>
+<p>实际上，不建议直接写这种混合了多种优先级的表达式，因为一旦混合在一起后，就很难识别它们的优先级了。</p>
+<p>对于复杂的表达式，一般建议按照以下操作去修改，方便理解：</p>
+<ul>
+<li>尽量不要在一个表达式中混合使用多种不同优先级的操作符</li>
+<li>不要写过于复杂的表达式，而是建议把它分成几个简单表达式</li>
+<li>不要过多地依赖操作符的优先级来控制表达式的执行顺序，尽量使用小括号 <code>()</code> 来控制表达式的执行顺序</li>
+</ul>
+<p>就比如上面的表达式，为了方便理解，可以给它加上小括号：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">((--a) &gt; <span class="number">0</span>) || ((++b) &lt;= <span class="number">1</span> &amp;&amp; (c * d) &gt; <span class="number">100</span>)</span><br></pre></td></tr></table></figure>
+
+<p>虽然小括号不是必须的，但是加上之后，表达式理解起来反而更加容易了，很简单就能识别出各个部分的优先级。</p>
+<h2 id="二、关系操作符"><a href="#二、关系操作符" class="headerlink" title="二、关系操作符"></a>二、关系操作符</h2><p>关系操作符是用于计算操作数之间的关系，其结果是一个布尔值，即 <code>true</code> 或 <code>false</code>。</p>
+<p>关系操作符包括以下几个：</p>
+<table>
+<thead>
+<tr>
+<th align="left">运算符</th>
+<th align="left">含义</th>
+<th align="left">例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">&gt;</td>
+<td align="left">大于</td>
+<td align="left">a &gt; b</td>
+</tr>
+<tr>
+<td align="left">&lt;</td>
+<td align="left">小于</td>
+<td align="left">a &lt; b</td>
+</tr>
+<tr>
+<td align="left">&gt;=</td>
+<td align="left">大于等于</td>
+<td align="left">a &gt;= b</td>
+</tr>
+<tr>
+<td align="left">&lt;=</td>
+<td align="left">小于等于</td>
+<td align="left">a &lt;= b</td>
+</tr>
+<tr>
+<td align="left">==</td>
+<td align="left">等于</td>
+<td align="left">a == b</td>
+</tr>
+<tr>
+<td align="left">!=</td>
+<td align="left">不等于</td>
+<td align="left">a != b</td>
+</tr>
+</tbody></table>
+<p>这个关系运算，和平时数学里的值比较差不多，需要注意的有几个地方：</p>
+<ul>
+<li>等于操作符（<code>==</code>、<code>!=</code>）可以作用于所有基本数据类型</li>
+<li>其他的大小比较操作符（<code>&gt;</code>、<code>&lt;</code>、<code>&gt;=</code>、<code>&lt;=</code>）能作用于除布尔基本类型外的其他基本数据类型。因为布尔值只有 <code>true</code> 和 <code>false</code> 这2种，不存在大小关系，没有意义</li>
+</ul>
+<p>特别注意，等于操作符（<code>==</code>、<code>!=</code>）作用在基本数据类型和对象上时的效果是不一样的：</p>
+<ul>
+<li>作用在基本数据类型上，比较的就是数据的真实值</li>
+<li>作用在对象上，实际比较的是对象的引用地址，而不是对象的值</li>
+</ul>
+<p>举个栗子来说：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> b = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">boolean</span> c = a == b; <span class="comment">// c = true，因为a和b都是基本数据类型，它们的值是相等的</span></span><br><span class="line"></span><br><span class="line">Integer d = <span class="number">1000</span>;</span><br><span class="line">Integer e = <span class="number">1000</span>;</span><br><span class="line"><span class="keyword">boolean</span> f = d == e; <span class="comment">// f = false，因为d和e都是对象，==比较的是对象引用地址，而不是对象的值</span></span><br></pre></td></tr></table></figure>
+
+<p>d和e都是对象，<code>==</code> 比较的是对象引用地址，而不是对象的值，所以表达式 <code>d == e</code> 的返回值是 <code>false</code>。因为 <code>d</code> 和 <code>e</code> 是2个对象，虽然这2个对象的数值是相等的，但是它们的引用地址是不同的。</p>
+<p>再举个栗子，如果同时对比基本数据类型和包装类型对象的话：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">1000</span>;</span><br><span class="line">Integer b = <span class="number">1000</span>;</span><br><span class="line"><span class="keyword">boolean</span> c = a == b; <span class="comment">// c = true</span></span><br></pre></td></tr></table></figure>
+
+<p>最终c的结果为<code>true</code>，说明了在对基本数据类型和包装类型进行比较时，包装类型对象会自动拆箱成基本数据类型，然后再比较2个基本数据类型的值。</p>
+<p>所以，判断操作数的关系时，需要注意：</p>
+<ul>
+<li>比较对象的值，一般不用 <code>==</code>，而是用 <code>equals()</code> 方法</li>
+<li>比较基本数据类型的值，<code>equals()</code> 方法用不了，直接用 <code>==</code></li>
+</ul>
+<p>简单来说，不要用 <code>==</code> 和 <code>!=</code> 去判断对象就对了。</p>
+<p>还有，不要将等于操作符（<code>==</code>、<code>!=</code>）作用在浮点数（<code>float</code>、<code>double</code>）上，由于计算机内存放的浮点数与实际的实数存在着一定的误差，如果对浮点数进行 ==（相等）或 !=（不相等）的比较，容易产生错误结果。</p>
+<h2 id="三、逻辑操作符"><a href="#三、逻辑操作符" class="headerlink" title="三、逻辑操作符"></a>三、逻辑操作符</h2><p>逻辑操作符是对布尔类型变量/布尔表达式进行运算，其运算结果也是布尔类型值，即 <code>true</code> 或 <code>false</code>。</p>
+<p>注意，逻辑操作符只能操作布尔值（布尔变量、关系表达式）。</p>
+<p>逻辑操作符包括以下几个：</p>
+<table>
+<thead>
+<tr>
+<th align="left">运算符</th>
+<th align="left">含义</th>
+<th align="left">例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">!</td>
+<td align="left">逻辑非</td>
+<td align="left">!a</td>
+</tr>
+<tr>
+<td align="left">&amp;&amp;</td>
+<td align="left">逻辑与</td>
+<td align="left">a &amp;&amp; b</td>
+</tr>
+<tr>
+<td align="left">||</td>
+<td align="left">逻辑或</td>
+<td align="left">a || b</td>
+</tr>
+<tr>
+<td align="left">&amp;</td>
+<td align="left">与</td>
+<td align="left">a &amp; b</td>
+</tr>
+<tr>
+<td align="left">|</td>
+<td align="left">或</td>
+<td align="left">a | b</td>
+</tr>
+</tbody></table>
+<p>本来 <code>&amp;</code> 和 <code>|</code> 不算在逻辑操作符内的，不过它也能用来进行逻辑判断，所以姑且放在这里。</p>
+<p>逻辑运算符的作用是，把各部分的运算关系表达式连接起来，组成一个复杂的逻辑表达式。</p>
+<p>比如说：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">boolean</span> b = a &gt; <span class="number">0</span> &amp;&amp; b &lt; <span class="number">0</span> || !(c &lt; <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<p>通过逻辑操作符将 <code>a &gt; 0</code>、<code>b &lt; 0</code>、<code>c &lt; 0</code> 这几个简单连接成了一个复杂的逻辑表达式。</p>
+<p>逻辑操作符 <code>&amp;&amp;</code>、<code>||</code> 具有“短路”现象，即一旦能够明确整个表达式的值，就不再计算表达式剩余的部分了。</p>
+<p>举个栗子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">boolean</span> a = <span class="number">1</span> &lt; <span class="number">2</span> &amp;&amp; <span class="number">3</span> &lt; <span class="number">4</span> || <span class="number">5</span> &gt; <span class="number">6</span>; <span class="comment">// a = true</span></span><br></pre></td></tr></table></figure>
+
+<p>这条表达式，它是这样计算的：</p>
+<ol>
+<li>首先计算 <code>1 &lt; 2</code>，结果是 <code>true</code>；</li>
+<li>其次计算 <code>3 &lt; 4</code>，结果是 <code>true</code>；</li>
+<li>发现后面是逻辑或运算，此时前面的表达式 <code>1 &lt; 2 &amp;&amp; 3 &lt; 4</code> 的结果已经是 <code>true</code> 了，所以就明确肯定整条表达式的值必然是 <code>true</code>（因为 <code>true</code> 逻辑或任何值，结果都是 <code>true</code>），这个时候就不再计算表达式剩余部分 <code>5 &gt; 6</code> 的值了，而是直接返回 <code>true</code> 给 a。</li>
+</ol>
+<p>表达式计算只计算到 <code>1 &lt; 2 &amp;&amp; 3 &lt; 4</code> 就返回了，后面的 <code>5 &gt; 6</code> 无需计算。这种行为就是“短路”现象，通过提前返回结果，减少表达式的判断，优化性能。</p>
+<p>不过，<code>&amp;</code> 和 <code>|</code> 就没有“短路”操作了，它会执行完整个表达式，所以一般情况下，不会在逻辑表达式中用 <code>&amp;</code> 和 <code>|</code>，因为它们没有短路优化，但是结果却与 <code>&amp;&amp;</code> 和 <code>||</code> 是一样的。</p>
+<p>一般建议，不要用 <code>&amp;</code> 和 <code>|</code> 来做逻辑判断，这2个操作符主要还是用在位操作上。</p>
+<h2 id="四、条件操作符"><a href="#四、条件操作符" class="headerlink" title="四、条件操作符"></a>四、条件操作符</h2><p>条件操作符一个三元运算符，表示 <code>if-then-else</code> 行为：</p>
+<table>
+<thead>
+<tr>
+<th align="left">运算符</th>
+<th align="left">含义</th>
+<th align="left">例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">?:</td>
+<td align="left">if-then-else</td>
+<td align="left">a &gt; 0 ? b : c</td>
+</tr>
+</tbody></table>
+<p>举个例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">10</span>;                    <span class="comment">// a = 10</span></span><br><span class="line"><span class="keyword">int</span> b = a &gt; <span class="number">0</span> ? a + <span class="number">1</span> : a - <span class="number">1</span>; <span class="comment">// b = 11</span></span><br></pre></td></tr></table></figure>
+
+<p>条件操作符就是一个判断语句，还是比较好理解的：</p>
+<ol>
+<li>首先判断 <code>a &gt; 0</code>；</li>
+<li>若 <code>a &gt; 0</code> 为 <code>true</code>，则执行 <code>?</code> 后的语句，即 <code>a + 1</code>;</li>
+<li>若 <code>a &gt; 0</code> 为 <code>false</code>，则执行 <code>:</code> 后的语句，即 <code>a - 1</code>。</li>
+</ol>
+<p>条件操作符和平时写的条件判断 <code>if-else</code> 差不多，相当于它的简写形式。</p>
+<h2 id="五、算术操作符"><a href="#五、算术操作符" class="headerlink" title="五、算术操作符"></a>五、算术操作符</h2><p>Java 中的算术操作符主要用来对数值类型数据进行算术运算。</p>
+<p>按照算术运算中涉及的操作数量，可以分为一元运算符和二元运算符。</p>
+<h3 id="5-1-一元运算符"><a href="#5-1-一元运算符" class="headerlink" title="5.1 一元运算符"></a>5.1 一元运算符</h3><p>一元运算符包括以下几个：</p>
+<table>
+<thead>
+<tr>
+<th align="left">运算符</th>
+<th align="left">含义</th>
+<th align="left">例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">-</td>
+<td align="left">一元减，取反符号</td>
+<td align="left">-a</td>
+</tr>
+<tr>
+<td align="left">+</td>
+<td align="left">一元加</td>
+<td align="left">+a</td>
+</tr>
+<tr>
+<td align="left">–</td>
+<td align="left">自减一</td>
+<td align="left">a–、–a</td>
+</tr>
+<tr>
+<td align="left">++</td>
+<td align="left">自增一</td>
+<td align="left">a++、++a</td>
+</tr>
+</tbody></table>
+<p>一元减号 <code>-</code> 用于转变数据的符号，比如正变负，负变正。一元加号 <code>+</code> 只是为了与一元减号相对应，实际作用不大。不过它们有一个特点：</p>
+<ul>
+<li>一元运算符 <code>-</code>、<code>+</code> 会先将小整数类型（<code>byte</code>、<code>char</code>、<code>short</code>）提升为 <code>int</code> 类型，再执行运算</li>
+</ul>
+<p>实际应用效果就类似下面这样子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">10</span>;            <span class="comment">// a = 10</span></span><br><span class="line"><span class="keyword">int</span> b = -a;            <span class="comment">// b = -10</span></span><br><span class="line"><span class="keyword">byte</span> c = <span class="number">10</span>;           <span class="comment">// c(byte) = 10</span></span><br><span class="line"><span class="keyword">short</span> d = (<span class="keyword">short</span>) +c;  <span class="comment">// d(short) = 10，+号会自动提升操作数类型为int，所以这里需要强制转换为short</span></span><br><span class="line"><span class="keyword">short</span> e = (<span class="keyword">short</span>) -c;  <span class="comment">// e(short) = 10，-号会自动提升操作数类型为int，所以这里需要强制转换为short</span></span><br></pre></td></tr></table></figure>
+
+<p>自增操作符可分为前缀式（<code>--a</code>）和后缀式（<code>a--</code>），前缀式是先计算，再返回值；而后缀式则是先返回值，再计算：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">10</span>;  <span class="comment">// a = 10</span></span><br><span class="line"><span class="keyword">int</span> b = <span class="number">20</span>;  <span class="comment">// b = 20</span></span><br><span class="line"><span class="keyword">int</span> c = --a; <span class="comment">// c = 9，a = 9，先计算自减--，再返回值</span></span><br><span class="line"><span class="keyword">int</span> d = b--; <span class="comment">// d = 20，b = 19，先返回值，再计算自减--</span></span><br></pre></td></tr></table></figure>
+
+<p>在表达式中使用前缀式和后缀式时，需要特别注意它们的返回值，要清楚知道表达式的返回值是多少。</p>
+<p>不过一般建议使用小括号把它们括起来，这样就无需过多在意前后缀表达式的返回值了。</p>
+<h3 id="5-2-二元运算符"><a href="#5-2-二元运算符" class="headerlink" title="5.2 二元运算符"></a>5.2 二元运算符</h3><p>二元运算符包括以下几个：</p>
+<table>
+<thead>
+<tr>
+<th align="left">运算符</th>
+<th align="left">含义</th>
+<th align="left">例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">+</td>
+<td align="left">加</td>
+<td align="left">a + b</td>
+</tr>
+<tr>
+<td align="left">-</td>
+<td align="left">减</td>
+<td align="left">a - b</td>
+</tr>
+<tr>
+<td align="left">*</td>
+<td align="left">乘</td>
+<td align="left">a * b</td>
+</tr>
+<tr>
+<td align="left">/</td>
+<td align="left">除</td>
+<td align="left">a / b</td>
+</tr>
+<tr>
+<td align="left">%</td>
+<td align="left">取余</td>
+<td align="left">a % b</td>
+</tr>
+</tbody></table>
+<p>这个就是平时的基本数学运算，理解起来很简单。</p>
+<p>有点不同的就是，Java 中的整数除法会直接去掉小数位来取整，而不是常见的四舍五入。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">10</span>;     <span class="comment">// a = 10</span></span><br><span class="line"><span class="keyword">int</span> b = a / <span class="number">3</span>;  <span class="comment">// b = 3，会直接去掉小数位</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> c = -<span class="number">10</span>;    <span class="comment">// c = -10</span></span><br><span class="line"><span class="keyword">int</span> d = c / <span class="number">3</span>;  <span class="comment">// d = -3，会直接去掉小数位</span></span><br></pre></td></tr></table></figure>
+
+<p>注意整数除法是直接去掉小数位数据，既不是向上/向下取整，也不是四舍五入。</p>
+<p>另外，二元运算符也会导致小整数类型（<code>byte</code>、<code>char</code>、<code>short</code>）提升为 <code>int</code> 类型：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">short</span> a = <span class="number">10</span>;</span><br><span class="line">a = (<span class="keyword">short</span>) (a + <span class="number">1</span>);  <span class="comment">// a 会先提升为 int 类型，再执行运算</span></span><br><span class="line">a = (<span class="keyword">short</span>) (a * <span class="number">2</span>);  <span class="comment">// a 会先提升为 int 类型，再执行运算</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">short</span> b = --a;        <span class="comment">// 注意，自增/自减不会提升为 int 类型，或者说底层已经帮我们转好类型了</span></span><br></pre></td></tr></table></figure>
+
+<p>一般来说，只要是涉及到数学运算的，小整数类型（<code>byte</code>、<code>char</code>、<code>short</code>）都会先提升为 <code>int</code> 类型，再运算。</p>
+<p>当然，除了自增（<code>++</code>）和自减（<code>--</code>）以外。</p>
+<h2 id="六、位操作符"><a href="#六、位操作符" class="headerlink" title="六、位操作符"></a>六、位操作符</h2><p>位操作符是直接对整数类型的位进行操作，类型包括 <code>long</code>，<code>int</code>，<code>short</code>，<code>char</code> 和 <code>byte</code>。</p>
+<p>注意，位操作只对整数起作用，浮点数 <code>float</code> 和 <code>double</code> 不能进行位操作（因为它们是按 IEEE754 标准保存的，位运算的意义不是很大）。</p>
+<p>按照意义，位操作符可分为2种：</p>
+<ul>
+<li>按位运算符：对2个操作数对应的位执行布尔代数操作</li>
+<li>移位运算符：直接对操作数的位移动，并用0/1补充移动后空出来的位</li>
+</ul>
+<p>下面分别介绍2种操作符类型。</p>
+<h3 id="6-1-按位运算符"><a href="#6-1-按位运算符" class="headerlink" title="6.1 按位运算符"></a>6.1 按位运算符</h3><p>按位运算符包括以下几个：</p>
+<table>
+<thead>
+<tr>
+<th align="left">运算符</th>
+<th align="left">含义</th>
+<th align="left">例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">&amp;</td>
+<td align="left">按位与（AND）</td>
+<td align="left">a &amp; b</td>
+</tr>
+<tr>
+<td align="left">|</td>
+<td align="left">按位或（OR）</td>
+<td align="left">a | b</td>
+</tr>
+<tr>
+<td align="left">^</td>
+<td align="left">按位异或（XOR）</td>
+<td align="left">a ^ b</td>
+</tr>
+<tr>
+<td align="left">~</td>
+<td align="left">按位取反（NOT）</td>
+<td align="left">~a</td>
+</tr>
+</tbody></table>
+<p>按位运算符是直接对位进行操作的，比如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> b = -<span class="number">20</span>;</span><br><span class="line"><span class="keyword">int</span> c = a ^ b;</span><br></pre></td></tr></table></figure>
+
+<p>它的一个实际运算过程是这样的，会按照操作数的每一个位进行布尔运算：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">   00000000000000000000000000001010        // a = 10</span><br><span class="line">^  11111111111111111111111111101100        // b = -20</span><br><span class="line">-------------------------------------</span><br><span class="line">   11111111111111111111111111100110        // c = -26</span><br></pre></td></tr></table></figure>
+
+<p>注意，布尔类型也可以进行按位运算，但是只能执行 <code>&amp;</code>、<code>|</code>、<code>^</code> 这3种操作，而没有按位取反 <code>~</code> 操作。</p>
+<p>至于没有按位取反操作的原因，可能有以下几个：</p>
+<ul>
+<li>布尔类型只有 <code>true</code> 和 <code>false</code> 这2个值，而布尔类型的位数是不确定的，在这种情况下执行按位取反，有可能会出现非布尔类型值<ul>
+<li>假设布尔类型是8位，其中 <code>10000000</code> 表示 <code>true</code>，<code>00000001</code> 表示 <code>false</code>，在这种情况下按位取反的话，<code>true</code> 取反后的值并不是 <code>false</code>，而且也不是布尔类型值了</li>
+<li>除非布尔类型只有1位，它的按位取反才显得正常，因为只有1位的话，就肯定只会有2个值，取反后肯定是相反值，也就不会出现非布尔类型值了</li>
+</ul>
+</li>
+<li>还有可能是为了避免和逻辑非（<code>!</code>）混淆，因为布尔值只有2个，所以从理论上来说，按位取反（<code>~</code>）和逻辑非（<code>!</code>）的结果是一样的</li>
+</ul>
+<p>综上，由于某些原因，布尔类型并没有按位取反（<code>~</code>）的操作。</p>
+<h3 id="6-2-移位运算符"><a href="#6-2-移位运算符" class="headerlink" title="6.2 移位运算符"></a>6.2 移位运算符</h3><p>移位运算符包括以下几个：</p>
+<table>
+<thead>
+<tr>
+<th align="left">运算符</th>
+<th align="left">含义</th>
+<th align="left">例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">&lt;&lt;</td>
+<td align="left">左移（高位移除、低位补0）</td>
+<td align="left">a &lt;&lt; 1</td>
+</tr>
+<tr>
+<td align="left">&gt;&gt;</td>
+<td align="left">有符号右移（高位补符号位、低位移除）</td>
+<td align="left">a &gt;&gt; 2</td>
+</tr>
+<tr>
+<td align="left">&gt;&gt;&gt;</td>
+<td align="left">无符号右移（高位补0、低位移除）</td>
+<td align="left">a &gt;&gt;&gt; 3</td>
+</tr>
+</tbody></table>
+<p>有符号右移和无符号右移，区别就在于高位的补充是什么值。举2个例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># b = a &gt;&gt; 2</span><br><span class="line"></span><br><span class="line">&gt;&gt;  11111111111111111111111111110110        // a = -10</span><br><span class="line">-------------------------------------</span><br><span class="line">    11111111111111111111111111111101        // b = a &gt;&gt; 2</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># b = a &gt;&gt;&gt; 2</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; 11111111111111111111111111110110        // a = -10</span><br><span class="line">-------------------------------------</span><br><span class="line">    00111111111111111111111111111101        // b = a &gt;&gt;&gt; 2</span><br></pre></td></tr></table></figure>
+
+<p>有符号右移（<code>&gt;&gt;</code>），高位会补充符号位（负数补 1，其他补 0），无符号右移（<code>&gt;&gt;&gt;</code>）高位统一补 0。</p>
+<p>另外，移位操作还有几个特点：</p>
+<ul>
+<li>小整数类型 <code>byte</code>、<code>char</code>、<code>short</code> 执行移位操作前，会先提升为 <code>int</code> 类型，再进行移位</li>
+<li><code>int</code> 移位只取操作数的低 5 位数值（2 的 5 次方是 32，也就是 <code>int</code> 的位数）</li>
+<li><code>long</code> 移位只取操作数的低 6 位数值（2 的 6 次方是 64，也就是 <code>long</code> 的位数）</li>
+</ul>
+<p>也就是说，小整数类型进行移位操作会出现这种情况：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">short</span> a = <span class="number">10</span>;</span><br><span class="line">a = (<span class="keyword">short</span>) (a &gt;&gt; <span class="number">1</span>); <span class="comment">// 返回值要强制类型转换</span></span><br></pre></td></tr></table></figure>
+
+<p>因为移位操作会把 <code>short</code> 提升为 <code>int</code>，所以最后的运算结果需要强制类型转换。</p>
+<p>至于移位操作数的值超出 <code>int</code> 或 <code>long</code> 的位数时，就需要特殊处理：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">10</span>;      <span class="comment">// a = 1010</span></span><br><span class="line"><span class="keyword">int</span> b = a &lt;&lt; <span class="number">55</span>; <span class="comment">// b = 101000000000000000000000000, 55 = 110111</span></span><br></pre></td></tr></table></figure>
+
+<p>这种情况，55 明显超出了 <code>int</code> 的 32 位，所以它实际上移位的数值是 55（110111） 的低 5 位，也就是 23（10111），也就是 <code>a &lt;&lt; 55</code> 等价于 <code>a &lt;&lt; 23</code>。</p>
+<p>同样地，如果移位操作数是负数，也是取低5位（<code>long</code> 取低6位）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">10</span>;       <span class="comment">// a = 1010</span></span><br><span class="line"><span class="keyword">int</span> b = a &lt;&lt; -<span class="number">55</span>; <span class="comment">// b = 1010000000000, -55 = 11111111111111111111111111001001</span></span><br></pre></td></tr></table></figure>
+
+<p>55 的低 5 位是 9（<code>1001</code>），所以 <code>a &lt;&lt; -55</code> 等价于 <code>a &lt;&lt; 9</code>。</p>
+<p>截取低位来运算，是为了避免移位超出类型的位数，徒做无用功。</p>
+<h2 id="七、赋值操作符"><a href="#七、赋值操作符" class="headerlink" title="七、赋值操作符"></a>七、赋值操作符</h2><p>赋值操作符就比较简单了，就是给变量赋值。</p>
+<p>赋值操作符包括以下几个：</p>
+<table>
+<thead>
+<tr>
+<th align="left">运算符</th>
+<th align="left">含义</th>
+<th align="left">例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">=</td>
+<td align="left">直接赋值</td>
+<td align="left">a = 1</td>
+</tr>
+<tr>
+<td align="left">+=</td>
+<td align="left">先加，再赋值</td>
+<td align="left">a += 2</td>
+</tr>
+<tr>
+<td align="left">-=</td>
+<td align="left">先减，再赋值</td>
+<td align="left">a -= 3</td>
+</tr>
+<tr>
+<td align="left">*=</td>
+<td align="left">先乘，再赋值</td>
+<td align="left">a *= 3</td>
+</tr>
+<tr>
+<td align="left">/=</td>
+<td align="left">先除，再赋值</td>
+<td align="left">a /= 3</td>
+</tr>
+<tr>
+<td align="left">&amp;=</td>
+<td align="left">先按位与，再赋值</td>
+<td align="left">a &amp;= 3</td>
+</tr>
+<tr>
+<td align="left">|=</td>
+<td align="left">先按位或，再赋值</td>
+<td align="left">a |= 3</td>
+</tr>
+<tr>
+<td align="left">^=</td>
+<td align="left">先按位异或，再赋值</td>
+<td align="left">a ^= 3</td>
+</tr>
+<tr>
+<td align="left">&lt;&lt;=</td>
+<td align="left">先左移位，再赋值</td>
+<td align="left">a &lt;&lt;= 3</td>
+</tr>
+<tr>
+<td align="left">&gt;&gt;=</td>
+<td align="left">先有符号右移位，再赋值</td>
+<td align="left">a &gt;&gt;= 3</td>
+</tr>
+<tr>
+<td align="left">&gt;&gt;&gt;=</td>
+<td align="left">先无符号右移位，再赋值</td>
+<td align="left">a &gt;&gt;&gt;= 3</td>
+</tr>
+</tbody></table>
+<p>除了赋值操作符 <code>=</code> 以外，其他的都是复合操作符，也就是赋值操作和运算操作联合在一起形成的。</p>
+<p>除了一元操作符（<code>--</code>、<code>++</code>、<code>~</code>），凡是运算相关的操作符（不包括关系、逻辑、条件），基本上都能和 <code>=</code> 联合形成复合操作符。</p>
+<p>不过这种复合操作符的优先级是比较低的（和 <code>=</code> 的优先级一样），举个例子来说：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a *= <span class="number">1</span> + <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+
+<p>正常来说，乘法 <code>*</code> 优先级肯定比加法 <code>+</code> 高的，但实际上的它却等价于：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a = a * (<span class="number">1</span> + <span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+
+<p>所以说，复合操作符的优先级比较低，和直接赋值 <code>=</code> 优先级一样。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>操作符种类：</p>
+<ul>
+<li>关系操作符：&gt;、&lt;、&gt;=、&lt;=、==、!=</li>
+<li>逻辑操作符：!、&amp;、|、&amp;&amp;、||</li>
+<li>条件操作符：?:</li>
+<li>算术操作符：-、++、–、+、-、*、/、%</li>
+<li>位操作符：~、&amp;、|、^、&lt;&lt;、&gt;&gt;、&gt;&gt;&gt;</li>
+<li>赋值操作符：=、+=、-=、*=、/=、&amp;=、|=、^=、&lt;&lt;=、&gt;&gt;=、&gt;&gt;&gt;=</li>
+</ul>
+<p>操作符优先级：</p>
+<ul>
+<li>操作符的优先级共分为 14 级，其中 1 级最高，14 级最低</li>
+<li>尽量不要在一个表达式中混合使用多种不同优先级的操作符</li>
+<li>不要写过于复杂的表达式，而是建议把它分成几个简单表达式</li>
+<li>不要过多地依赖操作符的优先级来控制表达式的执行顺序，尽量使用小括号 <code>()</code> 来控制表达式的执行顺序</li>
+</ul>
+<p>关系操作符：</p>
+<ul>
+<li>等于操作符（<code>==</code>、<code>!=</code>）可以作用于所有基本数据类型</li>
+<li>其他的大小比较操作符（<code>&gt;</code>、<code>&lt;</code>、<code>&gt;=</code>、<code>&lt;=</code>）能作用于除布尔基本类型外的其他基本数据类型。因为布尔值只有 <code>true</code> 和 <code>false</code> 这2种，不存在大小关系，没有意义</li>
+<li>作用在基本数据类型上，比较的就是数据的真实值</li>
+<li>作用在对象上，实际比较的是对象的引用地址，而不是对象的值</li>
+<li>比较对象的值，一般不用 <code>==</code>，而是用 <code>equals()</code> 方法</li>
+<li>比较基本数据类型的值，<code>equals()</code> 方法用不了，直接用 <code>==</code></li>
+</ul>
+<p>逻辑操作符：</p>
+<ul>
+<li>逻辑操作符 <code>&amp;&amp;</code>、<code>||</code> 具有“短路”现象，即一旦能够明确整个表达式的值，就不再计算表达式剩余的部分了</li>
+<li><code>&amp;</code> 和 <code>|</code> 就没有“短路”操作了，它会执行完整个表达式</li>
+<li>一般建议，不要用 <code>&amp;</code> 和 <code>|</code> 来做逻辑判断，这2个操作符主要还是用在位操作上</li>
+</ul>
+<p>条件操作符：</p>
+<ul>
+<li>条件操作符和平时写的条件判断 <code>if-else</code> 差不多，相当于它的简写形式</li>
+</ul>
+<p>算术操作符：</p>
+<ul>
+<li>按照算术运算中涉及的操作数量，可以分为一元运算符和二元运算符</li>
+<li>自增操作符可分为前缀式（<code>--a</code>）和后缀式（<code>a--</code>），前缀式是先计算，再返回值；而后缀式则是先返回值，再计算</li>
+<li>注意整数除法是直接去掉小数位数据，既不是向上/向下取整，也不是四舍五入</li>
+<li>一般来说，凡是涉及到数学运算的，小整数类型（<code>byte</code>、<code>char</code>、<code>short</code>）都会先提升为 <code>int</code> 类型，再运算</li>
+</ul>
+<p>位操作符：</p>
+<ul>
+<li>位操作符是直接对整数类型的位进行操作，类型包括 <code>long</code>，<code>int</code>，<code>short</code>，<code>char</code> 和 <code>byte</code></li>
+<li>位操作只对整数起作用，浮点数 <code>float</code> 和 <code>double</code> 不能进行位操作（因为它们是按 IEEE754 标准保存的，位运算的意义不是很大）</li>
+<li>按照意义，位操作符可分为2种：<ul>
+<li>按位运算符：对2个操作数对应的位执行布尔代数操作</li>
+<li>移位运算符：直接对操作数的位移动，并用0/1补充移动后空出来的位</li>
+</ul>
+</li>
+<li>布尔类型也可以进行按位运算，但是只能执行 <code>&amp;</code>、<code>|</code>、<code>^</code> 这3种操作，而没有按位取反 <code>~</code> 操作</li>
+<li>小整数类型 <code>byte</code>、<code>char</code>、<code>short</code> 执行移位操作前，会先提升为 <code>int</code> 类型，再进行移位</li>
+<li><code>int</code> 移位只取操作数的低 5 位数值（2 的 5 次方是 32，也就是 <code>int</code> 的位数）</li>
+<li><code>long</code> 移位只取操作数的低 6 位数值（2 的 6 次方是 64，也就是 <code>long</code> 的位数）</li>
+</ul>
+<p>赋值操作符：</p>
+<ul>
+<li>除了赋值操作符 <code>=</code> 以外，其他的都是复合操作符，也就是赋值操作和运算操作联合在一起形成的</li>
+<li>除了一元操作符（<code>--</code>、<code>++</code>、<code>~</code>），凡是运算相关的操作符（不包括关系、逻辑、条件），基本上都能和 <code>=</code> 联合形成复合操作符</li>
+<li>复合操作符的优先级是比较低的（和 <code>=</code> 的优先级一样）</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/%E5%9F%BA%E7%A1%80/" rel="tag"># 基础</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/lang/java/core/basic/01_types/" rel="prev" title="01_基本类型">
+      <i class="fa fa-chevron-left"></i> 01_基本类型
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-text">操作符</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%93%8D%E4%BD%9C%E7%AC%A6%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-text">一、操作符优先级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%85%B3%E7%B3%BB%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-text">二、关系操作符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E9%80%BB%E8%BE%91%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-text">三、逻辑操作符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E6%9D%A1%E4%BB%B6%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-text">四、条件操作符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E7%AE%97%E6%9C%AF%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-text">五、算术操作符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E4%B8%80%E5%85%83%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-text">5.1 一元运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-%E4%BA%8C%E5%85%83%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-text">5.2 二元运算符</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E4%BD%8D%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-text">六、位操作符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-%E6%8C%89%E4%BD%8D%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-text">6.1 按位运算符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-%E7%A7%BB%E4%BD%8D%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-text">6.2 移位运算符</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E8%B5%8B%E5%80%BC%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-text">七、赋值操作符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jiaduo"
+      src="/images/lufei.jpeg">
+  <p class="site-author-name" itemprop="name">jiaduo</p>
+  <div class="site-description" itemprop="description">不积跬步，无以至千里</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021/08 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiaduo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">152k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:19</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
