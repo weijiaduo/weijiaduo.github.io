@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="运行时数据区一、数据结构在运行Java程序时，Java虚拟机需要使用内存来存放各式各样的数据。Java虚拟机规范把这些内存区域叫作运行时数据区。 运行时数据区可以分为两类：一类是多线程共享的，另一类则是线程私有的。  多线程共享的运行时数据区需要在Java虚拟机启动时创建好，在Java虚拟机退出时销毁 线程私有的运行时数据区则在创建线程时才创建，线程退出时销毁">
+<meta property="og:type" content="article">
+<meta property="og:title" content="04_运行时数据区">
+<meta property="og:url" content="http://example.com/lang/java/jvm/selfjvm/04_runtimedata/index.html">
+<meta property="og:site_name" content="Strive">
+<meta property="og:description" content="运行时数据区一、数据结构在运行Java程序时，Java虚拟机需要使用内存来存放各式各样的数据。Java虚拟机规范把这些内存区域叫作运行时数据区。 运行时数据区可以分为两类：一类是多线程共享的，另一类则是线程私有的。  多线程共享的运行时数据区需要在Java虚拟机启动时创建好，在Java虚拟机退出时销毁 线程私有的运行时数据区则在创建线程时才创建，线程退出时销毁">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-15T03:13:21.000Z">
+<meta property="article:modified_time" content="2022-01-15T03:13:43.681Z">
+<meta property="article:author" content="jiaduo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="JVM">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/lang/java/jvm/selfjvm/04_runtimedata/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>04_运行时数据区 | Strive</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Strive</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Rome was not built in one day</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/jvm/selfjvm/04_runtimedata/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          04_运行时数据区
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-01-15 11:13:21 / 修改时间：11:13:43" itemprop="dateCreated datePublished" datetime="2022-01-15T11:13:21+08:00">2022-01-15</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>9.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="运行时数据区"><a href="#运行时数据区" class="headerlink" title="运行时数据区"></a>运行时数据区</h1><h2 id="一、数据结构"><a href="#一、数据结构" class="headerlink" title="一、数据结构"></a>一、数据结构</h2><p>在运行Java程序时，Java虚拟机需要使用内存来存放各式各样的数据。Java虚拟机规范把这些内存区域叫作运行时数据区。</p>
+<p>运行时数据区可以分为两类：一类是多线程共享的，另一类则是线程私有的。</p>
+<ul>
+<li>多线程共享的运行时数据区需要在Java虚拟机启动时创建好，在Java虚拟机退出时销毁</li>
+<li>线程私有的运行时数据区则在创建线程时才创建，线程退出时销毁</li>
+</ul>
+<span id="more"></span>
+
+<p>多线程共享的内存区域主要存放两类数据：类数据和类实例（也就是对象）：</p>
+<ul>
+<li>类实例对象数据存放在堆（Heap）中</li>
+<li>类数据存放在方法区（Method Area）中，类数据包括字段和方法信息、方法的字节码、运行时常量池等</li>
+</ul>
+<p>线程私有的运行时数据区用于辅助执行Java字节码。每个线程都有自己的pc寄存器（Program Counter）和Java虚拟机栈（JVMStack）。</p>
+<p>Java虚拟机栈又由栈帧（Stack Frame，后面简称帧）构成，帧中保存方法执行的状态，包括局部变量表（Local Variable）和操作数栈（Operand Stack）等。</p>
+<h2 id="二、数据类型"><a href="#二、数据类型" class="headerlink" title="二、数据类型"></a>二、数据类型</h2><p>Java虚拟机可以操作两类数据：基本类型（primitive type）和引用类型（reference type）。</p>
+<p>基本类型的变量存放的就是数据本身，引用类型的变量存放的是对象引用，真正的对象数据是在堆里分配的。这里所说的变量包括类变量（静态字段）、实例变量（非静态字段）、数组元素、方法的参数和局部变量，等等。</p>
+<p>基本类型可以进一步分为布尔类型（boolean type）和数字类型（numeric type），数字类型又可以分为整数类型（integral type）和浮点数类型（floating-point type）。</p>
+<p>引用类型可以进一步分为3种：类类型、接口类型和数组类型。类类型引用指向类实例，数组类型引用指向数组实例，接口类型引用指向实现了该接口的类或数组实例。引用类型有一个特殊的值——null，表示该引用不指向任何对象。</p>
+<h2 id="三、线程"><a href="#三、线程" class="headerlink" title="三、线程"></a>三、线程</h2><p>线程都有自己的pc寄存器（Program Counter）和Java虚拟机栈（JVMStack）。</p>
+<p>定义一个线程类，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 最大栈深度 */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> maxStackSize = <span class="number">1024</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 程序计数器  */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> pc;</span><br><span class="line">    <span class="comment">/** 虚拟机栈 */</span></span><br><span class="line">    <span class="keyword">private</span> JvmStack stack;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Thread</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        stack = <span class="keyword">new</span> JvmStack(maxStackSize);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPc</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> pc;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPc</span><span class="params">(<span class="keyword">int</span> pc)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.pc = pc;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pushFrame</span><span class="params">(Frame frame)</span> </span>&#123;</span><br><span class="line">        stack.push(frame);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Frame <span class="title">popFrame</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> stack.pop();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Frame <span class="title">currentFrame</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> stack.top();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中，<code>JvmStack</code> 是虚拟机栈，定义在后面给出。</p>
+<h2 id="四、虚拟机栈"><a href="#四、虚拟机栈" class="headerlink" title="四、虚拟机栈"></a>四、虚拟机栈</h2><p>虚拟机栈就是一个栈结构，数据先入后出。虚拟机栈里面放的就是栈帧，表示每一个被调用的方法。</p>
+<p>和堆一样，Java虚拟机规范对Java虚拟机栈的约束也相当宽松：</p>
+<ul>
+<li>Java虚拟机栈可以是连续的空间，也可以不连续；可以是固定大小，也可以在运行时动态扩展</li>
+<li>如果Java虚拟机栈有大小限制，且执行线程所需的栈空间超出了这个限制，会导致StackOverflowError异常抛出</li>
+<li>如果Java虚拟机栈可以动态扩展，但是内存已经耗尽，会导致OutOfMemoryError异常抛出</li>
+</ul>
+<p>因此可以采用单向链表的形式来实现虚拟机栈，它的定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JvmStack</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 最大栈深度 */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> maxSize;</span><br><span class="line">    <span class="comment">/** 当前栈深度 */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> size;</span><br><span class="line">    <span class="comment">/** 栈顶对象 */</span></span><br><span class="line">    <span class="keyword">private</span> Frame top;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">JvmStack</span><span class="params">(<span class="keyword">int</span> maxSize)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.maxSize = maxSize;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(Frame frame)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (size &gt;= maxSize) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> StackOverflowError(<span class="string">&quot;jvm stack is overflow: &quot;</span> + maxSize);</span><br><span class="line">        &#125;</span><br><span class="line">        frame.setLower(top);</span><br><span class="line">        top = frame;</span><br><span class="line">        size++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Frame <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (size == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">&quot;jvm stack is empty!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        Frame val = top;</span><br><span class="line">        top = top.getLower();</span><br><span class="line">        val.setLower(<span class="keyword">null</span>);</span><br><span class="line">        size--;</span><br><span class="line">        <span class="keyword">return</span> val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Frame <span class="title">top</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (size == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">&quot;jvm stack is empty!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> top;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中，栈帧 <code>Frame</code> 就作为单向链表的节点存在，栈顶就是单向链尾。</p>
+<h2 id="五、栈帧"><a href="#五、栈帧" class="headerlink" title="五、栈帧"></a>五、栈帧</h2><p>栈帧表示的一个方法调用，里面包括了执行方法所需要的局部变量表和操作数栈。</p>
+<p>执行方法所需的局部变量表大小和操作数栈深度是由编译器预先计算好的，存储在 class 文件 <code>method_info</code> 结构的 <code>Code</code> 属性中。</p>
+<p>栈帧的定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Frame</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/** 局部变量表 */</span></span><br><span class="line">    <span class="keyword">private</span> LocalVars localvars;</span><br><span class="line">    <span class="comment">/** 操作数栈 */</span></span><br><span class="line">    <span class="keyword">private</span> OperandStack operandStack;</span><br><span class="line">    <span class="comment">/** 指向下一个栈帧 */</span></span><br><span class="line">    <span class="keyword">private</span> Frame lower;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Frame</span><span class="params">(<span class="keyword">int</span> maxLocals, <span class="keyword">int</span> maxStack)</span> </span>&#123;</span><br><span class="line">        localvars = <span class="keyword">new</span> LocalVars(maxLocals);</span><br><span class="line">        operandStack = <span class="keyword">new</span> OperandStack(maxStack);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Frame <span class="title">getLower</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> lower;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setLower</span><span class="params">(Frame lower)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.lower = lower;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="六、局部变量表"><a href="#六、局部变量表" class="headerlink" title="六、局部变量表"></a>六、局部变量表</h2><p>局部变量表是按索引访问的，可以把它想象成一个数组。</p>
+<p>根据Java虚拟机规范，这个数组的每个元素至少可以容纳一个 <code>int</code> 或引用值，两个连续的元素可以容纳一个 <code>long</code> 或 <code>double</code> 值。</p>
+<p>为了能够同时容纳一个 <code>int</code> 和引用值，这里采用以下结构作为局部变量表的数组元素类型，同时增加了一些静态方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Slot</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 索引 */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> num;</span><br><span class="line">    <span class="comment">/** 引用 */</span></span><br><span class="line">    <span class="keyword">private</span> Object ref;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">getRef</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ref;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setRef</span><span class="params">(Object ref)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.ref = ref;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setInt</span><span class="params">(Slot slot, <span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">        slot.num = num;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getInt</span><span class="params">(Slot slot)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (<span class="keyword">int</span>) slot.num;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setFloat</span><span class="params">(Slot slot, <span class="keyword">float</span> num)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> bits = Float.floatToIntBits(num);</span><br><span class="line">        setInt(slot, bits);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">float</span> <span class="title">getFloat</span><span class="params">(Slot slot)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> bits = getInt(slot);</span><br><span class="line">        <span class="keyword">return</span> Float.intBitsToFloat(bits);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setLong</span><span class="params">(Slot highSlot, Slot lowSlot, <span class="keyword">long</span> num)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// long类型占用2个插槽</span></span><br><span class="line">        highSlot.num = num &gt;&gt;&gt; <span class="number">32</span>;</span><br><span class="line">        lowSlot.num = num &amp; <span class="number">0x0FFFFFFFFL</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">getLong</span><span class="params">(Slot highSlot, Slot lowSlot)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// long类型占用2个插槽</span></span><br><span class="line">        <span class="keyword">long</span> lowerBits = lowSlot.num;</span><br><span class="line">        <span class="keyword">long</span> highBits = highSlot.num;</span><br><span class="line">        <span class="keyword">long</span> val = highBits &amp; <span class="number">0x0FFFFFFFFL</span>;</span><br><span class="line">        val = (val &lt;&lt; <span class="number">32</span>) | (lowerBits &amp; <span class="number">0x0FFFFFFFFL</span>);</span><br><span class="line">        <span class="keyword">return</span> val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setDouble</span><span class="params">(Slot highSlot, Slot lowSlot, <span class="keyword">double</span> num)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 把double的bit转成long保存</span></span><br><span class="line">        <span class="keyword">long</span> bits = Double.doubleToLongBits(num);</span><br><span class="line">        setLong(highSlot, lowSlot, bits);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">double</span> <span class="title">getDouble</span><span class="params">(Slot highSlot, Slot lowSlot)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 把long的bit解析成double</span></span><br><span class="line">        <span class="keyword">long</span> bits = getLong(highSlot, lowSlot);</span><br><span class="line">        <span class="keyword">return</span> Double.longBitsToDouble(bits);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后局部变量表的定义则是这样的，实际就是对数组进行了一层封装，并提供了一些接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LocalVars</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 局部变量数组的最大大小 */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> defaultMaxLocals = <span class="number">65536</span>;</span><br><span class="line">    <span class="comment">/** 局部变量表数组 */</span></span><br><span class="line">    <span class="keyword">private</span> Slot[] slots;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LocalVars</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(defaultMaxLocals);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LocalVars</span><span class="params">(<span class="keyword">int</span> maxLocals)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (maxLocals &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            maxLocals = defaultMaxLocals;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 一开始就把插槽初始化好</span></span><br><span class="line">        slots = <span class="keyword">new</span> Slot[maxLocals];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; slots.length; i++) &#123;</span><br><span class="line">            slots[i] = <span class="keyword">new</span> Slot();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setInt</span><span class="params">(<span class="keyword">int</span> index, <span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">        Slot.setInt(slots[index], num);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getInt</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Slot.getInt(slots[index]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setFloat</span><span class="params">(<span class="keyword">int</span> index, <span class="keyword">float</span> num)</span> </span>&#123;</span><br><span class="line">        Slot.setFloat(slots[index], num);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">getFloat</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Slot.getFloat(slots[index]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setLong</span><span class="params">(<span class="keyword">int</span> index, <span class="keyword">long</span> num)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// long类型占用2个插槽</span></span><br><span class="line">        Slot.setLong(slots[index + <span class="number">1</span>], slots[index], num);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">getLong</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// long类型占用2个插槽</span></span><br><span class="line">        <span class="keyword">return</span> Slot.getLong(slots[index + <span class="number">1</span>], slots[index]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDouble</span><span class="params">(<span class="keyword">int</span> index, <span class="keyword">double</span> num)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// double类型占用2个插槽</span></span><br><span class="line">        Slot.setDouble(slots[index + <span class="number">1</span>], slots[index], num);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">getDouble</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// double类型占用2个插槽</span></span><br><span class="line">        <span class="keyword">return</span> Slot.getDouble(slots[index + <span class="number">1</span>], slots[index]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setRef</span><span class="params">(<span class="keyword">int</span> index, Object ref)</span> </span>&#123;</span><br><span class="line">        slots[index].setRef(ref);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">getRef</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> slots[index].getRef();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中，<code>long</code> 和 <code>double</code> 这2种类型是占用了2个插槽的。</p>
+<p><code>long</code> 类型可以拆成2个 <code>int</code> 类型保存。</p>
+<p><code>float</code> 可以转成 <code>int</code> 类型保存，<code>double</code> 可以转成 <code>long</code> 类型保存。</p>
+<h2 id="七、操作数栈"><a href="#七、操作数栈" class="headerlink" title="七、操作数栈"></a>七、操作数栈</h2><p>操作数栈和局部变量表类似，实际上操作数栈操作的数据，就是局部变量表里面的数据。</p>
+<p>操作数栈的大小是编译器已经确定的，所以可以用 <code>Slot[]</code> 实现栈结构，其中栈顶就是 <code>slots[size - 1]</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OperandStack</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 最大栈深度 */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> defaultMaxStack = <span class="number">65536</span>;</span><br><span class="line">    <span class="comment">/** 操作数栈数组 */</span></span><br><span class="line">    <span class="keyword">private</span> Slot[] slots;</span><br><span class="line">    <span class="comment">/** 当前栈大小 */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> size;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">OperandStack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(defaultMaxStack);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">OperandStack</span><span class="params">(<span class="keyword">int</span> maxStack)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (maxStack &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            maxStack = defaultMaxStack;</span><br><span class="line">        &#125;</span><br><span class="line">        slots = <span class="keyword">new</span> Slot[maxStack];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; slots.length; i++) &#123;</span><br><span class="line">            slots[i] = <span class="keyword">new</span> Slot();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pushInt</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        Slot.setInt(slots[size], val);</span><br><span class="line">        size++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">popInt</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        size--;</span><br><span class="line">        <span class="keyword">return</span> Slot.getInt(slots[size]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pushFloat</span><span class="params">(<span class="keyword">float</span> val)</span> </span>&#123;</span><br><span class="line">        Slot.setFloat(slots[size], val);</span><br><span class="line">        size++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">popFloat</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        size--;</span><br><span class="line">        <span class="keyword">return</span> Slot.getFloat(slots[size]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pushLong</span><span class="params">(<span class="keyword">long</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// long类型占用2个插槽</span></span><br><span class="line">        Slot.setLong(slots[size + <span class="number">1</span>], slots[size], val);</span><br><span class="line">        size += <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">popLong</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// long类型占用2个插槽</span></span><br><span class="line">        size -= <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">return</span> Slot.getLong(slots[size + <span class="number">1</span>], slots[size]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pushDouble</span><span class="params">(<span class="keyword">double</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// double类型占用2个插槽</span></span><br><span class="line">        Slot.setDouble(slots[size + <span class="number">1</span>], slots[size], val);</span><br><span class="line">        size += <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">popDouble</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// double类型占用2个插槽</span></span><br><span class="line">        size -= <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">return</span> Slot.getDouble(slots[size + <span class="number">1</span>], slots[size]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pushRef</span><span class="params">(Object ref)</span> </span>&#123;</span><br><span class="line">        slots[size].setRef(ref);</span><br><span class="line">        size++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">popRef</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        size--;</span><br><span class="line">        Object ref = slots[size].getRef();</span><br><span class="line">        slots[size].setRef(<span class="keyword">null</span>);</span><br><span class="line">        <span class="keyword">return</span> ref;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>操作数栈的实现和局部变量表的实现差不多，都是采用数组 <code>Slot[]</code>，所以操作数栈也需要对 <code>long</code> 和 <code>double</code> 进行特殊处理。</p>
+<h2 id="八、单元测试"><a href="#八、单元测试" class="headerlink" title="八、单元测试"></a>八、单元测试</h2><p>局部变量表测试：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LocalVarsTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testLocalVars</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        LocalVars localVars = <span class="keyword">new</span> LocalVars(<span class="number">100</span>);</span><br><span class="line">        localVars.setInt(<span class="number">0</span>, <span class="number">100</span>);</span><br><span class="line">        localVars.setInt(<span class="number">1</span>, -<span class="number">100</span>);</span><br><span class="line">        localVars.setLog(<span class="number">2</span>, <span class="number">2997924580L</span>);</span><br><span class="line">        localVars.setLog(<span class="number">4</span>, -<span class="number">2997924580L</span>);</span><br><span class="line">        localVars.setFloat(<span class="number">6</span>, <span class="number">3.1415926F</span>);</span><br><span class="line">        localVars.setDouble(<span class="number">7</span>, <span class="number">2.71828182845</span>);</span><br><span class="line">        localVars.setRef(<span class="number">9</span>, <span class="keyword">this</span>);</span><br><span class="line">        System.out.println(localVars.getInt(<span class="number">0</span>));</span><br><span class="line">        System.out.println(localVars.getInt(<span class="number">1</span>));</span><br><span class="line">        System.out.println(localVars.getLong(<span class="number">2</span>));</span><br><span class="line">        System.out.println(localVars.getLong(<span class="number">4</span>));</span><br><span class="line">        System.out.println(localVars.getFloat(<span class="number">6</span>));</span><br><span class="line">        System.out.println(localVars.getDouble(<span class="number">7</span>));</span><br><span class="line">        System.out.println(localVars.getRef(<span class="number">9</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>操作数栈测试：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OperandStackTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testOperandStack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        OperandStack stack = <span class="keyword">new</span> OperandStack(<span class="number">100</span>);</span><br><span class="line">        stack.pushInt(<span class="number">100</span>);</span><br><span class="line">        stack.pushInt(-<span class="number">100</span>);</span><br><span class="line">        stack.pushLong(<span class="number">2997924580L</span>);</span><br><span class="line">        stack.pushLong(-<span class="number">2997924580L</span>);</span><br><span class="line">        stack.pushFloat(<span class="number">3.1415926F</span>);</span><br><span class="line">        stack.pushFloat(-<span class="number">3.1415926F</span>);</span><br><span class="line">        stack.pushDouble(<span class="number">2.71828182845</span>);</span><br><span class="line">        stack.pushDouble(-<span class="number">2.71828182845</span>);</span><br><span class="line">        stack.pushRef(<span class="keyword">this</span>);</span><br><span class="line">        System.out.println(stack.popRef());</span><br><span class="line">        System.out.println(stack.popDouble());</span><br><span class="line">        System.out.println(stack.popDouble());</span><br><span class="line">        System.out.println(stack.popFloat());</span><br><span class="line">        System.out.println(stack.popFloat());</span><br><span class="line">        System.out.println(stack.popLong());</span><br><span class="line">        System.out.println(stack.popLong());</span><br><span class="line">        System.out.println(stack.popInt());</span><br><span class="line">        System.out.println(stack.popInt());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>数据结构：</p>
+<ul>
+<li><p>运行时数据区可以分为两类：一类是多线程共享的，另一类则是线程私有的</p>
+</li>
+<li><p>多线程共享的运行时数据区需要在Java虚拟机启动时创建好，在Java虚拟机退出时销毁</p>
+</li>
+<li><p>线程私有的运行时数据区则在创建线程时才创建，线程退出时销毁</p>
+</li>
+<li><p>多线程共享的内存区域主要存放两类数据：类数据和类实例（也就是对象）</p>
+</li>
+<li><p>类实例对象数据存放在堆（Heap）中</p>
+</li>
+<li><p>类数据存放在方法区（Method Area）中，类数据包括字段和方法信息、方法的字节码、运行时常量池等</p>
+</li>
+</ul>
+<p>数据类型：</p>
+<ul>
+<li>Java虚拟机可以操作两类数据：基本类型（primitive type）和引用类型（reference type）</li>
+<li>基本类型的变量存放的就是数据本身，引用类型的变量存放的是对象引用，真正的对象数据是在堆里分配的</li>
+<li>基本类型可以进一步分为布尔类型（boolean type）和数字类型（numeric type），数字类型又可以分为整数类型（integral type）和浮点数类型（floating-point type）</li>
+<li>引用类型可以进一步分为3种：类类型、接口类型和数组类型。类类型引用指向类实例，数组类型引用指向数组实例，接口类型引用指向实现了该接口的类或数组实例</li>
+</ul>
+<p>线程结构：</p>
+<ul>
+<li>线程都有自己的pc寄存器（Program Counter）和Java虚拟机栈（JVMStack）</li>
+<li>虚拟机栈就是一个栈结构，数据先入后出。虚拟机栈里面放的就是栈帧，表示每一个被调用的方法</li>
+<li>Java虚拟机规范对虚拟机栈的约束相当宽松：<ul>
+<li>Java虚拟机栈可以是连续的空间，也可以不连续；可以是固定大小，也可以在运行时动态扩展</li>
+<li>如果Java虚拟机栈有大小限制，且执行线程所需的栈空间超出了这个限制，会导致StackOverflowError异常抛出</li>
+<li>如果Java虚拟机栈可以动态扩展，但是内存已经耗尽，会导致OutOfMemoryError异常抛出</li>
+</ul>
+</li>
+<li>局部变量表是按索引访问的，可以把它想象成一个数组</li>
+<li>根据Java虚拟机规范，局部变量表的每个元素至少可以容纳一个 <code>int</code> 或引用值，两个连续的元素可以容纳一个 <code>long</code> 或 <code>double</code> 值</li>
+<li>操作数栈的大小是编译器已经确定的</li>
+<li>操作数栈实际操作的数据就是局部变量表里面的数据</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/JVM/" rel="tag"># JVM</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/design_pattern/flyweight/" rel="prev" title="享元模式">
+      <i class="fa fa-chevron-left"></i> 享元模式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/design_pattern/command/" rel="next" title="命令模式">
+      命令模式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA"><span class="nav-text">运行时数据区</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-text">一、数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-text">二、数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E7%BA%BF%E7%A8%8B"><span class="nav-text">三、线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A0%88"><span class="nav-text">四、虚拟机栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E6%A0%88%E5%B8%A7"><span class="nav-text">五、栈帧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E8%A1%A8"><span class="nav-text">六、局部变量表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E6%93%8D%E4%BD%9C%E6%95%B0%E6%A0%88"><span class="nav-text">七、操作数栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AB%E3%80%81%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="nav-text">八、单元测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jiaduo"
+      src="/images/lufei.jpeg">
+  <p class="site-author-name" itemprop="name">jiaduo</p>
+  <div class="site-description" itemprop="description">不积跬步，无以至千里</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021/08 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiaduo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">228k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:28</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

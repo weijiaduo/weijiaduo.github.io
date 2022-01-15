@@ -28,7 +28,7 @@
 <meta property="og:description" content="HashMap一、定义123public class HashMap&lt;K,V&gt; extends AbstractMap&lt;K,V&gt;    implements Map&lt;K,V&gt;, Cloneable, Serializable &amp;#123;&amp;#125;  二、实现2.1 数据结构HashMap 的底层数据存储结构是“数组 + 链表 + 红黑树”，红黑树结构是 JD">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-10-16T04:26:30.000Z">
-<meta property="article:modified_time" content="2021-10-16T05:13:38.094Z">
+<meta property="article:modified_time" content="2022-01-15T02:17:18.396Z">
 <meta property="article:author" content="jiaduo">
 <meta property="article:tag" content="java">
 <meta property="article:tag" content="集合">
@@ -192,10 +192,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-10-16 12:26:30 / 修改时间：13:13:38" itemprop="dateCreated datePublished" datetime="2021-10-16T12:26:30+08:00">2021-10-16</time>
+              <time title="创建时间：2021-10-16 12:26:30" itemprop="dateCreated datePublished" datetime="2021-10-16T12:26:30+08:00">2021-10-16</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-01-15 10:17:18" itemprop="dateModified" datetime="2022-01-15T10:17:18+08:00">2022-01-15</time>
+              </span>
 
           <br>
             <span class="post-meta-item" title="本文字数">
@@ -203,14 +209,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>22k</span>
+              <span>21k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>20 分钟</span>
+              <span>19 分钟</span>
             </span>
 
         </div>
@@ -308,7 +314,7 @@
 <p>实际上，阈值<code>threshold</code>并不是一个必要的变量，只是为了提高性能，减少负载的计算（除法计算），而添加的。</p>
 <p><strong>3）扩容容量</strong></p>
 <p><code>HashMap</code> 为了保持“2的倍数”容量，每次扩容都是之前的2倍。也就是 “新容量 = 旧容量 * 2”。</p>
-<p>直接看一下扩容代码（这里忽略了后面的一些无关代码）：</p>
+<p>直接看一下扩容代码：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> Node&lt;K,V&gt;[] resize() &#123;</span><br><span class="line">    Node&lt;K,V&gt;[] oldTab = table;</span><br><span class="line">    <span class="keyword">int</span> oldCap = (oldTab == <span class="keyword">null</span>) ? <span class="number">0</span> : oldTab.length;</span><br><span class="line">    <span class="keyword">int</span> oldThr = threshold;</span><br><span class="line">    <span class="keyword">int</span> newCap, newThr = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (oldCap &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 数组不是第一次初始化时，对旧容量进行扩容</span></span><br><span class="line">        <span class="comment">// 如果旧容量已经是最大容量了，就不再扩容</span></span><br><span class="line">        <span class="keyword">if</span> (oldCap &gt;= MAXIMUM_CAPACITY) &#123;</span><br><span class="line">            threshold = Integer.MAX_VALUE;</span><br><span class="line">            <span class="keyword">return</span> oldTab;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 正常情况下，新容量 = 旧容量 * 2</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> ((newCap = oldCap &lt;&lt; <span class="number">1</span>) &lt; MAXIMUM_CAPACITY &amp;&amp;</span><br><span class="line">                    oldCap &gt;= DEFAULT_INITIAL_CAPACITY)</span><br><span class="line">            newThr = oldThr &lt;&lt; <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (oldThr &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 数组第一次初始化时，如果初始化容量大于0，就用初始化容量，它也是2的倍数</span></span><br><span class="line">        newCap = oldThr;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 数组第一次初始化时，如果初始化容量为0，就用默认的初始化容量DEFAULT_INITIAL_CAPACITY</span></span><br><span class="line">        newCap = DEFAULT_INITIAL_CAPACITY;</span><br><span class="line">        newThr = (<span class="keyword">int</span>)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (newThr == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">float</span> ft = (<span class="keyword">float</span>)newCap * loadFactor;</span><br><span class="line">        newThr = (newCap &lt; MAXIMUM_CAPACITY &amp;&amp; ft &lt; (<span class="keyword">float</span>)MAXIMUM_CAPACITY ?</span><br><span class="line">                    (<span class="keyword">int</span>)ft : Integer.MAX_VALUE);</span><br><span class="line">    &#125;</span><br><span class="line">    threshold = newThr;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@SuppressWarnings(&#123;&quot;rawtypes&quot;,&quot;unchecked&quot;&#125;)</span></span><br><span class="line">    Node&lt;K,V&gt;[] newTab = (Node&lt;K,V&gt;[])<span class="keyword">new</span> Node[newCap];</span><br><span class="line">    table = newTab;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 略掉后面的代码，在后面的4）中贴有</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>扩容容量的计算还算简单，主要可以分为几步：</p>
@@ -330,16 +336,17 @@
 <li>如果时链表结构，映射到新数组时，也会被拆分成2条链表。</li>
 </ol>
 <p>举个例子说明一下，假设旧的数据结构如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">  0    1    2    3    4    5    6    7 </span><br><span class="line"> ____ ____ ____ ____ ____ ____ ____ ____</span><br><span class="line">|    | 9  |    | 11 |    | 21 | 14 | 15 |</span><br><span class="line">       |                        |    |</span><br><span class="line">       1                        22   7</span><br><span class="line">                                |</span><br><span class="line">                                6</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">  0    1    2    3    4    5    6    7 </span><br><span class="line"> ____ ____ ____ ____ ____ ____ ____ ____ </span><br><span class="line">|    | 9  |    | 11 |    | 21 | 14 | 15 |</span><br><span class="line">       |                        |    |</span><br><span class="line">       1                        22   7</span><br><span class="line">                                |</span><br><span class="line">                                6</span><br></pre></td></tr></table></figure>
 
 <p>当前的数组大小是 8，那么按照前面的规则，扩容后的新数组长度应该是 16，重新分配后的结构如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">   0    1    2    3    4    5    6    7 </span><br><span class="line">  ____ ____ ____ ____ ____ ____ ____ ____ </span><br><span class="line"> |    | 9  |    | 11 |    | 21 | 14 | 15 |</span><br><span class="line">        |                        |    |</span><br><span class="line">        1                        22   7</span><br><span class="line">                                 |</span><br><span class="line">                                 6</span><br><span class="line"></span><br><span class="line">                    |</span><br><span class="line">                    v</span><br><span class="line"></span><br><span class="line">  0    1    2    3    4    5    6    7    8    9    10   11   12   13   14   15 </span><br><span class="line"> ____ ____ ____ ____ ____ ____ ____ ____ ____ ____ ____ ____ ____ ____ ____ ____</span><br><span class="line">|    | 1  |    |    |    | 21 | 22 | 7  |    |  9 |    | 11 |    |    | 14 | 15 |</span><br><span class="line">                                                                        |</span><br><span class="line">                                                                        6</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">  0    1    2    3    4    5    6    7 </span><br><span class="line"> ____ ____ ____ ____ ____ ____ ____ ____ </span><br><span class="line">|    | 9  |    | 11 |    | 21 | 14 | 15 |</span><br><span class="line">       |                        |    |</span><br><span class="line">       1                        22   7</span><br><span class="line">                                |</span><br><span class="line">                                6</span><br><span class="line"></span><br><span class="line">                    |</span><br><span class="line">                    v</span><br><span class="line"></span><br><span class="line">  0    1    2    3    4    5    6    7    8    9    10   11   12   13   14   15 </span><br><span class="line"> ____ ____ ____ ____ ____ ____ ____ ____ ____ ____ ____ ____ ____ ____ ____ ____</span><br><span class="line">|    | 1  |    |    |    | 21 | 22 | 7  |    |  9 |    | 11 |    |    | 14 | 15 |</span><br><span class="line">                                                                        |</span><br><span class="line">                                                                        6</span><br></pre></td></tr></table></figure>
 
 <p>其实重新hash的计算也很简单，因为是2倍扩容，实际上重新分配时，一部分节点还是在原来的位置，而另一部分会被分出去。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ((e.hash &amp; oldCap) == <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="comment">// 原来的索引位置 i</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 扩容后的索引位置 i + oldCap.length</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>另外，<code>HashMap</code> 重新分配后的链表顺序还是和之前一样的。这一点和 <code>HashTable</code> 不一样，<code>HashTable</code> 扩容后链表结构会反过来。</p>
-<p>这里只展示了链表的重分配，实际上树结构的重分配也是一样的，只不过调整树的结构稍微麻烦一些，毕竟是有顺序的红黑树。</p>
+<p>另外，<code>HashMap</code> 重新分配后的链表顺序还是和之前一样的。</p>
+<p>这一点 <code>HashMap</code> 和 <code>HashTable</code> 不一样，<code>HashTable</code> 扩容后链表结构会反过来。</p>
+<p>这是链表的重分配，实际上红黑树的重分配也是一样的，只不过调整树结构稍微麻烦一些，毕竟是有顺序的红黑树。</p>
 <h3 id="2-4-树转化"><a href="#2-4-树转化" class="headerlink" title="2.4 树转化"></a>2.4 树转化</h3><p>除了加上“红黑树”结构以外，<code>HashMap</code> 和 <code>HashTable</code> 的结构都差不多，一般情况下都是“数组 + 链表”。</p>
 <p>而 <code>HashMap</code> 为了提高效率，增加了“红黑树”的功能，当然也给代码加了很多复杂操作~~</p>
 <p>什么时候需要红黑树呢？这里先说明一下相关的几个属性：</p>
@@ -368,19 +375,19 @@
 </ol>
 <p>注意，满足其中1个条件，就会将红黑树转成链表。</p>
 <p>首先是“红黑树的节点数量很少”的情况，这种情况只会出现在删除节点的时候，具体看代码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">removeTreeNode</span><span class="params">(HashMap&lt;K,V&gt; map, Node&lt;K,V&gt;[] tab, <span class="keyword">boolean</span> movable)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="keyword">if</span> (tab == <span class="keyword">null</span> || (n = tab.length) == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">int</span> index = (n - <span class="number">1</span>) &amp; hash;</span><br><span class="line">    TreeNode&lt;K,V&gt; first = (TreeNode&lt;K,V&gt;)tab[index], root = first, rl;</span><br><span class="line">    TreeNode&lt;K,V&gt; succ = (TreeNode&lt;K,V&gt;)next, pred = prev;</span><br><span class="line">    <span class="keyword">if</span> (pred == <span class="keyword">null</span>)</span><br><span class="line">        tab[index] = first = succ;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        pred.next = succ;</span><br><span class="line">    <span class="keyword">if</span> (succ != <span class="keyword">null</span>)</span><br><span class="line">        succ.prev = pred;</span><br><span class="line">    <span class="keyword">if</span> (first == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">if</span> (root.parent != <span class="keyword">null</span>)</span><br><span class="line">        root = root.root();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 当红黑树的节点数量很少时，将会转回链表</span></span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span> || root.right == <span class="keyword">null</span> ||</span><br><span class="line">        (rl = root.left) == <span class="keyword">null</span> || rl.left == <span class="keyword">null</span>) &#123;</span><br><span class="line">        tab[index] = first.untreeify(map);  <span class="comment">// too small</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 忽略后面很多代码...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">removeTreeNode</span><span class="params">(HashMap&lt;K,V&gt; map, Node&lt;K,V&gt;[] tab, <span class="keyword">boolean</span> movable)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 忽略部分代码</span></span><br><span class="line">    <span class="comment">// 移除节点...</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 当红黑树的节点数量很少时，将会转回链表</span></span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span> || root.right == <span class="keyword">null</span> ||</span><br><span class="line">        (rl = root.left) == <span class="keyword">null</span> || rl.left == <span class="keyword">null</span>) &#123;</span><br><span class="line">        tab[index] = first.untreeify(map);  <span class="comment">// too small</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 忽略后面很多代码...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>节点数量很少，究竟多少算少呢？按照代码的判断，它有几种情况：</p>
 <ol>
 <li>红黑树节点完全没有了</li>
 <li>红黑树右子树没有了</li>
 <li>红黑树左子树没有了</li>
-<li>红黑树的左子树的右子树没有了</li>
+<li>红黑树的左子树的左子树没有了</li>
 </ol>
 <p>这几种情况下，就认定为红黑树的节点数量很少了。</p>
 <p>这是为什么？红黑树本质上是一棵平衡树，如果某棵子树没了，那对应的另一边子树肯定最多只有1个节点，那就意味着整棵树就没几个节点了（至于更深层的原因，可以去深入了解红黑树的结构）。</p>
 <p>其次是“进行扩容时，如果红黑树节点数量低于 <code>UNTREEIFY_THRESHOLD</code>”，这种情况只会出现在增加节点导致扩容的时候：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">split</span><span class="params">(HashMap&lt;K,V&gt; map, Node&lt;K,V&gt;[] tab, <span class="keyword">int</span> index, <span class="keyword">int</span> bit)</span> </span>&#123;</span><br><span class="line">    TreeNode&lt;K,V&gt; b = <span class="keyword">this</span>;</span><br><span class="line">    <span class="comment">// 重新分配节点，分成2部分</span></span><br><span class="line">    TreeNode&lt;K,V&gt; loHead = <span class="keyword">null</span>, loTail = <span class="keyword">null</span>;</span><br><span class="line">    TreeNode&lt;K,V&gt; hiHead = <span class="keyword">null</span>, hiTail = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">int</span> lc = <span class="number">0</span>, hc = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (TreeNode&lt;K,V&gt; e = b, next; e != <span class="keyword">null</span>; e = next) &#123;</span><br><span class="line">        next = (TreeNode&lt;K,V&gt;)e.next;</span><br><span class="line">        e.next = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">if</span> ((e.hash &amp; bit) == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> ((e.prev = loTail) == <span class="keyword">null</span>)</span><br><span class="line">                loHead = e;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                loTail.next = e;</span><br><span class="line">            loTail = e;</span><br><span class="line">            ++lc;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> ((e.prev = hiTail) == <span class="keyword">null</span>)</span><br><span class="line">                hiHead = e;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                hiTail.next = e;</span><br><span class="line">            hiTail = e;</span><br><span class="line">            ++hc;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (loHead != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (lc &lt;= UNTREEIFY_THRESHOLD)</span><br><span class="line">            <span class="comment">// 如果红黑树的节点数量低于UNTREEIFY_THRESHOLD，就会将其转回链表</span></span><br><span class="line">            tab[index] = loHead.untreeify(map);</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            tab[index] = loHead;</span><br><span class="line">            <span class="keyword">if</span> (hiHead != <span class="keyword">null</span>) <span class="comment">// (else is already treeified)</span></span><br><span class="line">                loHead.treeify(tab);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (hiHead != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (hc &lt;= UNTREEIFY_THRESHOLD)</span><br><span class="line">            <span class="comment">// 如果红黑树的节点数量低于UNTREEIFY_THRESHOLD，就会将其转回链表</span></span><br><span class="line">            tab[index + bit] = hiHead.untreeify(map);</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            tab[index + bit] = hiHead;</span><br><span class="line">            <span class="keyword">if</span> (loHead != <span class="keyword">null</span>)</span><br><span class="line">                hiHead.treeify(tab);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">split</span><span class="params">(HashMap&lt;K,V&gt; map, Node&lt;K,V&gt;[] tab, <span class="keyword">int</span> index, <span class="keyword">int</span> bit)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 忽略部分代码</span></span><br><span class="line">    <span class="comment">// 重新分配节点，分成2部分...</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (loHead != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (lc &lt;= UNTREEIFY_THRESHOLD)</span><br><span class="line">            <span class="comment">// 如果红黑树的节点数量低于UNTREEIFY_THRESHOLD，就会将其转回链表</span></span><br><span class="line">            tab[index] = loHead.untreeify(map);</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            tab[index] = loHead;</span><br><span class="line">            <span class="keyword">if</span> (hiHead != <span class="keyword">null</span>) <span class="comment">// (else is already treeified)</span></span><br><span class="line">                loHead.treeify(tab);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (hiHead != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (hc &lt;= UNTREEIFY_THRESHOLD)</span><br><span class="line">            <span class="comment">// 如果红黑树的节点数量低于UNTREEIFY_THRESHOLD，就会将其转回链表</span></span><br><span class="line">            tab[index + bit] = hiHead.untreeify(map);</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            tab[index + bit] = hiHead;</span><br><span class="line">            <span class="keyword">if</span> (loHead != <span class="keyword">null</span>)</span><br><span class="line">                hiHead.treeify(tab);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>可以看到，扩容后，会将之前的节点拆分成2部分，如果某部分的节点数量不大于阈值 <code>UNTREEIFY_THRESHOLD</code>，就会将红黑树转回链表。</p>
 <h4 id="2-4-3-测试代码"><a href="#2-4-3-测试代码" class="headerlink" title="2.4.3 测试代码"></a>2.4.3 测试代码</h4><p>针对链表红黑树相互转换的几种情况，写个测试代码来测试一下。</p>
@@ -454,7 +461,7 @@
 <li>红黑树节点完全没有了</li>
 <li>红黑树右子树没有了</li>
 <li>红黑树左子树没有了</li>
-<li>红黑树的左子树的右子树没有了</li>
+<li>红黑树的左子树的左子树没有了</li>
 </ol>
 </li>
 <li>扩容后，重新分配得节点数量不大于阈值 <code>UNTREEIFY_THRESHOLD</code> 时，即6时</li>
@@ -485,7 +492,10 @@
     <a href="/lang/java/core/basic/02_operators/" rel="prev" title="02_操作符">
       <i class="fa fa-chevron-left"></i> 02_操作符
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/design_pattern/singleton/" rel="next" title="单例模式">
+      单例模式 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -560,14 +570,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-count">49</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -594,7 +604,7 @@
 <div class="copyright">
   
   &copy; 2021/08 – 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -603,12 +613,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">174k</span>
+    <span title="站点总字数">228k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">2:38</span>
+    <span title="站点阅读时长">3:28</span>
 </div>
 
         

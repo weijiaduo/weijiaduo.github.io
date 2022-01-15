@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="原型模式一、什么是原型模式？原型设计模式（Prototype Design Pattern），是指根据实例原型、实例模型来生成新的实例对象。 也就是用一个已经创建的实例作为原型，通过复制该原型对象来创建一个和原型相同或相似的新对象。 重点在于新实例对象，不是创建出来的，而是基于已有的原型对象复制的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="原型模式">
+<meta property="og:url" content="http://example.com/design_pattern/prototype/index.html">
+<meta property="og:site_name" content="Strive">
+<meta property="og:description" content="原型模式一、什么是原型模式？原型设计模式（Prototype Design Pattern），是指根据实例原型、实例模型来生成新的实例对象。 也就是用一个已经创建的实例作为原型，通过复制该原型对象来创建一个和原型相同或相似的新对象。 重点在于新实例对象，不是创建出来的，而是基于已有的原型对象复制的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/assets/propotype.png">
+<meta property="og:image" content="http://example.com/images/assets/product_propotype.png">
+<meta property="article:published_time" content="2022-01-14T17:44:10.000Z">
+<meta property="article:modified_time" content="2022-01-15T10:04:56.490Z">
+<meta property="article:author" content="jiaduo">
+<meta property="article:tag" content="Design Pattern">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/assets/propotype.png">
+
+<link rel="canonical" href="http://example.com/design_pattern/prototype/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>原型模式 | Strive</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Strive</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Rome was not built in one day</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/design_pattern/prototype/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          原型模式
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-01-15 01:44:10 / 修改时间：18:04:56" itemprop="dateCreated datePublished" datetime="2022-01-15T01:44:10+08:00">2022-01-15</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="原型模式"><a href="#原型模式" class="headerlink" title="原型模式"></a>原型模式</h1><h2 id="一、什么是原型模式？"><a href="#一、什么是原型模式？" class="headerlink" title="一、什么是原型模式？"></a>一、什么是原型模式？</h2><p>原型设计模式（Prototype Design Pattern），是指根据实例原型、实例模型来生成新的实例对象。</p>
+<p>也就是用一个已经创建的实例作为原型，通过复制该原型对象来创建一个和原型相同或相似的新对象。</p>
+<p>重点在于新实例对象，不是创建出来的，而是基于已有的原型对象复制的。</p>
+<span id="more"></span>
+
+<h2 id="二、为什么要用原型模式？"><a href="#二、为什么要用原型模式？" class="headerlink" title="二、为什么要用原型模式？"></a>二、为什么要用原型模式？</h2><ul>
+<li>对象之间相同或相似，即只是个别的几个属性不同的时候</li>
+<li>有些对象的创建过程较为复杂，而且有时候需要频繁创建，创建新对象还不如复制已有对象来得快<ul>
+<li>对象中的数据需要经过复杂的计算才能得到（比如排序、计算哈希值）</li>
+<li>对象中的数据需要从 RPC、网络、数据库、文件系统等非常慢速的 IO 中读取</li>
+</ul>
+</li>
+<li>想要复制当前的对象，但是对象内部的数据异常复杂，通过构造函数创建难以实现<ul>
+<li>比如一个图形，之前做了很多处理，比一开始创建的时候变动了很多，此时想要复制它，通过构造函数新建是难以实现的</li>
+</ul>
+</li>
+<li>想要让生成的实例的框架不依赖于具体的类<ul>
+<li>框架中不能指定类名来生成实例，所以会先“注册”一个“原型实例”，然后通过复制该“原型”来生成新实例</li>
+</ul>
+</li>
+</ul>
+<h2 id="三、模型的结构是怎么样的？"><a href="#三、模型的结构是怎么样的？" class="headerlink" title="三、模型的结构是怎么样的？"></a>三、模型的结构是怎么样的？</h2><p>原型模式主要包含以下几种角色：</p>
+<ol>
+<li>抽象原型类(Prototype)：负责定义用于复制现有实例来生成新实例的方法</li>
+<li>具体原型类(ConcretePrototype)：负责实现复制现有实例并生成新实例的方法</li>
+<li>访问类(Client)：负责使用复制实例的方法生成新的实例</li>
+</ol>
+<p><img src="/images/assets/propotype.png" alt="原型结构"></p>
+<h2 id="四、怎么实现原型模式？"><a href="#四、怎么实现原型模式？" class="headerlink" title="四、怎么实现原型模式？"></a>四、怎么实现原型模式？</h2><p>原型模式有两种实现方法：深拷贝和浅拷贝。</p>
+<ul>
+<li>浅拷贝只会复制对象中基本数据类型数据和引用对象的内存地址，不会递归地复制引用对象，以及引用对象的引用对象……</li>
+<li>深拷贝得到的是一份完完全全独立的对象。所以，深拷贝比起浅拷贝来说，更加耗时，更加耗内存空间</li>
+</ul>
+<p>深拷贝和浅拷贝的一些注意事项：</p>
+<ul>
+<li>如果要拷贝的对象是不可变对象，浅拷贝共享不可变对象是没问题的</li>
+<li>但对于可变对象来说，浅拷贝得到的对象和原始对象会共享部分数据，就有可能出现数据被修改的风险，也就变得复杂多了</li>
+<li>没有充分的理由，不要为了一点点的性能提升而使用浅拷贝</li>
+</ul>
+<p>示例程序的类结构图：</p>
+<p><img src="/images/assets/product_propotype.png" alt="示例程序类结构图"></p>
+<p>其中 Product 代表的是原型结构中的 Propotype，UnderlinePen 和 MessageBox 代表的是原型结构中的 ConcretePrototype，而 ProductManager 代表的是原型结构中的 Client。</p>
+<h3 id="4-1-Product-接口"><a href="#4-1-Product-接口" class="headerlink" title="4.1 Product 接口"></a>4.1 Product 接口</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Product</span> <span class="keyword">extends</span> <span class="title">Cloneable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 产品使用的方法</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> s</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">use</span><span class="params">(String s)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 产品克隆的方法</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 克隆出来的新对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">Product <span class="title">createClone</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-UnderlinePen-和-MessageBox-具现类"><a href="#4-2-UnderlinePen-和-MessageBox-具现类" class="headerlink" title="4.2 UnderlinePen 和 MessageBox 具现类"></a>4.2 UnderlinePen 和 MessageBox 具现类</h3><p>UnderlinePen 是为输出字符串在左右两端添加双引号，并在下边添加下划符号。代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 为输出字符串添加下划线，例如：</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &quot;Strong message product&quot;</span></span><br><span class="line"><span class="comment"> * ~~~~~~~~~~~~~~~~~~~~~~~~</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UnderlinePen</span> <span class="keyword">implements</span> <span class="title">Product</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 下划符号</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">char</span> ch;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">UnderlinePen</span><span class="params">(<span class="keyword">char</span> ch)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.ch = ch;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 输出字符串左右添加双引号，下边添加下划符号</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> s 输出字符串</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">use</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> len = s.getBytes().length;</span><br><span class="line">        System.out.println(<span class="string">&quot;\&quot;&quot;</span> + s + <span class="string">&quot;\&quot;&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len + <span class="number">2</span>; i++) &#123;</span><br><span class="line">            System.out.print(ch);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Product <span class="title">createClone</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Product p = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            p = (Product) clone();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (CloneNotSupportedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> p;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>MessageBox 是为输出字符串添加一个输出框。代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/***</span></span><br><span class="line"><span class="comment"> * 为输出字符串添加输出框，例如：</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * ***********************</span></span><br><span class="line"><span class="comment"> * * Warning box product *</span></span><br><span class="line"><span class="comment"> * ***********************</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageBox</span> <span class="keyword">implements</span> <span class="title">Product</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 输出框符号</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">char</span> ch;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MessageBox</span><span class="params">(<span class="keyword">char</span> ch)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.ch = ch;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 为输出字符串添加一个输出框</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> s 输出字符串</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">use</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> len = s.getBytes().length;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len + <span class="number">4</span>; i++) &#123;</span><br><span class="line">            System.out.print(ch);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println();</span><br><span class="line">        System.out.println(ch + <span class="string">&quot; &quot;</span> + s + <span class="string">&quot; &quot;</span> + ch);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len + <span class="number">4</span>; i++) &#123;</span><br><span class="line">            System.out.print(ch);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Product <span class="title">createClone</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Product p = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            p = (Product) clone();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (CloneNotSupportedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> p;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-3-ProductManager-访问类"><a href="#4-3-ProductManager-访问类" class="headerlink" title="4.3 ProductManager 访问类"></a>4.3 ProductManager 访问类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProductManager</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 保存产品原型实例</span></span><br><span class="line">    <span class="keyword">private</span> HashMap&lt;String, Product&gt; products = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 注册产品原型实例</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> name 原型名称</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> product 原型实例</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">register</span><span class="params">(String name, Product product)</span> </span>&#123;</span><br><span class="line">        products.put(name, product);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 通过原型名称获取产品新实例对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> name 产品原型名称</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 产品新实例对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Product <span class="title">getProduct</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        Product product = products.get(name);</span><br><span class="line">        <span class="keyword">return</span> product.createClone();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="五、原型模式有什么优缺点？"><a href="#五、原型模式有什么优缺点？" class="headerlink" title="五、原型模式有什么优缺点？"></a>五、原型模式有什么优缺点？</h2><p>原型模式的优点：</p>
+<ul>
+<li>当创建新的对象实例较为复杂时，使用原型模式可以简化对象的创建过程，通过一个已有实例可以提高新实例的创建效率</li>
+<li>原型模式提供了简化的创建结构，可以使用深克隆方式保存对象的状态，以便在需要的时候使用（例如恢复到历史某一状态）</li>
+</ul>
+<p>原型模式的缺点：</p>
+<ul>
+<li>需要为每一个类配备一个克隆方法，这对全新的类来说不是很难，但对已有的类进行改造时，必须修改其源代码，违背了“开闭原则”</li>
+<li>当对象之间存在多重嵌套引用时，为了实现深克隆，每一层对象对应的类都必须支持深克隆，实现起来会比较麻烦</li>
+<li>深克隆、浅克隆需要运用得当</li>
+</ul>
+<h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><ul>
+<li>Java 中提供了用于复制实例的方法 <code>clone()</code></li>
+<li><code>clone()</code> 方法定义在 <code>java.lang.Object</code> 中，也就是说，所有 Java 类都有 <code>clone()</code> 方法</li>
+<li><code>clone()</code> 方法内部所执行的是基于内存二进制流的复制，复制了一份和原型对象一样的内存数据</li>
+<li><code>clone()</code> 方法复制的只是对象的内存数据，所以 <code>clone()</code> 方法是浅复制</li>
+<li><code>clone()</code> 方法只会进行复制，不会调用实例的构造函数</li>
+<li>重写 <code>clone()</code> 方法时，记得调用父类的 <code>super.clone()</code> 方法</li>
+</ul>
+<ul>
+<li>类使用 <code>clone()</code> 方法，这个类必须实现 <code>java.lang.Clonable</code> 接口（自己实现或者父类实现都行）</li>
+<li><code>Clonable</code> 是一个标记接口，用于标记该类可以执行 <code>clone()</code> 方法，自身没有声明任何方法</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Design-Pattern/" rel="tag"># Design Pattern</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/design_pattern/builder/" rel="prev" title="建造者模式">
+      <i class="fa fa-chevron-left"></i> 建造者模式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/design_pattern/adapter/" rel="next" title="适配器模式">
+      适配器模式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F"><span class="nav-text">原型模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AF%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%EF%BC%9F"><span class="nav-text">一、什么是原型模式？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%EF%BC%9F"><span class="nav-text">二、为什么要用原型模式？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%A8%A1%E5%9E%8B%E7%9A%84%E7%BB%93%E6%9E%84%E6%98%AF%E6%80%8E%E4%B9%88%E6%A0%B7%E7%9A%84%EF%BC%9F"><span class="nav-text">三、模型的结构是怎么样的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%EF%BC%9F"><span class="nav-text">四、怎么实现原型模式？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-Product-%E6%8E%A5%E5%8F%A3"><span class="nav-text">4.1 Product 接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-UnderlinePen-%E5%92%8C-MessageBox-%E5%85%B7%E7%8E%B0%E7%B1%BB"><span class="nav-text">4.2 UnderlinePen 和 MessageBox 具现类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-ProductManager-%E8%AE%BF%E9%97%AE%E7%B1%BB"><span class="nav-text">4.3 ProductManager 访问类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%E6%9C%89%E4%BB%80%E4%B9%88%E4%BC%98%E7%BC%BA%E7%82%B9%EF%BC%9F"><span class="nav-text">五、原型模式有什么优缺点？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95"><span class="nav-text">扩展</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jiaduo"
+      src="/images/lufei.jpeg">
+  <p class="site-author-name" itemprop="name">jiaduo</p>
+  <div class="site-description" itemprop="description">不积跬步，无以至千里</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021/08 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiaduo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">228k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:28</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
