@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="程序关闭JVM 既可以正常关闭，也可以强行关闭。 正常关闭方式有：  最后一个“正常（非守护）”线程结束时 调用了 System.exit() 方法 通过其他特定于平台的方法（比如发送 SIGNAL 信号，或键入 CRTL + C）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="07_05_程序关闭">
+<meta property="og:url" content="http://example.com/lang/java/core/concurrency/07_05_%E7%A8%8B%E5%BA%8F%E5%85%B3%E9%97%AD/index.html">
+<meta property="og:site_name" content="Strive">
+<meta property="og:description" content="程序关闭JVM 既可以正常关闭，也可以强行关闭。 正常关闭方式有：  最后一个“正常（非守护）”线程结束时 调用了 System.exit() 方法 通过其他特定于平台的方法（比如发送 SIGNAL 信号，或键入 CRTL + C）">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-15T03:19:21.000Z">
+<meta property="article:modified_time" content="2022-05-15T03:46:06.757Z">
+<meta property="article:author" content="jiaduo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="并发编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/lang/java/core/concurrency/07_05_%E7%A8%8B%E5%BA%8F%E5%85%B3%E9%97%AD/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>07_05_程序关闭 | Strive</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Strive</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Rome was not built in one day</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/core/concurrency/07_05_%E7%A8%8B%E5%BA%8F%E5%85%B3%E9%97%AD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          07_05_程序关闭
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-05-15 11:19:21 / 修改时间：11:46:06" itemprop="dateCreated datePublished" datetime="2022-05-15T11:19:21+08:00">2022-05-15</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>946</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="程序关闭"><a href="#程序关闭" class="headerlink" title="程序关闭"></a>程序关闭</h1><p>JVM 既可以正常关闭，也可以强行关闭。</p>
+<p>正常关闭方式有：</p>
+<ul>
+<li>最后一个“正常（非守护）”线程结束时</li>
+<li>调用了 <code>System.exit()</code> 方法</li>
+<li>通过其他特定于平台的方法（比如发送 SIGNAL 信号，或键入 CRTL + C）</li>
+</ul>
+<span id="more"></span>
+
+<p>强制关闭方式有：</p>
+<ul>
+<li>调用了 <code>Runtime.getRuntime().halt()</code> 方法</li>
+<li>在操作系统中“杀死” JVM 进程</li>
+</ul>
+<p>不同的关闭方式，JVM 可能会有不同的表现。</p>
+<h2 id="一、关闭钩子"><a href="#一、关闭钩子" class="headerlink" title="一、关闭钩子"></a>一、关闭钩子</h2><p>关闭钩子是指通过 <code>Runtime.addShutdownHook(Thread hook)</code> 注册的但未开始的线程。</p>
+<p>注意，关闭钩子是一个 Thread 线程对象，执行时是按照线程的方式运行。</p>
+<p>正常关闭 JVM 时，会触发关闭钩子的执行：</p>
+<ol>
+<li>首先调用所有已注册的关闭钩子，关闭钩子（也就是线程）是并发执行的</li>
+<li>接着当所有的关闭钩子执行结束后，如果 <code>runFinalizersOnExit</code> 属性为 true，则调用所有已注册的 <code>finalizer</code> 钩子</li>
+<li>最后 JVM 进入终结阶段，JVM 会强制关闭，剩余的还未结束的线程（守护或非守护线程）也会被强制结束</li>
+</ol>
+<p>强制关闭 JVM 时，不会运行关闭钩子。</p>
+<p>关闭钩子的设计应该满足：</p>
+<ul>
+<li>关闭钩子应该是线程安全的，访问共享数据必须使用同步机制</li>
+<li>关闭钩子不应该对应用程序的状态或 JVM 的关闭原因做出任何假设，不要依赖程序的状态</li>
+<li>关闭钩子之间不应该有依赖关系，否则可能会导致死锁</li>
+<li>关闭钩子必须尽快退出，避免延迟 JVM 关闭时间</li>
+<li>关闭钩子不应该抛出异常，避免导致 JVM 关闭失败</li>
+</ul>
+<p>关闭钩子的设计应该要尽量简单，比如做一些程序的清理工作。</p>
+<h2 id="二、守护线程"><a href="#二、守护线程" class="headerlink" title="二、守护线程"></a>二、守护线程</h2><ul>
+<li>线程可以分为2种：普通线程和守护线程</li>
+<li>守护线程和普通线程之间的差异仅在于当线程退出时发生的操作</li>
+<li>守护线程是一个特殊的线程，它不会阻碍程序关闭，而是会在程序关闭时自动结束</li>
+<li>尽可能少用守护线程，因为它很容易就被抛弃，而大部分情况下线程都需要在退出时清理资源</li>
+<li>守护线程最好用于执行“内部”任务，执行一些周期性任务，比如清理缓存等</li>
+</ul>
+<h2 id="三、终结器"><a href="#三、终结器" class="headerlink" title="三、终结器"></a>三、终结器</h2><ul>
+<li>垃圾回收器在回收垃圾对象时，会先执行对象中定义的终结器 <code>finalize()</code></li>
+<li>避免使用终结器，终结器并不保证它会在何时运行，是否会运行</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>程序的关闭，需要各个环节的相互配合才能完成：</p>
+<ul>
+<li>程序关闭，需要等待服务停止</li>
+<li>服务停止，需要等待线程结束</li>
+<li>线程结束，需要等待任务完成/取消</li>
+<li>任务取消，需要通过中断来完成</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" rel="tag"># 并发编程</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/lang/java/core/concurrency/07_04_%E6%9C%8D%E5%8A%A1%E5%81%9C%E6%AD%A2/" rel="prev" title="07_04_服务停止">
+      <i class="fa fa-chevron-left"></i> 07_04_服务停止
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/lang/java/core/concurrency/08_01_%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E4%BD%BF%E7%94%A8/" rel="next" title="08_01_线程池的使用">
+      08_01_线程池的使用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E5%85%B3%E9%97%AD"><span class="nav-text">程序关闭</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%85%B3%E9%97%AD%E9%92%A9%E5%AD%90"><span class="nav-text">一、关闭钩子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B"><span class="nav-text">二、守护线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E7%BB%88%E7%BB%93%E5%99%A8"><span class="nav-text">三、终结器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jiaduo"
+      src="/images/lufei.jpeg">
+  <p class="site-author-name" itemprop="name">jiaduo</p>
+  <div class="site-description" itemprop="description">不积跬步，无以至千里</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">80</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021/08 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiaduo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">354k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:22</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

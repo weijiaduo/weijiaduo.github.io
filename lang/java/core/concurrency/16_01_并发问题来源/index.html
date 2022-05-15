@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="并发问题来源一、缓存带来的可见性问题 计算机中可以保存数据的地方有几个：寄存器、缓存、主内存 原始数据都保存在主存上，最初的读取和最终的写入，都是在主存上操作 CPU 与主存之间存在缓存，每个 CPU 都有自己独立的的缓存 操作数据时，首先要将原始数据从主存中读取到 CPU 的缓存中，然后再对缓存的数据进行操作 单 CPU 下，一个线程对缓存的修改，对于另一个线程来说是可见的，因为只有一个缓存 多">
+<meta property="og:type" content="article">
+<meta property="og:title" content="16_01_并发问题来源">
+<meta property="og:url" content="http://example.com/lang/java/core/concurrency/16_01_%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98%E6%9D%A5%E6%BA%90/index.html">
+<meta property="og:site_name" content="Strive">
+<meta property="og:description" content="并发问题来源一、缓存带来的可见性问题 计算机中可以保存数据的地方有几个：寄存器、缓存、主内存 原始数据都保存在主存上，最初的读取和最终的写入，都是在主存上操作 CPU 与主存之间存在缓存，每个 CPU 都有自己独立的的缓存 操作数据时，首先要将原始数据从主存中读取到 CPU 的缓存中，然后再对缓存的数据进行操作 单 CPU 下，一个线程对缓存的修改，对于另一个线程来说是可见的，因为只有一个缓存 多">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-15T04:48:21.000Z">
+<meta property="article:modified_time" content="2022-05-15T03:50:57.676Z">
+<meta property="article:author" content="jiaduo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="并发编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/lang/java/core/concurrency/16_01_%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98%E6%9D%A5%E6%BA%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>16_01_并发问题来源 | Strive</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Strive</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Rome was not built in one day</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/core/concurrency/16_01_%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98%E6%9D%A5%E6%BA%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          16_01_并发问题来源
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-05-15 12:48:21 / 修改时间：11:50:57" itemprop="dateCreated datePublished" datetime="2022-05-15T12:48:21+08:00">2022-05-15</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="并发问题来源"><a href="#并发问题来源" class="headerlink" title="并发问题来源"></a>并发问题来源</h1><h1 id="一、缓存带来的可见性问题"><a href="#一、缓存带来的可见性问题" class="headerlink" title="一、缓存带来的可见性问题"></a>一、缓存带来的可见性问题</h1><ul>
+<li>计算机中可以保存数据的地方有几个：寄存器、缓存、主内存</li>
+<li>原始数据都保存在主存上，最初的读取和最终的写入，都是在主存上操作</li>
+<li>CPU 与主存之间存在缓存，每个 CPU 都有自己独立的的缓存</li>
+<li>操作数据时，首先要将原始数据从主存中读取到 CPU 的缓存中，然后再对缓存的数据进行操作</li>
+<li>单 CPU 下，一个线程对缓存的修改，对于另一个线程来说是可见的，因为只有一个缓存</li>
+<li>多 CPU 下，线程可能运行在不同 CPU 上，操作的是各自不同的缓存，相互之间是不可见的</li>
+</ul>
+<span id="more"></span>
+
+<p>比如，主存中一个变量 count = 1；</p>
+<p>线程 A 在 CPU1 上运行，读取 count 到缓存 Cache1，然后执行 count++;</p>
+<p>线程 B 在 CPU2 上运行，也读取 count 缓存 Cache2，然后执行 count++;</p>
+<p>假如 A 和 B 是同时读取的 count，它们拿到后都是 1，接着执行了 count++ 后，结果都变成了 2。</p>
+<p>最后线程 A 和线程 B 同步变量到主存后，count 的值最终只会是 2，但是理论上应该是 3 才对。</p>
+<p>这都是因为线程 A 和线程 B 各自只在自己的缓存上操作数据，相互不可见，导致没有意识到 count 被改了。</p>
+<h1 id="二、任务切换带来的原子性问题"><a href="#二、任务切换带来的原子性问题" class="headerlink" title="二、任务切换带来的原子性问题"></a>二、任务切换带来的原子性问题</h1><ul>
+<li>一个线程任务不可能长期占用 CPU，每隔一段时间，就需要切换线程任务</li>
+<li>线程任务切换一般采用时间片作为单位，比如 50 毫秒一个时间片</li>
+<li>线程在执行1个或多个时间片后，就可能会被切换到其他线程任务</li>
+<li>如果后面的线程修改了之前线程的数据，那等下次轮到之前线程执行时，它的状态就可能会和它之前被切换前的状态不一致，继续执行下去就有可能出现并发问题</li>
+</ul>
+<p>比如 long 变量是 64 位。</p>
+<p>线程 A 刚加载了它的前 32 位数据，就被切换走了，开始执行线程 B。</p>
+<p>然后线程 B 把变量值改了，写了新值进去，然后又切换回线程 A 执行。</p>
+<p>此时线程 A 去加载后 32 位时，数据已经和之前的不一样了。</p>
+<p>最终，旧值的前 32 位 + 新值的后 32 位，这 2 个 32 位拼起来的 64 位就会是一个意料之外的值。</p>
+<h1 id="三、指令重排带来的有序性问题"><a href="#三、指令重排带来的有序性问题" class="headerlink" title="三、指令重排带来的有序性问题"></a>三、指令重排带来的有序性问题</h1><ul>
+<li>编译器生成的指令顺序，可能会和源代码的顺序不同，因为它会对代码进行优化，以便提高执行效率</li>
+<li>处理器可以采用乱序或并行的方式来执行指令，比如指令流水线，所以也不一定是按照编译器生成的指令顺序来执行</li>
+<li>缓存变量提交到主内存的次序可能会改变，即缓存中先写的变量，不一定会被先提交到主内存中</li>
+</ul>
+<p>比如下面可能会出现重排序的例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PossibleReordering</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">static</span> <span class="keyword">int</span> x = <span class="number">0</span>, y = <span class="number">0</span>;</span><br><span class="line">     <span class="keyword">static</span> <span class="keyword">int</span> a = <span class="number">0</span>, b = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        Thread one = <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">            a = <span class="number">1</span>; <span class="comment">// 1</span></span><br><span class="line">            x = b; <span class="comment">// 2</span></span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        Thread other = <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">            b = <span class="number">1</span>; <span class="comment">// 3</span></span><br><span class="line">            y = a; <span class="comment">// 4</span></span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        one.start();</span><br><span class="line">        other.start();</span><br><span class="line"></span><br><span class="line">        one.join();</span><br><span class="line">        other.join();</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;(&quot;</span> + x + <span class="string">&quot;,&quot;</span> + y + <span class="string">&quot;)&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于每个线程中的各个操作没有数据流依赖性，所以这些操作可以乱序执行。</p>
+<p>也就是说，1和2之间没有依赖关系，所以重排序后2可能比1先执行；同理，4也可能比3先执行。</p>
+<p>因此，输出的结果就可能有4种：</p>
+<ul>
+<li>(0, 1)</li>
+<li>(1, 0)</li>
+<li>(1, 1)</li>
+<li>(0, 0)</li>
+</ul>
+<p>其中，(0, 0) 就是由于指令重排引起的，重排后的执行顺序可能是这样的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">时间线&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span><br><span class="line"></span><br><span class="line">线程A       x=b;                    a=1;</span><br><span class="line"></span><br><span class="line">线程B               b=1;    y=a;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" rel="tag"># 并发编程</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/lang/java/core/concurrency/15_02_%E5%8E%9F%E5%AD%90%E5%8F%98%E9%87%8F%E5%92%8C%E9%9D%9E%E9%98%BB%E5%A1%9E%E5%90%8C%E6%AD%A5/" rel="prev" title="15_02_原子变量">
+      <i class="fa fa-chevron-left"></i> 15_02_原子变量
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/lang/java/core/concurrency/16_02_Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/" rel="next" title="16_02_Java内存模型">
+      16_02_Java内存模型 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98%E6%9D%A5%E6%BA%90"><span class="nav-text">并发问题来源</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E7%BC%93%E5%AD%98%E5%B8%A6%E6%9D%A5%E7%9A%84%E5%8F%AF%E8%A7%81%E6%80%A7%E9%97%AE%E9%A2%98"><span class="nav-text">一、缓存带来的可见性问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%BB%BB%E5%8A%A1%E5%88%87%E6%8D%A2%E5%B8%A6%E6%9D%A5%E7%9A%84%E5%8E%9F%E5%AD%90%E6%80%A7%E9%97%AE%E9%A2%98"><span class="nav-text">二、任务切换带来的原子性问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%8C%87%E4%BB%A4%E9%87%8D%E6%8E%92%E5%B8%A6%E6%9D%A5%E7%9A%84%E6%9C%89%E5%BA%8F%E6%80%A7%E9%97%AE%E9%A2%98"><span class="nav-text">三、指令重排带来的有序性问题</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jiaduo"
+      src="/images/lufei.jpeg">
+  <p class="site-author-name" itemprop="name">jiaduo</p>
+  <div class="site-description" itemprop="description">不积跬步，无以至千里</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">80</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021/08 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiaduo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">354k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:22</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

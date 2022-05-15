@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Java内存模型一、什么是内存模型？缓存一致性问题：  在多处理器系统中，每个处理器都有自己的高速缓存，而它们又共享同一主内存（Main Memory） 当多处理器对同一块主内存区域进行操作时，可能会导致各自的缓存数据不一致，这就是缓存一致性问题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="16_02_Java内存模型">
+<meta property="og:url" content="http://example.com/lang/java/core/concurrency/16_02_Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/index.html">
+<meta property="og:site_name" content="Strive">
+<meta property="og:description" content="Java内存模型一、什么是内存模型？缓存一致性问题：  在多处理器系统中，每个处理器都有自己的高速缓存，而它们又共享同一主内存（Main Memory） 当多处理器对同一块主内存区域进行操作时，可能会导致各自的缓存数据不一致，这就是缓存一致性问题">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-15T04:58:21.000Z">
+<meta property="article:modified_time" content="2022-05-15T03:51:25.945Z">
+<meta property="article:author" content="jiaduo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="并发编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/lang/java/core/concurrency/16_02_Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>16_02_Java内存模型 | Strive</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Strive</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Rome was not built in one day</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/core/concurrency/16_02_Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          16_02_Java内存模型
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-05-15 12:58:21 / 修改时间：11:51:25" itemprop="dateCreated datePublished" datetime="2022-05-15T12:58:21+08:00">2022-05-15</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Java内存模型"><a href="#Java内存模型" class="headerlink" title="Java内存模型"></a>Java内存模型</h1><h2 id="一、什么是内存模型？"><a href="#一、什么是内存模型？" class="headerlink" title="一、什么是内存模型？"></a>一、什么是内存模型？</h2><p>缓存一致性问题：</p>
+<ul>
+<li>在多处理器系统中，每个处理器都有自己的高速缓存，而它们又共享同一主内存（Main Memory）</li>
+<li>当多处理器对同一块主内存区域进行操作时，可能会导致各自的缓存数据不一致，这就是缓存一致性问题</li>
+</ul>
+<span id="more"></span>
+
+<p>内存模型：</p>
+<ul>
+<li>内存模型，是指在特定的操作协议下，对特定的内存或缓存进行读写访问的抽象过程</li>
+<li>内存模型，定义了如何以一种安全可靠的方式去读写访问内存或缓存</li>
+<li>简答来讲，内存模型规定了什么时候读入数据、什么时候写入数据、读写的顺序的等内存访问的问题</li>
+</ul>
+<p>缓存一致性协议: </p>
+<ul>
+<li>为了解决缓存一致性问题，内存模型就需要引入一些缓存一致性协议，比如 MSI、MESI、MOSI 等</li>
+<li>缓存一致性协议，并不是针对某种内存模型，而是一种通用的缓存同步规范</li>
+<li>Java 内存模型，是 JVM 定义的一个内存模型，使用的缓存一致性协议是 MESI 协议</li>
+</ul>
+<h2 id="二、为什么要有内存模型？"><a href="#二、为什么要有内存模型？" class="headerlink" title="二、为什么要有内存模型？"></a>二、为什么要有内存模型？</h2><p>定义 Java 内存模型的目的：</p>
+<ul>
+<li>屏蔽各种硬件和操作系统的内存访问差异，以实现让 Java 程序在各种平台下都能达到一致的内存访问效果</li>
+</ul>
+<p>定义Java内存模型的好处：</p>
+<ul>
+<li>Java 内存模型统一了底层不同架构平台上内存模型的接口</li>
+<li>程序无需关注运行平台的差异，只需要关注 Java 内存模型提供了怎么样的内存保证</li>
+<li>程序不用去考虑底层访问的性能问题，由 JVM 负责去优化，JVM 会根据硬件的特性去优化执行速度</li>
+</ul>
+<p>比如说，Java 内存模型保证了 volatile 变量的写入是对所有线程可见的。</p>
+<p>程序员只需知道 volatile 变量是所有线程可见的即可，至于内存模型底层是怎么实现的，用的时候无需了解。</p>
+<h2 id="三、Java-内存模型的设计"><a href="#三、Java-内存模型的设计" class="headerlink" title="三、Java 内存模型的设计"></a>三、Java 内存模型的设计</h2><h3 id="3-1-内存层次划分"><a href="#3-1-内存层次划分" class="headerlink" title="3.1 内存层次划分"></a>3.1 内存层次划分</h3><p>内存层次：</p>
+<ul>
+<li>主内存（Main Memory）：主内存只有一个，所有变量数据都存储在主内存中</li>
+<li>工作内存（Working Memory）：每条线程都有自己的工作内存，使用的变量都是主内存变量的一份拷贝</li>
+</ul>
+<p>内存操作：</p>
+<ul>
+<li>线程对变量的所有操作（读取、赋值等）都是在自己的工作内存中进行</li>
+<li>不同线程之间不能直接访问对方工作内存中的变量</li>
+<li>线程之间的变量值共享，只能通过主内存来完成</li>
+</ul>
+<h3 id="3-2-内存间的交互操作"><a href="#3-2-内存间的交互操作" class="headerlink" title="3.2 内存间的交互操作"></a>3.2 内存间的交互操作</h3><p>内存交互问题：</p>
+<ul>
+<li>变量如何从主内存拷贝到工作内存？</li>
+<li>变量如何从工作内存同步回主内存？</li>
+</ul>
+<p>原子操作：</p>
+<ul>
+<li>lock（锁定）：作用于主内存变量，锁定主内存中的变量，防止其他线程访问</li>
+<li>read（读取）：作用于主内存变量，读取主内存中的变量</li>
+<li>load（加载）：作用于工作内存变量，将 read 拿到的变量，拷贝到工作内存中</li>
+<li>use（使用）：作用于工作内存变量，使用工作内存中的变量</li>
+<li>assign（赋值）：作用于工作内存变量，对工作内存的变量进行赋值</li>
+<li>store（存储）：作用于工作内存变量，将工作内存的变量传送到主内存</li>
+<li>write（写入）：作用于主内存变量，将 store 传送出来的变量写入主内存变量</li>
+<li>unlock（解锁）：作用于主内存变量，将主内存中变量的锁定状态解除</li>
+</ul>
+<p>执行规则：</p>
+<ul>
+<li>一个新的变量，只能在主内存中“诞生”</li>
+<li>不允许 read 和 load、store 和 write 操作之一单独出现</li>
+<li>一个变量在同一时刻只允许一条线程对其进行 lock 操作</li>
+<li>对一个变量执行 lock 操作，那将会清空工作内存中此变量的值</li>
+<li>对变量执行 unlock 操作前，必须先把此变量同步回主内存中</li>
+</ul>
+<h3 id="3-3-内存模型的并发设计"><a href="#3-3-内存模型的并发设计" class="headerlink" title="3.3 内存模型的并发设计"></a>3.3 内存模型的并发设计</h3><p>针对并发中出现的原子性、可见性、有序性问题，内存模型给了多种并发保证方式，来确保它们的安全性。</p>
+<h4 id="3-3-1-内存指令的并发保证"><a href="#3-3-1-内存指令的并发保证" class="headerlink" title="3.3.1 内存指令的并发保证"></a>3.3.1 内存指令的并发保证</h4><p>(1) 原子性：</p>
+<ul>
+<li>由 Java 内存模型直接保证的原子性操作包括 read、load、use、assign、store、write</li>
+<li>更大范围的原子性操作，Java 内存模型还提供了 lock 和 unlock 来满足</li>
+</ul>
+<p>(2) 可见性：</p>
+<ul>
+<li>Java 内存模型依赖于主内存作为传递媒介，来实现可见性：<ul>
+<li>写入变量后，将值同步刷新回主内存，比如通过 unlock 操作实现</li>
+<li>读取变量前，从主内存中获取最新值，比如通过 lock 操作实现</li>
+</ul>
+</li>
+<li>一个线程的操作结果对于另一个线程可见，那必然是经过了主内存的传递</li>
+</ul>
+<p>(3) 有序性：</p>
+<ul>
+<li>Java 内存模型是通过按需禁止重排序来避免有序性问题的</li>
+<li>通过底层指令集的某些指令来禁止重排序，Java 语言层面可以使用 volatile 关键字</li>
+</ul>
+<h4 id="3-3-2-关键字的并发保证"><a href="#3-3-2-关键字的并发保证" class="headerlink" title="3.3.2 关键字的并发保证"></a>3.3.2 关键字的并发保证</h4><p>Java 语言中的并发关键字包括 synchronized、volatile、final。</p>
+<p>(1) synchronized：</p>
+<ul>
+<li>可以保证原子性、可见性、有序性</li>
+<li>原子性：由“一个变量在同一时刻只允许一条线程对其进行 lock 操作”规则保证</li>
+<li>可见性：由“对变量执行 unlock 操作前，必须先把此变量同步回主内存中”规则保证</li>
+<li>有序性：由“一个变量在同一时刻只允许一条线程对其进行 lock 操作”规则保证，这条规则决定了持有同一个锁的两个同步块只能串行地进入</li>
+</ul>
+<p>(2) volatile：</p>
+<ul>
+<li>可以保证可见性和有序性</li>
+<li>可见性：volatile 变量保证了新值可以立即同步回主内存中，以及每次使用前立即从主内存中刷新</li>
+<li>有序性：volatile 关键字本身设计就包含了禁止指令重排序地语义</li>
+</ul>
+<p>(3) final：</p>
+<ul>
+<li>可以保证可见性</li>
+<li>可见性：被 final 修饰的字段，在构造器中一旦正确安全初始化完成后（安全发布），就保证了它的可见性</li>
+</ul>
+<p>并发关键字可以让程序自己选择是否要控制可见性和有序性。</p>
+<h4 id="3-3-3-先行发生原则（happens-before）的并发保证"><a href="#3-3-3-先行发生原则（happens-before）的并发保证" class="headerlink" title="3.3.3 先行发生原则（happens-before）的并发保证"></a>3.3.3 先行发生原则（happens-before）的并发保证</h4><p>Java 内存模型为了保证可见性和有序性，规定了一种先行发生原则（happens-before）。</p>
+<p>先行发生原则定义：</p>
+<ul>
+<li>想要保证执行操作 B 的线程，能够看到执行操作 A 的结果，A 和 B 必须满足 Happen-Before 原则</li>
+<li>如果操作 A 发生于操作 B 之前，那么操作 A 产生的“影响”就能被执行操作 B 的线程所观察到</li>
+<li>其中“影响”包括：修改了内存中共享变量的值、发送了消息、调用了方法等</li>
+</ul>
+<p>先行发生原则特点：</p>
+<ul>
+<li>操作 A 先行发生于操作 B，这里先行是指时间顺序上的先行发生</li>
+<li>前一个操作的“影响”对后续操作是可见的。比如修改了内存中共享变量的值</li>
+</ul>
+<p>先行发生规则：</p>
+<ul>
+<li>程序次序规则（Program Order Rule）：一个线程内，保证程序语义的串行性</li>
+<li>管程锁定规则（Monitor Lock Rule）：一个 unlock 操作先行发生于后面对同一个锁的 lock 操作（必须是同一个锁）</li>
+<li>volatile 变量规则（Volatile Variable Rule）：对一个 volatile 变量，对于它的写操作先行发生于后面对它的读操作</li>
+<li>线程启动规则（Thread Start Rule）：Thread 对象的 start() 方法先行发生于此线程的每一个动作</li>
+<li>线程终止规则（Thread Termination Rule）：线程中的所有操作，都先行于对于此线程的终止检测</li>
+<li>线程中断规则（Thread Interruption Rule）：对线程 interrupt() 方法的调用先行发生于对此线程的中断检测</li>
+<li>对象终结规则（Object Termination Rule）：对象的初始化完成（构造函数执行结束）先行发生于它的 finallize() 方法的开始</li>
+<li>传递性规则（Transitivity Rule）：如果 A 先行于 B，B 先行于 C，那么 A 先行于 C</li>
+</ul>
+<p>举几个例子：</p>
+<p>(1) 管程锁定规则</p>
+<p>管程锁定规则，规定了 unlock 操作先行发生于 lock 操作。</p>
+<p>也就是说，上一个 unlock 操作之前产生的“影响”，对于下一个 lock 操作是可见的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 线程 A</span></span><br><span class="line"><span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123; <span class="comment">// 此处自动加锁 lock</span></span><br><span class="line">  <span class="comment">// count 是共享变量</span></span><br><span class="line">  <span class="keyword">this</span>.count = <span class="number">1</span>;</span><br><span class="line">&#125; <span class="comment">// 此处自动解锁 unlock</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 线程 B </span></span><br><span class="line"><span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123; <span class="comment">// 此处会执行 lock 操作</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.count == <span class="number">1</span>) &#123;</span><br><span class="line">      <span class="comment">// 管程锁定规则可以确保看到 count 变量的值</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125; <span class="comment">// 此处会执行 unlock 操作</span></span><br></pre></td></tr></table></figure>
+
+<p>假设线程 A 先拿到锁，对 count 变量进行了修改，得到 count = 1，然后执行 unlock 操作退出加锁区域。</p>
+<p>接着线程 B 再执行 lock 操作去获取锁，线程 A 的 unlock 操作先于线程 B 的 lock 操作执行。</p>
+<p>依据管程锁定规则，那么线程 B 就能看到线程 A 的修改，也就是线程 B 内可以看到 count = 1。</p>
+<p>(2) 线程启动规则</p>
+<p>线程启动规则，规定了 Thread 对象的 start() 方法先行发生于此线程的每一个动作。</p>
+<p>也就是说，在 Thread 对象的 start() 方法执行前所产生的“影响”，线程内都是可见的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">Thread B = <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">  <span class="comment">// 主线程调用B.start()之前</span></span><br><span class="line">  <span class="comment">// 所有对共享变量的修改，此处皆可见</span></span><br><span class="line">  <span class="keyword">if</span> (count == <span class="number">1</span>) &#123;</span><br><span class="line">      <span class="comment">// 线程启动规则可以保证能进入到这里</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对共享变量var修改</span></span><br><span class="line">count = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// count &gt; 0 是为了确保 count = 1 在 B.start(); 之前执行（程序次序规则）</span></span><br><span class="line"><span class="keyword">if</span> (count &gt; <span class="number">0</span>) &#123;</span><br><span class="line">  <span class="comment">// 主线程启动子线程</span></span><br><span class="line">  B.start();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>主线程在启动子线程 B 的 start() 方法前的操作，即 count = 1，对于线程 B 内而言，是可见的。</p>
+<p>也就是，主线程对 count 的修改，先行于线程 B 的 start() 方法，那么线程 B 内部就可以看到修改的结果。</p>
+<h4 id="3-3-4-初始化安全性的并发保证"><a href="#3-3-4-初始化安全性的并发保证" class="headerlink" title="3.3.4 初始化安全性的并发保证"></a>3.3.4 初始化安全性的并发保证</h4><p>内存模型还提供了一些在对象初始化方面的并发保证：</p>
+<ul>
+<li>静态初始化器，可以保证对所有线程具有可见性</li>
+<li>对于被正确构造的对象，所有线程都能看到构造函数给 final 域设置的值，包括 final 域引用对象内可达的值</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SafeStates</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Object object = <span class="keyword">new</span> Object();</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, String&gt; states;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SafeStates</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        states = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        states.put(<span class="string">&quot;1&quot;</span>, <span class="string">&quot;a&quot;</span>);</span><br><span class="line">        states.put(<span class="string">&quot;2&quot;</span>, <span class="string">&quot;b&quot;</span>);</span><br><span class="line">        states.put(<span class="string">&quot;3&quot;</span>, <span class="string">&quot;c&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也就是说，由 SafeStates 创建的对象，它里面的 object 和 states，对于所有线程而言，都是可见的。</p>
+<p>而且，states 里面的值 <code>1</code>、<code>2</code>、<code>3</code> 对所有线程也是可见的。</p>
+<p>但是，初始化安全性的保证，只保证对象在初始化阶段是安全可见的。</p>
+<p>如果后面改变的了对象的值，比如在构造函数外执行 <code>state.put(&quot;4&quot;, &quot;d&quot;)</code>，这个值的可见性就无法保证，必须采用同步。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" rel="tag"># 并发编程</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/lang/java/core/concurrency/16_01_%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98%E6%9D%A5%E6%BA%90/" rel="prev" title="16_01_并发问题来源">
+      <i class="fa fa-chevron-left"></i> 16_01_并发问题来源
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/lang/java/core/concurrency/16_03_Happen-Before%E5%8E%9F%E5%88%99%E7%9A%84%E5%80%9F%E5%8A%A9/" rel="next" title="16_03_Happen-Before原则的借助">
+      16_03_Happen-Before原则的借助 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="nav-text">Java内存模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AF%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%EF%BC%9F"><span class="nav-text">一、什么是内存模型？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%9C%89%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%EF%BC%9F"><span class="nav-text">二、为什么要有内存模型？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81Java-%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="nav-text">三、Java 内存模型的设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E5%86%85%E5%AD%98%E5%B1%82%E6%AC%A1%E5%88%92%E5%88%86"><span class="nav-text">3.1 内存层次划分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E5%86%85%E5%AD%98%E9%97%B4%E7%9A%84%E4%BA%A4%E4%BA%92%E6%93%8D%E4%BD%9C"><span class="nav-text">3.2 内存间的交互操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%B6%E5%8F%91%E8%AE%BE%E8%AE%A1"><span class="nav-text">3.3 内存模型的并发设计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-1-%E5%86%85%E5%AD%98%E6%8C%87%E4%BB%A4%E7%9A%84%E5%B9%B6%E5%8F%91%E4%BF%9D%E8%AF%81"><span class="nav-text">3.3.1 内存指令的并发保证</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-2-%E5%85%B3%E9%94%AE%E5%AD%97%E7%9A%84%E5%B9%B6%E5%8F%91%E4%BF%9D%E8%AF%81"><span class="nav-text">3.3.2 关键字的并发保证</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-3-%E5%85%88%E8%A1%8C%E5%8F%91%E7%94%9F%E5%8E%9F%E5%88%99%EF%BC%88happens-before%EF%BC%89%E7%9A%84%E5%B9%B6%E5%8F%91%E4%BF%9D%E8%AF%81"><span class="nav-text">3.3.3 先行发生原则（happens-before）的并发保证</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-4-%E5%88%9D%E5%A7%8B%E5%8C%96%E5%AE%89%E5%85%A8%E6%80%A7%E7%9A%84%E5%B9%B6%E5%8F%91%E4%BF%9D%E8%AF%81"><span class="nav-text">3.3.4 初始化安全性的并发保证</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jiaduo"
+      src="/images/lufei.jpeg">
+  <p class="site-author-name" itemprop="name">jiaduo</p>
+  <div class="site-description" itemprop="description">不积跬步，无以至千里</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">80</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021/08 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiaduo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">354k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:22</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

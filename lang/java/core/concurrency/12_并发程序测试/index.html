@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="并发程序测试一、并发程序测试1.1 并发测试的挑战 潜在错误的发生具有不确定性，是随机的  1.2 并发测试的类型1.2.1 安全性测试 安全性：不发生任何错误的行为 安全性测试：通常采用测试不变性条件和后验条件的形式，即判断某个类的行为在并发测试下，其状态是否与其规范一致">
+<meta property="og:type" content="article">
+<meta property="og:title" content="12_并发程序测试">
+<meta property="og:url" content="http://example.com/lang/java/core/concurrency/12_%E5%B9%B6%E5%8F%91%E7%A8%8B%E5%BA%8F%E6%B5%8B%E8%AF%95/index.html">
+<meta property="og:site_name" content="Strive">
+<meta property="og:description" content="并发程序测试一、并发程序测试1.1 并发测试的挑战 潜在错误的发生具有不确定性，是随机的  1.2 并发测试的类型1.2.1 安全性测试 安全性：不发生任何错误的行为 安全性测试：通常采用测试不变性条件和后验条件的形式，即判断某个类的行为在并发测试下，其状态是否与其规范一致">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-15T03:49:21.000Z">
+<meta property="article:modified_time" content="2022-05-15T03:48:32.593Z">
+<meta property="article:author" content="jiaduo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="并发编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/lang/java/core/concurrency/12_%E5%B9%B6%E5%8F%91%E7%A8%8B%E5%BA%8F%E6%B5%8B%E8%AF%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>12_并发程序测试 | Strive</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Strive</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Rome was not built in one day</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/core/concurrency/12_%E5%B9%B6%E5%8F%91%E7%A8%8B%E5%BA%8F%E6%B5%8B%E8%AF%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          12_并发程序测试
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-05-15 11:49:21 / 修改时间：11:48:32" itemprop="dateCreated datePublished" datetime="2022-05-15T11:49:21+08:00">2022-05-15</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="并发程序测试"><a href="#并发程序测试" class="headerlink" title="并发程序测试"></a>并发程序测试</h1><h2 id="一、并发程序测试"><a href="#一、并发程序测试" class="headerlink" title="一、并发程序测试"></a>一、并发程序测试</h2><h3 id="1-1-并发测试的挑战"><a href="#1-1-并发测试的挑战" class="headerlink" title="1.1 并发测试的挑战"></a>1.1 并发测试的挑战</h3><ul>
+<li>潜在错误的发生具有不确定性，是随机的</li>
+</ul>
+<h3 id="1-2-并发测试的类型"><a href="#1-2-并发测试的类型" class="headerlink" title="1.2 并发测试的类型"></a>1.2 并发测试的类型</h3><h3 id="1-2-1-安全性测试"><a href="#1-2-1-安全性测试" class="headerlink" title="1.2.1 安全性测试"></a>1.2.1 安全性测试</h3><ul>
+<li>安全性：不发生任何错误的行为</li>
+<li>安全性测试：通常采用测试不变性条件和后验条件的形式，即判断某个类的行为在并发测试下，其状态是否与其规范一致</li>
+</ul>
+<span id="more"></span>
+
+<h3 id="1-2-2-活跃性测试"><a href="#1-2-2-活跃性测试" class="headerlink" title="1.2.2 活跃性测试"></a>1.2.2 活跃性测试</h3><ul>
+<li>活跃性：某个“良好”的行为“终究”会发生</li>
+<li>活跃性测试与性能测试息息相关，活跃性测试比较难量化，所以常用性能测试替代</li>
+<li>性能测试可通过多个方面来衡量：<ul>
+<li>吞吐量：一组并发任务在已完成任务中所占的比例</li>
+<li>响应性（延迟）：请求从发出到完成所用的时间</li>
+<li>可伸缩性：在增加更多资源的情况下，吞吐量的提升情况</li>
+</ul>
+</li>
+</ul>
+<h2 id="二、正确性测试"><a href="#二、正确性测试" class="headerlink" title="二、正确性测试"></a>二、正确性测试</h2><h3 id="2-1-正确性测试的基本思路"><a href="#2-1-正确性测试的基本思路" class="headerlink" title="2.1 正确性测试的基本思路"></a>2.1 正确性测试的基本思路</h3><ul>
+<li>找出需要检查的不变性条件和后验条件</li>
+<li>为不变性条件和后验条件编写测试用例</li>
+<li>在编写测试用例时，不断探索发现新的测试情况</li>
+<li>为新的情况编写测试用例</li>
+</ul>
+<h3 id="2-2-常用的测试方法"><a href="#2-2-常用的测试方法" class="headerlink" title="2.2 常用的测试方法"></a>2.2 常用的测试方法</h3><h4 id="2-2-1-直接验证测试"><a href="#2-2-1-直接验证测试" class="headerlink" title="2.2.1 直接验证测试"></a>2.2.1 直接验证测试</h4><ul>
+<li>直接调用对象的对外接口方法，验证它的不变性条件和后验条件</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">testIsEmpty</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    assertTrue(list.isEmpty());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-2-回调钩子测试"><a href="#2-2-2-回调钩子测试" class="headerlink" title="2.2.2 回调钩子测试"></a>2.2.2 回调钩子测试</h4><ul>
+<li>有些对象拥有自己的一些生命周期，不同时期的状态有固定的规范</li>
+<li>比如线程的生命周期可以是：创建、启动、阻塞、结束</li>
+<li>可以在对象生命周期中添加一些钩子函数，在每个阶段调用测试方法，验证当时的状态是否正确</li>
+</ul>
+<h4 id="2-2-3-随机安全测试"><a href="#2-2-3-随机安全测试" class="headerlink" title="2.2.3 随机安全测试"></a>2.2.3 随机安全测试</h4><ul>
+<li>想要测试在不可预测的并发访问情况下，执行结果是否一直是安全正确的</li>
+<li>需要多次验证，并且每次验证应该是随机的，但是结果应该总是安全正确的</li>
+<li>随机性结果的验证，可以通过校验和计算函数来实现，即对入参和返回进行校验比较</li>
+<li>大多数随机生成器类都是线程安全的，使用它们会带来额外的同步开销，使用一些简单的随机生成器更好</li>
+</ul>
+<p>简单的随机数生成函数（基于 hashCode + nanoTime + xorShift）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">randomInt</span><span class="params">(Object object)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> xorShift(object.hashCode() * System.nanoTime());</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">xorShift</span><span class="params">(<span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">    y ^= (y &lt;&lt; <span class="number">6</span>);</span><br><span class="line">    y ^= (y &gt;&gt;&gt; <span class="number">21</span>);</span><br><span class="line">    y ^= (y &lt;&lt; <span class="number">7</span>);</span><br><span class="line">    <span class="keyword">return</span> y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="2-2-4-阻塞中断测试"><a href="#2-2-4-阻塞中断测试" class="headerlink" title="2.2.4 阻塞中断测试"></a>2.2.4 阻塞中断测试</h4><ul>
+<li>如果某个方法在特殊条件下进入了阻塞，那么只有当线程不再执行时，测试才是成功的</li>
+<li>测试阻塞方法的方式：<ul>
+<li>在一个单独线程中启动阻塞方法</li>
+<li>等待线程进入阻塞状态</li>
+<li>在另一个线程中调用中断，将阻塞线程中断唤醒</li>
+</ul>
+</li>
+<li>阻塞方法要求能够响应中断并返回</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">testBlock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    Thread t = <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 做某些阻塞操作...</span></span><br><span class="line">            fail();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        t.start();</span><br><span class="line">        <span class="comment">// 等待线程进入阻塞状态</span></span><br><span class="line">        Thread.sleep(LOCKUP_DETECT_TIMEOUT);</span><br><span class="line">        <span class="comment">// 中断阻塞线程</span></span><br><span class="line">        t.interrupt();</span><br><span class="line">        <span class="comment">// 等待线程结束</span></span><br><span class="line">        t.join(LOCKUP_DETECT_TIMEOUT);</span><br><span class="line">        <span class="comment">// 验证线程是否已经结束</span></span><br><span class="line">        assertTrue(t.isAlive());</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">        fail();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="2-2-5-资源管理测试"><a href="#2-2-5-资源管理测试" class="headerlink" title="2.2.5 资源管理测试"></a>2.2.5 资源管理测试</h4><ul>
+<li>对于任何持有或管理其他对象的对象，应该在不需要的时候释放和销毁它们的引用</li>
+<li>并发线程很多时，将会非常消耗资源，最终可能导致资源耗尽和应用程序故障失败</li>
+<li>为了防止资源耗尽，需要测试线程拥有的资源是否已经正确释放</li>
+<li>测试资源的占用和释放，可以采用一些分析工具，分析内存中的对象信息，比如堆中对象的垃圾回收情况</li>
+</ul>
+<h4 id="2-2-6-上下文切换测试"><a href="#2-2-6-上下文切换测试" class="headerlink" title="2.2.6 上下文切换测试"></a>2.2.6 上下文切换测试</h4><ul>
+<li>并发问题的来源，就是因为线程之间的资源竞争</li>
+<li>为了提高并发错误发生的可能性，可以提高线程之间的上下文切换频率</li>
+<li>可以通过使用 Thread.yield() 方法来产生更多的交替操作</li>
+</ul>
+<h2 id="三、性能测试"><a href="#三、性能测试" class="headerlink" title="三、性能测试"></a>三、性能测试</h2><h3 id="3-1-性能测试目的"><a href="#3-1-性能测试目的" class="headerlink" title="3.1 性能测试目的"></a>3.1 性能测试目的</h3><ul>
+<li>通过衡量测试用例的性能，反映出对象在应用程序中的实际用途，比如并发容器适用于高并发的情况</li>
+<li>根据测试结果，调整各种不同的限制参数，比如线程数量、缓存容量等</li>
+</ul>
+<h3 id="3-2-常用测试方法"><a href="#3-2-常用测试方法" class="headerlink" title="3.2 常用测试方法"></a>3.2 常用测试方法</h3><h4 id="3-2-1-计时功能测试"><a href="#3-2-1-计时功能测试" class="headerlink" title="3.2.1 计时功能测试"></a>3.2.1 计时功能测试</h4><ul>
+<li>性能最直接的方式，就是计算并发任务的完成时间</li>
+<li>所有并发任务总的完成时间、各个任务的完成时间、操作平均完成时间</li>
+<li>计时测试，可能需要用到闭锁（latch）、栅栏（Barrier）等方式来同时为各个任务计时</li>
+</ul>
+<h4 id="3-2-2-算法对比测试"><a href="#3-2-2-算法对比测试" class="headerlink" title="3.2.2 算法对比测试"></a>3.2.2 算法对比测试</h4><ul>
+<li>通过对比其他的算法实现，来衡量当前算法的性能</li>
+<li>比如对比同步容器和并发容器的性能，就能明显看出各自的性能差异</li>
+</ul>
+<h4 id="3-2-3-稳定性测试"><a href="#3-2-3-稳定性测试" class="headerlink" title="3.2.3 稳定性测试"></a>3.2.3 稳定性测试</h4><ul>
+<li>除了任务完成的速度，还应该测试任务在各种情况下的稳定性</li>
+<li>比如，算法 A 的完成时间在 10ms ~ 200ms 之间，算法 B 的完成时间在 70ms ~ 100ms 之间，就说明算法 B 更具稳定性</li>
+<li>有时候，稳定性比速度更具有价值，所以应视情况而定</li>
+</ul>
+<h2 id="四、并发测试的陷阱"><a href="#四、并发测试的陷阱" class="headerlink" title="四、并发测试的陷阱"></a>四、并发测试的陷阱</h2><h3 id="4-1-垃圾回收"><a href="#4-1-垃圾回收" class="headerlink" title="4.1 垃圾回收"></a>4.1 垃圾回收</h3><ul>
+<li>垃圾回收的执行无法预测，可以在任何时刻运行，测试不应该考虑垃圾回收的触发时机</li>
+<li>防止垃圾回收造成测试偏差：<ul>
+<li>无垃圾回收：确保垃圾回收不会执行（通过打印gc日志查看）</li>
+<li>平均垃圾回收：确保垃圾回收多次执行，基本平均到每次测试中，减少误差</li>
+</ul>
+</li>
+<li>平均垃圾回收策略，在实际环境中的表现会更好</li>
+</ul>
+<h3 id="4-2-动态编译"><a href="#4-2-动态编译" class="headerlink" title="4.2 动态编译"></a>4.2 动态编译</h3><ul>
+<li>通常情况，JVM 都是通过解释字节码的方式来运行程序</li>
+<li>但是如果某个方法频繁调用，JVM 的动态编译器会直接将方法编译为机器代码，后面直接就运行机器代码，不再解释字节码运行了</li>
+<li>在某些情况下，动态编译执行还可能回退回解释执行</li>
+<li>动态编译具有更好的性能，但是这会对性能测试造成一定的影响</li>
+<li>避免动态编译影响的方式：<ul>
+<li>避免动态编译：测试应具有更普遍的随机性，避免动态编译的触发</li>
+<li>错开动态编辑：等到动态编译之后，再开始测试性能</li>
+</ul>
+</li>
+<li>如果动态编译不可避免，那么性能测试就应该延迟到等动态编译完成后再开始</li>
+</ul>
+<h3 id="4-3-针对性优化"><a href="#4-3-针对性优化" class="headerlink" title="4.3 针对性优化"></a>4.3 针对性优化</h3><ul>
+<li>JVM 会根据实际的执行过程，来生成更优的代码</li>
+<li>也就是说，同一套代码，在不同环境下执行，被 JVM 优化后的代码可能会有不同</li>
+<li>测试应覆盖执行代码的所有分支情况，避免 JVM 针对某种情况进行针对性优化</li>
+<li>比如，如果执行某个方法时，一直都是只执行某条代码分支，多次执行以后，JVM 有可能会针对它进行代码优化</li>
+</ul>
+<h3 id="4-4-无用代码的消除"><a href="#4-4-无用代码的消除" class="headerlink" title="4.4 无用代码的消除"></a>4.4 无用代码的消除</h3><ul>
+<li>优化编译器，可能会消除对最终结果没有任何影响的无用代码</li>
+<li>测试代码中，有些代码虽然不影响最终的结果，但也是必要的，它不应该被优化器给优化掉</li>
+<li>可以通过查看机器代码，来验证测试代码是否被优化了</li>
+<li>避免无用代码被优化掉的小技巧：使用对象的 hashCode 与任意值（如 nanoTime）比较</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (object.hashCode() == System.nanoTime()) &#123;</span><br><span class="line">    <span class="comment">// 输出一个无用的消息</span></span><br><span class="line">    System.out.println(<span class="string">&quot; &quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="4-5-不真实竞争"><a href="#4-5-不真实竞争" class="headerlink" title="4.5 不真实竞争"></a>4.5 不真实竞争</h3><ul>
+<li>测试程序，应该与实际使用相适应，否则测试结果就会显得不真实，毫无意义</li>
+<li>如果实际使用中，任务都是用于计算密集型的，那么测试程序应该是计算密集型的</li>
+</ul>
+<h2 id="五、其他测试方法"><a href="#五、其他测试方法" class="headerlink" title="五、其他测试方法"></a>五、其他测试方法</h2><h3 id="5-1-代码审查"><a href="#5-1-代码审查" class="headerlink" title="5.1 代码审查"></a>5.1 代码审查</h3><ul>
+<li>并发专家能够比大多数测试程序更高效地发现一些竞争问题（毕竟测试代码也是人写的）</li>
+<li>通过找出常见的设计性问题，还可以提高代码的质量</li>
+<li>可以提前发现问题，降低后期维护的成本和风险</li>
+</ul>
+<h3 id="5-2-静态代码分析"><a href="#5-2-静态代码分析" class="headerlink" title="5.2 静态代码分析"></a>5.2 静态代码分析</h3><ul>
+<li>一些代码扫描工具（如 findBug），可以自动发现一些常见的代码错误</li>
+<li>不一致的同步：加锁对象不一致，导致加锁无用</li>
+<li>未释放的锁：锁释放没有放 finally 块中，异常时可能导致锁永远无法释放</li>
+<li>调用 Thread.run()：不要调用 Thread 的 run() 方法，而是调用 start() 方法</li>
+<li>双重校验锁：错误的习惯用法，写不好就会出现一堆问题</li>
+<li>Lock 的误用：Lock 并不是作为同步块来使用的</li>
+<li>自旋循环：自旋等待不加 volatile 可能会导致 CPU 无限高负载，闭锁和条件等待通常是一种更好的方式</li>
+</ul>
+<h3 id="5-3-面向方面技术"><a href="#5-3-面向方面技术" class="headerlink" title="5.3 面向方面技术"></a>5.3 面向方面技术</h3><ul>
+<li>通过切面编程，去验证在各个阶段的状态和线程</li>
+<li>并发领域的切面技术还不够成熟，作用有限</li>
+</ul>
+<h3 id="5-4-分析与监测工具"><a href="#5-4-分析与监测工具" class="headerlink" title="5.4 分析与监测工具"></a>5.4 分析与监测工具</h3><ul>
+<li>存在一些分析工具，可以给出程序内部的详细执行信息</li>
+<li>比如线程状态、线程堆栈、线程锁对象、线程等待、死锁分析等</li>
+<li>分析工具通常采用侵入式实现，有可能会对程序的执行时序和行为产生较大的影响</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" rel="tag"># 并发编程</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/lang/java/core/concurrency/11_%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98/" rel="prev" title="11_性能问题">
+      <i class="fa fa-chevron-left"></i> 11_性能问题
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/lang/java/core/concurrency/13_%E6%98%BE%E5%BC%8F%E9%94%81/" rel="next" title="13_显式锁">
+      13_显式锁 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E7%A8%8B%E5%BA%8F%E6%B5%8B%E8%AF%95"><span class="nav-text">并发程序测试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%B9%B6%E5%8F%91%E7%A8%8B%E5%BA%8F%E6%B5%8B%E8%AF%95"><span class="nav-text">一、并发程序测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E5%B9%B6%E5%8F%91%E6%B5%8B%E8%AF%95%E7%9A%84%E6%8C%91%E6%88%98"><span class="nav-text">1.1 并发测试的挑战</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E5%B9%B6%E5%8F%91%E6%B5%8B%E8%AF%95%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="nav-text">1.2 并发测试的类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-1-%E5%AE%89%E5%85%A8%E6%80%A7%E6%B5%8B%E8%AF%95"><span class="nav-text">1.2.1 安全性测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-2-%E6%B4%BB%E8%B7%83%E6%80%A7%E6%B5%8B%E8%AF%95"><span class="nav-text">1.2.2 活跃性测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%AD%A3%E7%A1%AE%E6%80%A7%E6%B5%8B%E8%AF%95"><span class="nav-text">二、正确性测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E6%AD%A3%E7%A1%AE%E6%80%A7%E6%B5%8B%E8%AF%95%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF"><span class="nav-text">2.1 正确性测试的基本思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E5%B8%B8%E7%94%A8%E7%9A%84%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95"><span class="nav-text">2.2 常用的测试方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-1-%E7%9B%B4%E6%8E%A5%E9%AA%8C%E8%AF%81%E6%B5%8B%E8%AF%95"><span class="nav-text">2.2.1 直接验证测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-2-%E5%9B%9E%E8%B0%83%E9%92%A9%E5%AD%90%E6%B5%8B%E8%AF%95"><span class="nav-text">2.2.2 回调钩子测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-3-%E9%9A%8F%E6%9C%BA%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95"><span class="nav-text">2.2.3 随机安全测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-4-%E9%98%BB%E5%A1%9E%E4%B8%AD%E6%96%AD%E6%B5%8B%E8%AF%95"><span class="nav-text">2.2.4 阻塞中断测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-5-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E6%B5%8B%E8%AF%95"><span class="nav-text">2.2.5 资源管理测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-6-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2%E6%B5%8B%E8%AF%95"><span class="nav-text">2.2.6 上下文切换测试</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95"><span class="nav-text">三、性能测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E7%9B%AE%E7%9A%84"><span class="nav-text">3.1 性能测试目的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E5%B8%B8%E7%94%A8%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95"><span class="nav-text">3.2 常用测试方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-1-%E8%AE%A1%E6%97%B6%E5%8A%9F%E8%83%BD%E6%B5%8B%E8%AF%95"><span class="nav-text">3.2.1 计时功能测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-2-%E7%AE%97%E6%B3%95%E5%AF%B9%E6%AF%94%E6%B5%8B%E8%AF%95"><span class="nav-text">3.2.2 算法对比测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-3-%E7%A8%B3%E5%AE%9A%E6%80%A7%E6%B5%8B%E8%AF%95"><span class="nav-text">3.2.3 稳定性测试</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E5%B9%B6%E5%8F%91%E6%B5%8B%E8%AF%95%E7%9A%84%E9%99%B7%E9%98%B1"><span class="nav-text">四、并发测试的陷阱</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6"><span class="nav-text">4.1 垃圾回收</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E5%8A%A8%E6%80%81%E7%BC%96%E8%AF%91"><span class="nav-text">4.2 动态编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E9%92%88%E5%AF%B9%E6%80%A7%E4%BC%98%E5%8C%96"><span class="nav-text">4.3 针对性优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E6%97%A0%E7%94%A8%E4%BB%A3%E7%A0%81%E7%9A%84%E6%B6%88%E9%99%A4"><span class="nav-text">4.4 无用代码的消除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-5-%E4%B8%8D%E7%9C%9F%E5%AE%9E%E7%AB%9E%E4%BA%89"><span class="nav-text">4.5 不真实竞争</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E5%85%B6%E4%BB%96%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95"><span class="nav-text">五、其他测试方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E4%BB%A3%E7%A0%81%E5%AE%A1%E6%9F%A5"><span class="nav-text">5.1 代码审查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-%E9%9D%99%E6%80%81%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-text">5.2 静态代码分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-%E9%9D%A2%E5%90%91%E6%96%B9%E9%9D%A2%E6%8A%80%E6%9C%AF"><span class="nav-text">5.3 面向方面技术</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-4-%E5%88%86%E6%9E%90%E4%B8%8E%E7%9B%91%E6%B5%8B%E5%B7%A5%E5%85%B7"><span class="nav-text">5.4 分析与监测工具</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jiaduo"
+      src="/images/lufei.jpeg">
+  <p class="site-author-name" itemprop="name">jiaduo</p>
+  <div class="site-description" itemprop="description">不积跬步，无以至千里</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">80</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021/08 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiaduo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">354k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:22</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

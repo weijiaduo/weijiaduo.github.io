@@ -164,7 +164,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/design_pattern/builder/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/core/concurrency/03_%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%85%B1%E4%BA%AB/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/lufei.jpeg">
@@ -178,7 +178,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/design_pattern/builder/" class="post-title-link" itemprop="url">建造者模式</a>
+            <a href="/lang/java/core/concurrency/03_%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%85%B1%E4%BA%AB/" class="post-title-link" itemprop="url">03_对象的共享</a>
         </h2>
 
         <div class="post-meta">
@@ -187,16 +187,357 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2022-01-15 01:43:10" itemprop="dateCreated datePublished" datetime="2022-01-15T01:43:10+08:00">2022-01-15</time>
+              <time title="创建时间：2022-05-15 11:14:21 / 修改时间：11:42:14" itemprop="dateCreated datePublished" datetime="2022-05-15T11:14:21+08:00">2022-05-15</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-01-16 23:28:46" itemprop="dateModified" datetime="2022-01-16T23:28:46+08:00">2022-01-16</time>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
               </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="对象的共享"><a href="#对象的共享" class="headerlink" title="对象的共享"></a>对象的共享</h1><h2 id="一、共享对象可能存在的问题？"><a href="#一、共享对象可能存在的问题？" class="headerlink" title="一、共享对象可能存在的问题？"></a>一、共享对象可能存在的问题？</h2><ul>
+<li>多个线程同时访问或修改共享对象时，可能会出现冲突，即原子性问题</li>
+<li>一个线程修改对象状态后，其他线程未必能够看到发生的变化，即内存可见性</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/lang/java/core/concurrency/03_%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%85%B1%E4%BA%AB/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/core/concurrency/02_%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/lang/java/core/concurrency/02_%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%A7/" class="post-title-link" itemprop="url">02_线程安全性</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-05-15 11:13:21 / 修改时间：11:40:29" itemprop="dateCreated datePublished" datetime="2022-05-15T11:13:21+08:00">2022-05-15</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>592</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="线程安全性"><a href="#线程安全性" class="headerlink" title="线程安全性"></a>线程安全性</h1><h2 id="一、什么是线程安全？"><a href="#一、什么是线程安全？" class="headerlink" title="一、什么是线程安全？"></a>一、什么是线程安全？</h2><ul>
+<li><p>当多个线程访问某个类时，这个类始终能表现出正确的行为，就称这个类是线程安全的</p>
+</li>
+<li><p>线程安全类，一般都封装了必要的同步机制，使用时无需额外进行同步</p>
+</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/lang/java/core/concurrency/02_%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%A7/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/jvm/selfjvm/05_instruction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/lang/java/jvm/selfjvm/05_instruction/" class="post-title-link" itemprop="url">05_指令集和解释器</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-02-21 00:13:21 / 修改时间：00:05:17" itemprop="dateCreated datePublished" datetime="2022-02-21T00:13:21+08:00">2022-02-21</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>28k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>26 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="指令集和解释器"><a href="#指令集和解释器" class="headerlink" title="指令集和解释器"></a>指令集和解释器</h1><p>Java虚拟机顾名思义，就是一台虚拟的机器，而字节码（bytecode）就是运行在这台虚拟机器上的机器码。</p>
+<h2 id="一、字节码指令"><a href="#一、字节码指令" class="headerlink" title="一、字节码指令"></a>一、字节码指令</h2><h3 id="1-1-指令结构"><a href="#1-1-指令结构" class="headerlink" title="1.1 指令结构"></a>1.1 指令结构</h3><p>字节码中存放编码后的 Java 虚拟机指令：</p>
+<ul>
+<li><p>每条指令都以一个单字节的操作码（opcode）开头。</p>
+</li>
+<li><p>由于只使用一字节表示操作码，Java 虚拟机最多只能支持 256 条指令。</p>
+</li>
+</ul>
+<p>到第八版为止，Java 虚拟机规范已经定义了205条指令，操作码分别是<code>0(0x00)</code>到 <code>202(0xCA)</code>、<code>254(0xFE)</code>和 <code>255(0xFF)</code>。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/lang/java/jvm/selfjvm/05_instruction/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/design_pattern/mediator/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/design_pattern/mediator/" class="post-title-link" itemprop="url">中介者模式</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-01-24 00:16:10 / 修改时间：00:17:16" itemprop="dateCreated datePublished" datetime="2022-01-24T00:16:10+08:00">2022-01-24</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="中介者模式"><a href="#中介者模式" class="headerlink" title="中介者模式"></a>中介者模式</h1><h2 id="一、什么是中介者模式？"><a href="#一、什么是中介者模式？" class="headerlink" title="一、什么是中介者模式？"></a>一、什么是中介者模式？</h2><p>中介者模式（Mediator Design Pattern）：定义一个单独的（中介）对象，来封装一系列对象的交互。将这组对象之间的交互都委派给中介对象，来避免对象之间的直接交互。</p>
+<p>英文原文：</p>
+<blockquote>
+<p>Mediator pattern defines a separate (mediator) object that encapsulates the interaction between a set of objects and the objects delegate their interaction to a mediator object instead of interacting with each other directly.</p>
+</blockquote>
+<p>它有几个特点：</p>
+<ul>
+<li>一组对象之间存在相互交流的情况，也就是一种网状关系</li>
+<li>定义一个上帝（中介）对象，负责中转对象之间的交互，来避免对象之间的直接联系</li>
+<li>相当于加了个中间层转换，把网状关系变成了星型关系</li>
+</ul>
+<p>中介者模式，也称为调停模式，负责多个对象之间的互相沟通。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/design_pattern/mediator/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/design_pattern/memento/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/design_pattern/memento/" class="post-title-link" itemprop="url">备忘录模式</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-01-23 03:46:10 / 修改时间：03:47:14" itemprop="dateCreated datePublished" datetime="2022-01-23T03:46:10+08:00">2022-01-23</time>
+            </span>
 
           <br>
             <span class="post-meta-item" title="本文字数">
@@ -223,14 +564,17 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="建造者模式"><a href="#建造者模式" class="headerlink" title="建造者模式"></a>建造者模式</h1><h2 id="一、什么是建造者模式？"><a href="#一、什么是建造者模式？" class="headerlink" title="一、什么是建造者模式？"></a>一、什么是建造者模式？</h2><p>建造者设计模式（Builder Design Pattern），是指将一个复杂对象的构造与它的表示分离，使同样的构建过程可以创建不同的表示。</p>
+          <h1 id="备忘录模式"><a href="#备忘录模式" class="headerlink" title="备忘录模式"></a>备忘录模式</h1><h2 id="一、什么是备忘录模式？"><a href="#一、什么是备忘录模式？" class="headerlink" title="一、什么是备忘录模式？"></a>一、什么是备忘录模式？</h2><p>备忘录模式（Memento Desidn Pattern）：在不违背封装性原则的前提下，捕获一个对象的内部状态，并在对象之外保存，以便之后恢复对象为先前的状态。</p>
+<p>它的几个特点是：</p>
 <ul>
-<li>使用建造者模式的目的，就是为了解决复杂对象的构建</li>
+<li>要求不要违背封装性原则</li>
+<li>保存的是对象的内部状态，意味着对象外部不应该对保存的数据进行操作，而是假设不知道它的数据结构</li>
+<li>保存的数据，相当于快照，可以用于撤销恢复</li>
 </ul>
-<p>它将一个复杂的对象分解为多个简单的对象，然后一步一步构建起来。</p>
+<p>备忘录模式，也称为快照模式。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/design_pattern/builder/#more" rel="contents">
+              <a class="btn" href="/design_pattern/memento/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -254,7 +598,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/design_pattern/abstract_factory/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/design_pattern/iterator/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/lufei.jpeg">
@@ -268,7 +612,94 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/design_pattern/abstract_factory/" class="post-title-link" itemprop="url">抽象工厂模式</a>
+            <a href="/design_pattern/iterator/" class="post-title-link" itemprop="url">迭代器模式</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-01-21 02:37:10 / 修改时间：02:41:11" itemprop="dateCreated datePublished" datetime="2022-01-21T02:37:10+08:00">2022-01-21</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="迭代器模式"><a href="#迭代器模式" class="headerlink" title="迭代器模式"></a>迭代器模式</h1><h2 id="一、什么是迭代器模式？"><a href="#一、什么是迭代器模式？" class="headerlink" title="一、什么是迭代器模式？"></a>一、什么是迭代器模式？</h2><p>迭代器模式（Iterator Design Pattern）：提供一种方式来访问聚合里面的所有元素，而不暴露聚合对象的内部数据结构。</p>
+<p>迭代器模式，也称为游标模式，主要用于遍历数据集合。</p>
+<p>迭代器模式的几个特点：</p>
+<ul>
+<li>目的是为了遍历集合数据</li>
+<li>特点是可以避免集合的内部数据结构暴露，增加集合内部实现的灵活性</li>
+</ul>
+<p>迭代器是为了遍历集合数据，所以一个完整的迭代器，肯定是包括集合和迭代器2部分。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/design_pattern/iterator/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/design_pattern/chain/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/design_pattern/chain/" class="post-title-link" itemprop="url">职责链模式</a>
         </h2>
 
         <div class="post-meta">
@@ -278,15 +709,197 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2022-01-15 01:42:10" itemprop="dateCreated datePublished" datetime="2022-01-15T01:42:10+08:00">2022-01-15</time>
+              <time title="创建时间：2022-01-20 01:05:10" itemprop="dateCreated datePublished" datetime="2022-01-20T01:05:10+08:00">2022-01-20</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-01-16 23:28:46" itemprop="dateModified" datetime="2022-01-16T23:28:46+08:00">2022-01-16</time>
+                <time title="修改时间：2022-01-21 02:40:58" itemprop="dateModified" datetime="2022-01-21T02:40:58+08:00">2022-01-21</time>
               </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="职责链模式"><a href="#职责链模式" class="headerlink" title="职责链模式"></a>职责链模式</h1><h2 id="一、职责链模式是什么？"><a href="#一、职责链模式是什么？" class="headerlink" title="一、职责链模式是什么？"></a>一、职责链模式是什么？</h2><p>职责链模式（Chain of Responsibility Design Pattern）：将请求的发送和接收解耦，让多个接收者都有机会处理这个请求。将接收者串联起来，并沿着接收者链传递请求，直到某个接收者能够处理它为止。</p>
+<p>英语原文：</p>
+<blockquote>
+<p>Avoid coupling the sender of a request to its receiver by giving more than one object a chance to handle the request. Chain the receiving objects and pass the request along the chain until an object handles it.</p>
+</blockquote>
+<p>职责链的几个特点：</p>
+<ul>
+<li>存在多个接收者可以处理请求</li>
+<li>请求只需被某个接收者处理即可</li>
+<li>请求也可以被多个接收者处理</li>
+</ul>
+<p>职责链的目的在于，找到一个可以处理请求的接收者就好了。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/design_pattern/chain/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/design_pattern/strategy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/design_pattern/strategy/" class="post-title-link" itemprop="url">策略模式</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-01-19 01:48:10 / 修改时间：01:51:13" itemprop="dateCreated datePublished" datetime="2022-01-19T01:48:10+08:00">2022-01-19</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h1><h2 id="一、什么是策略模式？"><a href="#一、什么是策略模式？" class="headerlink" title="一、什么是策略模式？"></a>一、什么是策略模式？</h2><p>策略模式（Strategy Design Pattern）：定义一系列算法，并将算法封装起来，使得它们可以相互替换。策略模式可以使得算法独立于客户端（即使用算法的地方）。</p>
+<p>英语原文: </p>
+<blockquote>
+<p>Define a family of algorithms, encapsulate each one, and make them interchangeable. Strategy lets the algorithm vary independently from clients that use it.</p>
+</blockquote>
+<p>策略模式有几个特点：</p>
+<ul>
+<li>存在多种算法</li>
+<li>算法之间可以相互替换，说明它们返回结果的影响是一样的，只是算法内部实现不同</li>
+<li>策略独立于客户端，单独实现</li>
+</ul>
+<p>比如说，排序功能，排序的结果可能都是一样的，但是可以使用不同的算法，如选择排序、冒泡排序、快速排序等。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/design_pattern/strategy/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/design_pattern/bridge/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/design_pattern/bridge/" class="post-title-link" itemprop="url">桥接模式</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-01-17 23:01:10 / 修改时间：23:46:52" itemprop="dateCreated datePublished" datetime="2022-01-17T23:01:10+08:00">2022-01-17</time>
+            </span>
 
           <br>
             <span class="post-meta-item" title="本文字数">
@@ -313,11 +926,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="抽象工厂模式"><a href="#抽象工厂模式" class="headerlink" title="抽象工厂模式"></a>抽象工厂模式</h1><h2 id="一、什么是抽象工厂模式"><a href="#一、什么是抽象工厂模式" class="headerlink" title="一、什么是抽象工厂模式"></a>一、什么是抽象工厂模式</h2><p>抽象工厂（AbstractFactory）是一种为访问类提供一个创建一组相关或相互依赖对象的接口，且访问类无须指定所要产品的具体类就能得到同族的不同等级的产品的模式结构。</p>
-<p>抽象工厂模式是工厂方法模式的升级版本，工厂方法模式只生产“一个等级”的产品，而抽象工厂模式可生产“多个等级”的产品。</p>
+          <h1 id="桥接模式"><a href="#桥接模式" class="headerlink" title="桥接模式"></a>桥接模式</h1><h2 id="一、什么是桥接模式？"><a href="#一、什么是桥接模式？" class="headerlink" title="一、什么是桥接模式？"></a>一、什么是桥接模式？</h2><p>桥接模式（Bridge Design Pattern）:将抽象与实现解耦，让他们能够独立变化。</p>
+<p>或者，桥接模式就是将类的功能层次结构和类的实现层次结构分离开来，降低它们的耦合度。</p>
+<p>抽象，即类的功能层次结构，采用的是继承的方式。</p>
+<p>实现，即类的实现层次结构，采用的是组合的方式。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/design_pattern/abstract_factory/#more" rel="contents">
+              <a class="btn" href="/design_pattern/bridge/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -341,7 +956,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/design_pattern/factory_method/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/design_pattern/proxy/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/lufei.jpeg">
@@ -355,95 +970,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/design_pattern/factory_method/" class="post-title-link" itemprop="url">工厂方法模式</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-01-15 01:41:10" itemprop="dateCreated datePublished" datetime="2022-01-15T01:41:10+08:00">2022-01-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-01-16 23:28:46" itemprop="dateModified" datetime="2022-01-16T23:28:46+08:00">2022-01-16</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>1.7k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="工厂方法模式"><a href="#工厂方法模式" class="headerlink" title="工厂方法模式"></a>工厂方法模式</h1><h2 id="一、什么是工厂方法模式？"><a href="#一、什么是工厂方法模式？" class="headerlink" title="一、什么是工厂方法模式？"></a>一、什么是工厂方法模式？</h2><p>又称工厂模式、多态工厂模式和虚拟构造器模式，通过定义工厂父类负责定义创建对象的公共接口，而子类则负责生成具体的对象。</p>
-<p>即将类的实例化（具体产品的创建）延迟到工厂类的子类（具体工厂）中完成，由子类来决定应该实例化（创建）哪一个类。</p>
-<p>被创建的对象称为“产品”，把创建产品的对象称为“工厂”。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/design_pattern/factory_method/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/design_pattern/singleton/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/design_pattern/singleton/" class="post-title-link" itemprop="url">单例模式</a>
+            <a href="/design_pattern/proxy/" class="post-title-link" itemprop="url">代理模式</a>
         </h2>
 
         <div class="post-meta">
@@ -454,7 +981,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-01-15 01:40:10 / 修改时间：01:41:00" itemprop="dateCreated datePublished" datetime="2022-01-15T01:40:10+08:00">2022-01-15</time>
+              <time title="创建时间：2022-01-16 11:44:10 / 修改时间：23:28:46" itemprop="dateCreated datePublished" datetime="2022-01-16T11:44:10+08:00">2022-01-16</time>
             </span>
 
           <br>
@@ -482,544 +1009,17 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><h2 id="一、什么是单例模式？"><a href="#一、什么是单例模式？" class="headerlink" title="一、什么是单例模式？"></a>一、什么是单例模式？</h2><p>单例设计模式（Singleton Design Pattern）：指一个类只有一个实例，且该类能自行创建这个实例的一种模式。</p>
-<p>这个类就是一个单例类，这种设计模式就叫作单例设计模式，简称单例模式。</p>
-<p>单例模式有 3 个特点：</p>
-<ol>
-<li>单例类只有一个实例对象</li>
-<li>该单例对象必须由单例类自行创建</li>
-<li>单例类对外提供一个访问该单例的全局访问点</li>
-</ol>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/design_pattern/singleton/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/source/jdk8/collection/HashMap/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/lang/java/source/jdk8/collection/HashMap/" class="post-title-link" itemprop="url">HashMap</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-10-16 12:26:30" itemprop="dateCreated datePublished" datetime="2021-10-16T12:26:30+08:00">2021-10-16</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-01-15 10:17:18" itemprop="dateModified" datetime="2022-01-15T10:17:18+08:00">2022-01-15</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>21k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>19 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HashMap</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractMap</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">Map</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt;, <span class="title">Cloneable</span>, <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="二、实现"><a href="#二、实现" class="headerlink" title="二、实现"></a>二、实现</h2><h3 id="2-1-数据结构"><a href="#2-1-数据结构" class="headerlink" title="2.1 数据结构"></a>2.1 数据结构</h3><p>HashMap 的底层数据存储结构是“数组 + 链表 + 红黑树”，红黑树结构是 JDK8 之后进行的优化。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/lang/java/source/jdk8/collection/HashMap/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/core/basic/02_operators/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/lang/java/core/basic/02_operators/" class="post-title-link" itemprop="url">02_操作符</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-10-15 00:09:33 / 修改时间：00:10:38" itemprop="dateCreated datePublished" datetime="2021-10-15T00:09:33+08:00">2021-10-15</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>8.3k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>8 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="操作符"><a href="#操作符" class="headerlink" title="操作符"></a>操作符</h1><p>Java 中的操作符有很多，大概可以分成以下几种：</p>
+          <h1 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h1><h2 id="一、什么代理模式？"><a href="#一、什么代理模式？" class="headerlink" title="一、什么代理模式？"></a>一、什么代理模式？</h2><p>代理模式（Proxy Design Pattern）：在不改变原始类（被代理类）的情况下，对它进行功能的增强。</p>
+<p>代理模式有几个特点：</p>
 <ul>
-<li>关系操作符：&gt;、&lt;、&gt;=、&lt;=、==、!=</li>
-<li>逻辑操作符：!、&amp;、|、&amp;&amp;、||</li>
-<li>条件操作符：?:</li>
-<li>算术操作符：-、++、–、+、-、*、/、%</li>
-<li>位操作符：~、&amp;、|、^、&lt;&lt;、&gt;&gt;、&gt;&gt;&gt;</li>
-<li>赋值操作符：=、+=、-=、*=、/=、&amp;=、|=、^=、&lt;&lt;=、&gt;&gt;=、&gt;&gt;&gt;=</li>
+<li>不会改变原始类（被代理类）</li>
+<li>核心功能还是由原始类（被代理类）实现</li>
+<li>代理类只负责增强的那部分功能</li>
 </ul>
+<p>代理，就是帮别人做事情，核心工作还是由被代理人做，但是其他琐碎的事则可以交给代理人。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/lang/java/core/basic/02_operators/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/core/basic/01_types/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/lang/java/core/basic/01_types/" class="post-title-link" itemprop="url">01_基本类型</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-10-08 18:21:34" itemprop="dateCreated datePublished" datetime="2021-10-08T18:21:34+08:00">2021-10-08</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-10-15 00:10:15" itemprop="dateModified" datetime="2021-10-15T00:10:15+08:00">2021-10-15</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>2.9k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="基本类型"><a href="#基本类型" class="headerlink" title="基本类型"></a>基本类型</h1><h2 id="一、类型大小"><a href="#一、类型大小" class="headerlink" title="一、类型大小"></a>一、类型大小</h2><p>在 Java 中，通过 <code>new</code> 生成的对象数据是存储在“堆”中，而基本类型则是直接把“值”保存在栈中。</p>
-<p>Java 中每种基本类型所占用的存储空间大小都是确定的，不会随着机器硬件架构变化而变化。</p>
-<ul>
-<li>存储空间大小不变性，为Java的可移植性提供了很大的帮助</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/lang/java/core/basic/01_types/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/jvm/selfjvm/03_classfile/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/lang/java/jvm/selfjvm/03_classfile/" class="post-title-link" itemprop="url">03_解析class文件</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-10-08 09:10:21" itemprop="dateCreated datePublished" datetime="2021-10-08T09:10:21+08:00">2021-10-08</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-10-15 00:25:16" itemprop="dateModified" datetime="2021-10-15T00:25:16+08:00">2021-10-15</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>19k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>18 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="解析class文件"><a href="#解析class文件" class="headerlink" title="解析class文件"></a>解析class文件</h2><p>Java 虚拟机规范中所指的 class 文件，并非特指位于磁盘中的 .class 文件，而是泛指任何格式符合规范的 class 数据。它实际上可以通过网络下载，从数据库加载，甚至是在运行中直接生成等方式来获取 class 文件。</p>
-<ul>
-<li>构成 class 文件的基本数据单位是字节，可以把整个 class 文件当成一个字节流来处理</li>
-<li>数据由连续多个字节构成，这些数据在 class 文件中以大端（big-endian）方式存储</li>
-</ul>
-<p>为了描述 class 文件格式，Java 虚拟机规范定义了 u1、u2 和 u4 三种数据类型来表示1、2和4字节无符号整数。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/lang/java/jvm/selfjvm/03_classfile/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/jvm/selfjvm/02_classpath/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/lang/java/jvm/selfjvm/02_classpath/" class="post-title-link" itemprop="url">02_查找class文件</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-09-17 01:06:23 / 修改时间：01:24:27" itemprop="dateCreated datePublished" datetime="2021-09-17T01:06:23+08:00">2021-09-17</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>12k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>11 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="查找class文件"><a href="#查找class文件" class="headerlink" title="查找class文件"></a>查找class文件</h1><p>加载允许一个类，必须把它相关的依赖类也加载进来，比如父类、成员类等。</p>
-<p>Java虚拟机规范并没有规定去哪里寻找类，所以不同虚拟机可以采用不同的方法。</p>
-<h2 id="一、类加载路径"><a href="#一、类加载路径" class="headerlink" title="一、类加载路径"></a>一、类加载路径</h2><p>Oracle的Java虚拟机是根据类路径（classpath）来搜索类，按照搜索顺序可分为3类：</p>
-<ol>
-<li>启动类路径（bootstrasp classpath）：默认目录是 <code>jre\lib</code>，即Java标准库（大部分在rt.jar里）所在位置</li>
-<li>扩展类路径（extension classpath）：默认目录是 <code>jre\lib\ext</code>，即Java扩展机制的类所在位置</li>
-<li>用户类路径（user classpath）：默认当前目录，即自己实现的类、以及第三方类库所在位置</li>
-</ol>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/lang/java/jvm/selfjvm/02_classpath/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/jvm/selfjvm/01_cmd/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/lang/java/jvm/selfjvm/01_cmd/" class="post-title-link" itemprop="url">01_命令行工具</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-09-15 07:24:12 / 修改时间：08:06:04" itemprop="dateCreated datePublished" datetime="2021-09-15T07:24:12+08:00">2021-09-15</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>3.2k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="命令行工具"><a href="#命令行工具" class="headerlink" title="命令行工具"></a>命令行工具</h1><p>Java虚拟机启动时，需要指定类启动应用程序。</p>
-<p>但是Java虚拟机规范中并没有明确规定，怎么指定类启动应用程序，也就是主类（包含<code>main</code>方法的类）。</p>
-<p>Oracle的虚拟机实现是通过 java 命令来启动的，主类名由命令函参数指定。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">java [-options] class [args]</span><br><span class="line">java [-options] -jar jarfile [args]</span><br><span class="line">javaw [-options] class [args]</span><br><span class="line">javaw [-options] -jar jarfile [args]</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/lang/java/jvm/selfjvm/01_cmd/#more" rel="contents">
+              <a class="btn" href="/design_pattern/proxy/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1042,7 +1042,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1110,14 +1110,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">58</span>
+          <span class="site-state-item-count">80</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1153,12 +1153,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">284k</span>
+    <span title="站点总字数">354k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">4:18</span>
+    <span title="站点阅读时长">5:22</span>
 </div>
 
         

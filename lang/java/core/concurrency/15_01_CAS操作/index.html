@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="CAS 操作一、锁的劣势 采用独占的方式访问锁的守护变量 获取锁，存在挂起和恢复线程的问题，这些操作都比较耗时 等待锁时，线程不能做其他的事情 容易出现活跃性故障，比如死锁、活锁等 锁竞争激烈时，线程调度开销会非常大">
+<meta property="og:type" content="article">
+<meta property="og:title" content="15_01_CAS操作">
+<meta property="og:url" content="http://example.com/lang/java/core/concurrency/15_01_CAS%E6%93%8D%E4%BD%9C/index.html">
+<meta property="og:site_name" content="Strive">
+<meta property="og:description" content="CAS 操作一、锁的劣势 采用独占的方式访问锁的守护变量 获取锁，存在挂起和恢复线程的问题，这些操作都比较耗时 等待锁时，线程不能做其他的事情 容易出现活跃性故障，比如死锁、活锁等 锁竞争激烈时，线程调度开销会非常大">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-15T04:28:21.000Z">
+<meta property="article:modified_time" content="2022-05-15T03:49:48.077Z">
+<meta property="article:author" content="jiaduo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="并发编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/lang/java/core/concurrency/15_01_CAS%E6%93%8D%E4%BD%9C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>15_01_CAS操作 | Strive</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Strive</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Rome was not built in one day</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/core/concurrency/15_01_CAS%E6%93%8D%E4%BD%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          15_01_CAS操作
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-05-15 12:28:21 / 修改时间：11:49:48" itemprop="dateCreated datePublished" datetime="2022-05-15T12:28:21+08:00">2022-05-15</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="CAS-操作"><a href="#CAS-操作" class="headerlink" title="CAS 操作"></a>CAS 操作</h1><h2 id="一、锁的劣势"><a href="#一、锁的劣势" class="headerlink" title="一、锁的劣势"></a>一、锁的劣势</h2><ul>
+<li>采用独占的方式访问锁的守护变量</li>
+<li>获取锁，存在挂起和恢复线程的问题，这些操作都比较耗时</li>
+<li>等待锁时，线程不能做其他的事情</li>
+<li>容易出现活跃性故障，比如死锁、活锁等</li>
+<li>锁竞争激烈时，线程调度开销会非常大</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="二、CAS-操作"><a href="#二、CAS-操作" class="headerlink" title="二、CAS 操作"></a>二、CAS 操作</h2><h3 id="2-1-基本原理"><a href="#2-1-基本原理" class="headerlink" title="2.1 基本原理"></a>2.1 基本原理</h3><p>基本原理：</p>
+<ol>
+<li>CAS 包含3个操作数：内存原值 V，期望旧值 A，写入新值 B</li>
+<li>当且仅当 V == A 时，才能将 V 更新为 B</li>
+</ol>
+<p>简单地说，就是当 V == A 时，CAS 就认为没有其他线程修改过内存值 V，可以直接写入新值。</p>
+<ul>
+<li>当多线程竞争同一个 CAS 时，只有其中一个线程可以成功，其他线程均失败</li>
+</ul>
+<p>用代码模拟 CAS 操作大概如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimulatedCAS</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> value;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">int</span> <span class="title">get</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">int</span> <span class="title">compareAndSwap</span><span class="params">(<span class="keyword">int</span> expectValue, <span class="keyword">int</span> newValue)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> oldValue = value;</span><br><span class="line">        <span class="keyword">if</span> (oldValue == expectValue) &#123;</span><br><span class="line">            value = newValue;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> oldValue;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">boolean</span> <span class="title">compareAndSet</span><span class="params">(<span class="keyword">int</span> expectValue, <span class="keyword">int</span> newValue)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (expectValue == compareAndSwap(expectValue, newValue));</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实际上 CAS 操作会由底层的 JVM 或操作系统实现，是一种原子操作。</p>
+<p>CAS 的使用模式通常是这样的：</p>
+<ol>
+<li>首先从内存 V 中读取到值 A，此时 V == A</li>
+<li>然后根据 A 计算得到新值 B</li>
+<li>接着通过 CAS 以原子方式将 V 的值更新为 B</li>
+<li>如果 CAS 成功，则返回；否则一般都需要重新执行 CAS</li>
+</ol>
+<p>伪代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(<span class="keyword">true</span>) &#123;</span><br><span class="line">    A = V;</span><br><span class="line">    B = A + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (CAS(V, A, B)) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用 CAS 时，一般都是循环执行代码，直到 CAS 成功为止。</p>
+<h3 id="2-2-硬件支持"><a href="#2-2-硬件支持" class="headerlink" title="2.2 硬件支持"></a>2.2 硬件支持</h3><p>在多处理器架构中，一般都提供有一些特殊指令，用于管理对共享数据的并发访问：</p>
+<ul>
+<li>Test-and-Set（测试并设置）</li>
+<li>Fetch-and-Increment（获取并递增）</li>
+<li>Compare-and-Swap（比较并交换）</li>
+<li>Load-Linked（加载链接）</li>
+<li>Store-Conditional（存储条件）</li>
+</ul>
+<p>这些特殊指令，提供了某种形式的“原子“读写操作，可以安全地访问共享数据。</p>
+<h3 id="2-3-JVM-支持"><a href="#2-3-JVM-支持" class="headerlink" title="2.3 JVM 支持"></a>2.3 JVM 支持</h3><p>硬件指令虽然提供了 CAS 的实现，但是在 Java 代码中是不能直接使用硬件指令的。</p>
+<p>所以 JVM 会将 CAS 代码编译成底层硬件提供的最有效方法：</p>
+<ul>
+<li>在支持 CAS 的平台上，JVM 会将 CAS 代码编译为相应的（多条）机器指令</li>
+<li>在不支持 CAS 的平台上，JVM 将会使用自旋锁来代替 CAS 操作</li>
+</ul>
+<p>JVM 为 Java 代码执行 CAS 操作提供了底层的支持。</p>
+<h3 id="2-4-锁和-CAS-的区别"><a href="#2-4-锁和-CAS-的区别" class="headerlink" title="2.4 锁和 CAS 的区别"></a>2.4 锁和 CAS 的区别</h3><ul>
+<li>独占锁是一项悲观技术；而 CAS 是一项乐观的技术</li>
+<li>获取锁失败时，线程会阻塞挂起；而竞争 CAS 失败时，线程不会阻塞，而是直接返回</li>
+<li>锁的获取可能导致操作系统级别的锁定、线程挂起以及上下文切换等；而 CAS 操作不会</li>
+<li>锁可以自动处理竞争问题（JVM 实现）；而 CAS 需要由调用者处理竞争问题（循环 CAS 直到成功）</li>
+<li>锁定时，至少需要一次 CAS，所以锁的开销基本都会比 CAS 大</li>
+<li>竞争激烈时，锁的性能会更好；而竞争不激烈时，CAS 的性能会更好</li>
+<li>竞争激烈时，CAS 会导致很多线程空自旋等待，浪费 CPU 资源</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" rel="tag"># 并发编程</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/lang/java/core/concurrency/14_%E6%9D%A1%E4%BB%B6%E9%98%9F%E5%88%97/" rel="prev" title="14_条件队列">
+      <i class="fa fa-chevron-left"></i> 14_条件队列
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/lang/java/core/concurrency/15_02_%E5%8E%9F%E5%AD%90%E5%8F%98%E9%87%8F%E5%92%8C%E9%9D%9E%E9%98%BB%E5%A1%9E%E5%90%8C%E6%AD%A5/" rel="next" title="15_02_原子变量">
+      15_02_原子变量 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#CAS-%E6%93%8D%E4%BD%9C"><span class="nav-text">CAS 操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E9%94%81%E7%9A%84%E5%8A%A3%E5%8A%BF"><span class="nav-text">一、锁的劣势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81CAS-%E6%93%8D%E4%BD%9C"><span class="nav-text">二、CAS 操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="nav-text">2.1 基本原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E7%A1%AC%E4%BB%B6%E6%94%AF%E6%8C%81"><span class="nav-text">2.2 硬件支持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-JVM-%E6%94%AF%E6%8C%81"><span class="nav-text">2.3 JVM 支持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-%E9%94%81%E5%92%8C-CAS-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-text">2.4 锁和 CAS 的区别</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jiaduo"
+      src="/images/lufei.jpeg">
+  <p class="site-author-name" itemprop="name">jiaduo</p>
+  <div class="site-description" itemprop="description">不积跬步，无以至千里</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">80</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021/08 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiaduo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">354k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:22</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
