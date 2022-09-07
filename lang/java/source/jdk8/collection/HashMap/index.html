@@ -28,7 +28,7 @@
 <meta property="og:description" content="HashMap一、定义123public class HashMap&lt;K,V&gt; extends AbstractMap&lt;K,V&gt;    implements Map&lt;K,V&gt;, Cloneable, Serializable &amp;#123;&amp;#125;  二、实现2.1 数据结构HashMap 的底层数据存储结构是“数组 + 链表 + 红黑树”，红黑树结构是 JD">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-10-16T04:26:30.000Z">
-<meta property="article:modified_time" content="2022-01-15T02:17:18.396Z">
+<meta property="article:modified_time" content="2022-09-07T20:55:55.722Z">
 <meta property="article:author" content="jiaduo">
 <meta property="article:tag" content="java">
 <meta property="article:tag" content="集合">
@@ -200,7 +200,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-01-15 10:17:18" itemprop="dateModified" datetime="2022-01-15T10:17:18+08:00">2022-01-15</time>
+                <time title="修改时间：2022-09-08 04:55:55" itemprop="dateModified" datetime="2022-09-08T04:55:55+08:00">2022-09-08</time>
               </span>
 
           <br>
@@ -268,13 +268,13 @@
 
 <p>添加的话，可以分为几步：</p>
 <ol>
-<li>table未初始化时，先初始化table；</li>
-<li>hash所在的table位置未初始化。计算hash对应到table的位置<code>p = table[(n - 1) &amp; hash]</code>，如果<code>p</code>为null，则直接插入新节点到数组上；</li>
-<li>添加节点已存在时。如果<code>p</code>在table中已存在，不会新建节点，而是直接更新值；</li>
+<li>table未初始化时，先初始化table</li>
+<li>hash所在的table位置未初始化。计算hash对应到table的位置<code>p = table[(n - 1) &amp; hash]</code>，如果<code>p</code>为null，则直接插入新节点到数组上</li>
+<li>添加节点已存在时。如果<code>p</code>在table中已存在，不会新建节点，而是直接更新值</li>
 <li>添加节点不存在时，分2种情况：</li>
 </ol>
 <ul>
-<li>插入结构是红黑树，如果<code>p</code>是一个树节点（<code>TreeNode</code>），也就是红黑树结构，那么就按照树结构来添加节点；</li>
+<li>插入结构是红黑树，如果<code>p</code>是一个树节点（<code>TreeNode</code>），也就是红黑树结构，那么就按照树结构来添加节点</li>
 <li>插入结构是链表，如果<code>p</code>是普通节点，也就是链表结构，把新节点添加到链表末尾。另外如果此时超过了阈值，链表会转化为红黑树</li>
 </ul>
 <p>需要说明的一点就是，如果添加的元素在<code>HashMap</code>中已存在，那么就会更新对应节点的值，而不是插入新节点。</p>
@@ -319,9 +319,9 @@
 
 <p>扩容容量的计算还算简单，主要可以分为几步：</p>
 <ol>
-<li>如果不是第一次初始化数组，就对旧容量进行扩容，在没有达到最大容量的情况下，新容量 = 旧容量 * 2；</li>
-<li>如果是第一次初始化数组，并且初始化容量大于0，那么就用初始化容量作为新容量；</li>
-<li>如果是第一次初始化数组，并且初始化容量为0，那么就用默认初始化容量作为新容量。</li>
+<li>如果不是第一次初始化数组，就对旧容量进行扩容，在没有达到最大容量的情况下，新容量 = 旧容量 * 2</li>
+<li>如果是第一次初始化数组，并且初始化容量大于0，那么就用初始化容量作为新容量</li>
+<li>如果是第一次初始化数组，并且初始化容量为0，那么就用默认初始化容量作为新容量</li>
 </ol>
 <p>当然，代码中间还加上了一些溢出边界的判断，但是总体逻辑差不多就是这样。</p>
 <p><strong>4）数据迁移</strong></p>
@@ -331,9 +331,9 @@
 <p>迁移过程可以分为几个步骤：</p>
 <ol>
 <li>遍历旧数组的所有元素，重新计算里面每个元素在新数组中的位置，并把它移动到新数组中</li>
-<li>因为是扩容了2倍，所以在旧数组中同位置的元素，映射到新数组上面时，会映射到2个位置；</li>
-<li>如果是红黑树结构，映射到新数组时，也会被拆分成2部分；</li>
-<li>如果时链表结构，映射到新数组时，也会被拆分成2条链表。</li>
+<li>因为是扩容了2倍，所以在旧数组中同位置的元素，映射到新数组上面时，会映射到2个位置</li>
+<li>如果是红黑树结构，映射到新数组时，也会被拆分成2部分</li>
+<li>如果是链表结构，映射到新数组时，也会被拆分成2条链表</li>
 </ol>
 <p>举个例子说明一下，假设旧的数据结构如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">  0    1    2    3    4    5    6    7 </span><br><span class="line"> ____ ____ ____ ____ ____ ____ ____ ____ </span><br><span class="line">|    | 9  |    | 11 |    | 21 | 14 | 15 |</span><br><span class="line">       |                        |    |</span><br><span class="line">       1                        22   7</span><br><span class="line">                                |</span><br><span class="line">                                6</span><br></pre></td></tr></table></figure>
@@ -352,7 +352,8 @@
 <p>什么时候需要红黑树呢？这里先说明一下相关的几个属性：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 转化树的数组长度阈值</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MIN_TREEIFY_CAPACITY = <span class="number">64</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 链表转树的阈值</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TREEIFY_THRESHOLD = <span class="number">8</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 树转链表的阈值</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> UNTREEIFY_THRESHOLD = <span class="number">6</span>;</span><br></pre></td></tr></table></figure>
 
-<p>这里有3个变量和链表与树转化有关。其中 <code>MIN_TREEIFY_CAPACITY</code> 和 <code>TREEIFY_THRESHOLD</code> 是链表转红黑树用到的，<code>UNTREEIFY_THRESHOLD</code> 是红黑树转回链表时用到的。</p>
+<p>这里有3个变量和链表与树转化有关。</p>
+<p>其中 <code>MIN_TREEIFY_CAPACITY</code> 和 <code>TREEIFY_THRESHOLD</code> 是链表转红黑树用到的，<code>UNTREEIFY_THRESHOLD</code> 是红黑树转回链表时用到的。</p>
 <h4 id="2-4-1-链表转到红黑树"><a href="#2-4-1-链表转到红黑树" class="headerlink" title="2.4.1 链表转到红黑树"></a>2.4.1 链表转到红黑树</h4><p>HashMap 不是随便就把链表转到红黑树的，而是需要满足某些条件：</p>
 <ul>
 <li>数组长度达到阈值 <code>MIN_TREEIFY_CAPACITY</code>，即64</li>
@@ -360,7 +361,8 @@
 </ul>
 <p>注意，要同时满足这2个条件，才会将链表转成红黑树。</p>
 <p><code>MIN_TREEIFY_CAPACITY</code> 是转化树需要的数组长度阈值，这是用来干嘛的？</p>
-<p>其实就是当 <code>table</code> 数组太小时，<code>HashMap</code> 宁愿进行扩容，也不愿意把链表转成树。这个可能是考虑到性能问题，数组比较小时，维护红黑树反而比如扩容的性能低。</p>
+<p>其实就是当 <code>table</code> 数组太小时，<code>HashMap</code> 宁愿进行扩容，也不愿意把链表转成树。</p>
+<p>这个可能是考虑到性能问题，数组比较小时，维护红黑树反而比扩容的性能低。</p>
 <p>下面是链表转成红黑树的逻辑判断：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这个部分的源码上面添加元素写有备注了，就不重复写了</span></span><br><span class="line"><span class="function"><span class="keyword">final</span> V <span class="title">putVal</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">boolean</span> onlyIfAbsent, <span class="keyword">boolean</span> evict)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 忽略部分代码</span></span><br><span class="line">    <span class="keyword">if</span> ((p = tab[i = (n - <span class="number">1</span>) &amp; hash]) == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">// 忽略部分代码</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        Node&lt;K,V&gt; e; K k;</span><br><span class="line">        <span class="keyword">if</span> (p.hash == hash &amp;&amp;</span><br><span class="line">            ((k = p.key) == key || (key != <span class="keyword">null</span> &amp;&amp; key.equals(k)))) &#123;</span><br><span class="line">            <span class="comment">// 忽略部分代码</span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (p <span class="keyword">instanceof</span> TreeNode) &#123;</span><br><span class="line">            <span class="comment">// 忽略部分代码</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> binCount = <span class="number">0</span>; ; ++binCount) &#123;</span><br><span class="line">                <span class="keyword">if</span> ((e = p.next) == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    p.next = newNode(hash, key, value, <span class="keyword">null</span>);</span><br><span class="line">                    <span class="keyword">if</span> (binCount &gt;= TREEIFY_THRESHOLD - <span class="number">1</span>) &#123;</span><br><span class="line">                        <span class="comment">// 如果达到阈值，需要把链表转化成红黑树</span></span><br><span class="line">                        treeifyBin(tab, hash);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// 忽略部分代码</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 忽略部分代码</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 忽略部分代码</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -374,7 +376,8 @@
 <li>进行扩容时，此时红黑树会拆分成2棵子树，如果拆分后的2棵子树的节点数量低于某个阈值，即 <code>UNTREEIFY_THRESHOLD</code>，红黑树将会转会链表</li>
 </ol>
 <p>注意，满足其中1个条件，就会将红黑树转成链表。</p>
-<p>首先是“红黑树的节点数量很少”的情况，这种情况只会出现在删除节点的时候，具体看代码：</p>
+<p>首先是“红黑树的节点数量很少”的情况。</p>
+<p>这种情况只会出现在删除节点的时候，具体看代码：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">removeTreeNode</span><span class="params">(HashMap&lt;K,V&gt; map, Node&lt;K,V&gt;[] tab, <span class="keyword">boolean</span> movable)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 忽略部分代码</span></span><br><span class="line">    <span class="comment">// 移除节点...</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 当红黑树的节点数量很少时，将会转回链表</span></span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span> || root.right == <span class="keyword">null</span> ||</span><br><span class="line">        (rl = root.left) == <span class="keyword">null</span> || rl.left == <span class="keyword">null</span>) &#123;</span><br><span class="line">        tab[index] = first.untreeify(map);  <span class="comment">// too small</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 忽略后面很多代码...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>节点数量很少，究竟多少算少呢？按照代码的判断，它有几种情况：</p>
@@ -385,8 +388,9 @@
 <li>红黑树的左子树的左子树没有了</li>
 </ol>
 <p>这几种情况下，就认定为红黑树的节点数量很少了。</p>
-<p>这是为什么？红黑树本质上是一棵平衡树，如果某棵子树没了，那对应的另一边子树肯定最多只有1个节点，那就意味着整棵树就没几个节点了（至于更深层的原因，可以去深入了解红黑树的结构）。</p>
-<p>其次是“进行扩容时，如果红黑树节点数量低于 <code>UNTREEIFY_THRESHOLD</code>”，这种情况只会出现在增加节点导致扩容的时候：</p>
+<p>这是为什么？红黑树本质上是一棵平衡树，如果某棵子树没了，另一边的子树肯定没几个节点，那就意味着整棵树就没几个节点了（至于更深层的原因，可以去深入了解红黑树的结构）。</p>
+<p>其次是“进行扩容时，如果红黑树节点数量低于 <code>UNTREEIFY_THRESHOLD</code>”。</p>
+<p>这种情况只会出现在增加节点导致扩容的时候：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">split</span><span class="params">(HashMap&lt;K,V&gt; map, Node&lt;K,V&gt;[] tab, <span class="keyword">int</span> index, <span class="keyword">int</span> bit)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 忽略部分代码</span></span><br><span class="line">    <span class="comment">// 重新分配节点，分成2部分...</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (loHead != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (lc &lt;= UNTREEIFY_THRESHOLD)</span><br><span class="line">            <span class="comment">// 如果红黑树的节点数量低于UNTREEIFY_THRESHOLD，就会将其转回链表</span></span><br><span class="line">            tab[index] = loHead.untreeify(map);</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            tab[index] = loHead;</span><br><span class="line">            <span class="keyword">if</span> (hiHead != <span class="keyword">null</span>) <span class="comment">// (else is already treeified)</span></span><br><span class="line">                loHead.treeify(tab);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (hiHead != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (hc &lt;= UNTREEIFY_THRESHOLD)</span><br><span class="line">            <span class="comment">// 如果红黑树的节点数量低于UNTREEIFY_THRESHOLD，就会将其转回链表</span></span><br><span class="line">            tab[index + bit] = hiHead.untreeify(map);</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            tab[index + bit] = hiHead;</span><br><span class="line">            <span class="keyword">if</span> (loHead != <span class="keyword">null</span>)</span><br><span class="line">                hiHead.treeify(tab);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>可以看到，扩容后，会将之前的节点拆分成2部分，如果某部分的节点数量不大于阈值 <code>UNTREEIFY_THRESHOLD</code>，就会将红黑树转回链表。</p>
@@ -570,7 +574,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">80</span>
+          <span class="site-state-item-count">81</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -613,12 +617,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">354k</span>
+    <span title="站点总字数">358k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:22</span>
+    <span title="站点阅读时长">5:26</span>
 </div>
 
         
