@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="线段树一、线段树是什么？ 线段树本质上是一种缓存，它缓存的是区间值 线段树一棵平衡二叉树 线段树的节点表示的是一个区间，节点值表示区间值">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线段树">
+<meta property="og:url" content="http://example.com/algorithm/segment_tree/index.html">
+<meta property="og:site_name" content="Strive">
+<meta property="og:description" content="线段树一、线段树是什么？ 线段树本质上是一种缓存，它缓存的是区间值 线段树一棵平衡二叉树 线段树的节点表示的是一个区间，节点值表示区间值">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-09-12T21:26:30.000Z">
+<meta property="article:modified_time" content="2022-09-12T22:16:29.044Z">
+<meta property="article:author" content="jiaduo">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="数据结构">
+<meta property="article:tag" content="线段树">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/algorithm/segment_tree/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>线段树 | Strive</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Strive</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Rome was not built in one day</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/algorithm/segment_tree/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          线段树
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-09-13 05:26:30 / 修改时间：06:16:29" itemprop="dateCreated datePublished" datetime="2022-09-13T05:26:30+08:00">2022-09-13</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>20k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>18 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="线段树"><a href="#线段树" class="headerlink" title="线段树"></a>线段树</h1><h2 id="一、线段树是什么？"><a href="#一、线段树是什么？" class="headerlink" title="一、线段树是什么？"></a>一、线段树是什么？</h2><ul>
+<li>线段树本质上是一种缓存，它缓存的是区间值</li>
+<li>线段树一棵平衡二叉树</li>
+<li>线段树的节点表示的是一个区间，节点值表示区间值</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="二、为什么要用线段树？"><a href="#二、为什么要用线段树？" class="headerlink" title="二、为什么要用线段树？"></a>二、为什么要用线段树？</h2><p>线段树的主要用途有：</p>
+<ul>
+<li>缓存区间值，提高多次查询区间值的性能</li>
+<li>懒更新区间，减少修改的次数，提高多次修改区间的性能</li>
+</ul>
+<p>简单点说就是：</p>
+<ul>
+<li>通过缓存，提高多次区间查询和区间修改的性能</li>
+<li>重点在于多次，多次，多次！！！</li>
+</ul>
+<p>下面说明线段树如何通过缓存提高性能。</p>
+<p>一般情况下，当需要修改一个区间内的所有值时，只能通过遍历的方式实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = start; i &lt; end; i++) &#123;</span><br><span class="line">    nums[i] = val;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>包括获取查询某个区间内的最大值、最小值、区间和时，也只能遍历整个区间：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = start; i &lt; end; i++) &#123;</span><br><span class="line">    sum += nums[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>像这种区间查询和区间修改，没有其他办法，也只能通过遍历来实现了。</p>
+<p>但是，如果说会多次执行区间查询，每次都要遍历一遍的话，性能会比较差。</p>
+<ul>
+<li>能不能把区间查询的结果缓存下来，下次查询时直接返回缓存？</li>
+</ul>
+<p>比如，在区间之上缓存一个区间和结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">             ____</span><br><span class="line">            | 28 |               -- 缓存区间值</span><br><span class="line">              |        </span><br><span class="line">   _______________________</span><br><span class="line">  |                       |</span><br><span class="line"> ___ ___ ___ ___ ___ ___ ___</span><br><span class="line">| 1 | 6 | 7 | 2 | 5 | 4 | 3 |    -- 原始数组（已排除索引 0，从 1 开始）</span><br></pre></td></tr></table></figure>
+
+<p>下次查询 <code>[1, 7]</code> 的区间和时，就可以直接从缓存节点返回结果 28。</p>
+<p>这样貌似可行，但是只缓存一个够了吗？不够，如果要查询区间 <code>[2 ,4]</code>，还是要遍历。</p>
+<p>所以需要把各个区间的结果都缓存了，最终缓存结构就变成了一棵二叉树：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">                                  ____</span><br><span class="line">                                 | 28 | ([1, 7])</span><br><span class="line">                                   |</span><br><span class="line">                  ____________________________________</span><br><span class="line">                 |                                    |</span><br><span class="line">                ____                                 ____</span><br><span class="line">               | 16 | ([1, 4])                      | 12 | ([5, 7])</span><br><span class="line">                 |                                    |</span><br><span class="line">        ___________________                     ______________</span><br><span class="line">       |                   |                   |              |</span><br><span class="line">      ___                 ___                 ___             |</span><br><span class="line">     | 7 | ([1, 2])      | 9 | ([3, 4])      | 9 | ([5, 6])   |</span><br><span class="line">       |                   |                   |              |</span><br><span class="line">   _________           _________           _________          |</span><br><span class="line">  |         |         |         |         |         |         |</span><br><span class="line"> ___       ___       ___       ___       ___       ___       ___</span><br><span class="line">| 1 |     | 6 |     | 7 |     | 2 |     | 5 |     | 4 |     | 3 |</span><br></pre></td></tr></table></figure>
+
+<p>这个二叉树结构就是线段树，每个节点表示一个区间，节点值就是区间值。</p>
+<p>线段树实际就是一个二叉树缓存结构，上一层缓存着下一层节点的区间值。</p>
+<p>有了线段树，区间的查询就变简单了，比如查询区间 <code>[3, 7]</code>：</p>
+<ol>
+<li>从根节点出发，利用二分法逐层往下寻找查询区间</li>
+<li>最后找到了满足要求的区间节点 <code>[3, 4]</code> 和 <code>[5, 7]</code></li>
+<li>区间节点 <code>[3, 4]</code> 的值是 9，区间节点 <code>[5, 7]</code> 的值是 12</li>
+<li>所以 <code>[3, 7]</code> 的区间和等于 <code>9 + 12 = 21</code></li>
+</ol>
+<p>有了线段树以后，无需再遍历所有节点，而是通过上层的缓存节点就能拿到结果。</p>
+<ul>
+<li>区间查询的复杂度从 <code>O(n)</code> 降为了 <code>O(logn)</code></li>
+</ul>
+<p>线段树就是利用空间换时间，通过缓存来提高区间查询的性能。</p>
+<ul>
+<li>线段树本质就是缓存，父节点是子节点的缓存</li>
+</ul>
+<p>至于父节点缓存的是什么，视情况而定。比如说：</p>
+<ul>
+<li>区间最大值</li>
+<li>区间最小值</li>
+<li>区间和</li>
+<li>…</li>
+</ul>
+<p>使用线段树前，应该想清楚，缓存的数据究竟是什么？</p>
+<h2 id="三、线段树如何实现？"><a href="#三、线段树如何实现？" class="headerlink" title="三、线段树如何实现？"></a>三、线段树如何实现？</h2><p>线段树的实现方式主要分为 2 种类型：</p>
+<ul>
+<li>静态线段树：所有节点一开始就构建好了，和区间范围有关</li>
+<li>动态线段树：树节点是动态创建的，随数据变化而变化</li>
+</ul>
+<p>静态线段树包括：</p>
+<ul>
+<li>简单线段树：基于数组实现的满二叉树结构</li>
+</ul>
+<p>动态线段树包括：</p>
+<ul>
+<li>动态估点线段树：基于数组实现的动态二叉树</li>
+<li>动态开点线段树：基于指针实现的动态二叉树</li>
+</ul>
+<p>下面分别介绍这几种线段树。</p>
+<h3 id="3-1-简单线段树"><a href="#3-1-简单线段树" class="headerlink" title="3.1 简单线段树"></a>3.1 简单线段树</h3><h4 id="3-1-1-基本思路"><a href="#3-1-1-基本思路" class="headerlink" title="3.1.1 基本思路"></a>3.1.1 基本思路</h4><ul>
+<li>采用数组存储线段树节点</li>
+<li>数组存储的是一棵满二叉树，其中有些节点是多余的</li>
+<li>根节点的数组索引是 <code>1</code></li>
+<li>左子节点索引 <code>2 * i</code>；右子节点索引 <code>2 * i + 1</code></li>
+<li>总节点数量，一般取区间 <code>[1, n]</code> 的 4 倍，即 <code>4n</code></li>
+</ul>
+<h4 id="3-1-2-存储结构"><a href="#3-1-2-存储结构" class="headerlink" title="3.1.2 存储结构"></a>3.1.2 存储结构</h4><p>线段树是一棵平衡二叉树，也就是左右子树节点数量相差不超过 1。</p>
+<p>但是平衡二叉树在数组上的存储、构造和取数都不方便，所以数组存储的是满二叉树结构。</p>
+<p>满二叉树在数组中的父子节点索引关系刚好是：</p>
+<ul>
+<li>根节点索引是 <code>1</code></li>
+<li>左子节点索引 <code>2 * i</code></li>
+<li>右子节点索引 <code>2 * i + 1</code></li>
+</ul>
+<p>利用满二叉树的性质，很容易在数组上实现线段树。</p>
+<h4 id="3-1-3-节点数量"><a href="#3-1-3-节点数量" class="headerlink" title="3.1.3 节点数量"></a>3.1.3 节点数量</h4><p>二叉树的节点数量，从上往下统计的话：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">2 ^ 0           -- 第1层</span><br><span class="line">2 ^ 1           -- 第2层</span><br><span class="line">2 ^ 2           -- 第3层</span><br><span class="line">2 ^ 3           -- 第4层</span><br><span class="line">...</span><br><span class="line">2 ^ (h - 1)     -- 第h层</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>如果区间范围 <code>n = 2 ^ k</code> 的话，那么刚好是满二叉树，节点总数就是 <code>S = 2n - 1</code>。</p>
+<p>但如果区间范围是 <code>n = 2 ^ k + c</code> 的话，多出了几个，二叉树的最后一层就没有满。</p>
+<ul>
+<li>满二叉树有一个特点，下一层的节点数量等于前面所有层级的节点数量总和</li>
+</ul>
+<p>所以，如果填满了最后一层构成满二叉树的话，总节点数量就满足：</p>
+<ul>
+<li><code>2n - 1 &lt;= S &lt; 2 * (2n - 1) = 4n - 2</code></li>
+</ul>
+<p>所以，在初始化线段树时：</p>
+<ul>
+<li>总节点数量一般取区间范围的 4 倍</li>
+</ul>
+<p>但里面不是所有节点都会用到，有些多余的节点。</p>
+<h4 id="3-1-4-构建过程"><a href="#3-1-4-构建过程" class="headerlink" title="3.1.4 构建过程"></a>3.1.4 构建过程</h4><p>简单线段树的构建步骤如下：</p>
+<ol>
+<li>计算出区间 <code>[1, n]</code> 的总节点数量 <code>4n</code></li>
+<li>初始化所有树节点</li>
+<li>递归构建二叉树结构</li>
+</ol>
+<p>比如构建“区间和”线段树的过程，类似这样：</p>
+<p>(1) 初始化区间节点</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">SegmentTree</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 总节点数量 4n</span></span><br><span class="line">    tree = <span class="keyword">new</span> Node[<span class="number">4</span> * n];</span><br><span class="line">    <span class="comment">// 初始化所有节点</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; tree.length; i++) &#123;</span><br><span class="line">        tree[i] = <span class="keyword">new</span> Node();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>(2) 递归构建二叉树</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildTree</span><span class="params">(<span class="keyword">int</span> root, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 叶子节点</span></span><br><span class="line">    <span class="keyword">if</span> (start == end) &#123;</span><br><span class="line">        tree[root].val = arr[start];</span><br><span class="line">        <span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 左子节点索引</span></span><br><span class="line">    <span class="keyword">int</span> left = <span class="number">2</span> * root;</span><br><span class="line">    <span class="comment">// 右子节点索引</span></span><br><span class="line">    <span class="keyword">int</span> right = <span class="number">2</span> * root + <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 递归构建树</span></span><br><span class="line">    <span class="keyword">int</span> mid = start + (end - start) / <span class="number">2</span>;</span><br><span class="line">    buildTree(left, start, mid);</span><br><span class="line">    buildTree(right, mid + <span class="number">1</span>, end);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 向上更新父节点缓存</span></span><br><span class="line">    pushUp(node);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">pushUp</span><span class="params">(<span class="keyword">int</span> root)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 左子节点索引</span></span><br><span class="line">    <span class="keyword">int</span> left = <span class="number">2</span> * root;</span><br><span class="line">    <span class="comment">// 右子节点索引</span></span><br><span class="line">    <span class="keyword">int</span> right = <span class="number">2</span> * root + <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// 更新父节点的区间值</span></span><br><span class="line">    tree[root].val = tree[left].val + tree[right].val;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>比如，数组 <code>arr = [, 1, 8, 2, 7, 4]</code>（注意数组 0 的位置不用）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">                                   ____</span><br><span class="line">                                  | 18 | ([1, 5])</span><br><span class="line">                                    |</span><br><span class="line">                  _______________________________________</span><br><span class="line">                 |                                       |</span><br><span class="line">                ____                                    ___</span><br><span class="line">               | 11 | ([1, 3])                         | 7 | ([4, 5])</span><br><span class="line">                 |                                       |</span><br><span class="line">        ___________________                     ___________________</span><br><span class="line">       |                   |                   |                   |</span><br><span class="line">      ___                 ___                 ___                 ___</span><br><span class="line">     | 9 | ([1, 2])      | 2 |               | 3 |               | 4 |</span><br><span class="line">       |</span><br><span class="line">   _________       </span><br><span class="line">  |         |     </span><br><span class="line"> ___       ___</span><br><span class="line">| 1 |     | 8 |</span><br></pre></td></tr></table></figure>
+
+<p>假设 n 等于数组长度（0 不算），也就是 <code>n = 5</code>，所以需申请 <code>4 * 5 = 20</code> 个节点空间。</p>
+<p>但是实际上只用到了 <code>9</code> 个空间，不过这里面为了构造满二叉树结构也要 <code>15</code>个节点了。</p>
+<p>之所以还多出来的节点是由 <code>4n</code> 的误差引起的，毕竟 <code>4n</code> 并不是精确的节点数量值。</p>
+<h3 id="3-2-动态估点线段树"><a href="#3-2-动态估点线段树" class="headerlink" title="3.2 动态估点线段树"></a>3.2 动态估点线段树</h3><h4 id="3-2-1-基本思路"><a href="#3-2-1-基本思路" class="headerlink" title="3.2.1 基本思路"></a>3.2.1 基本思路</h4><ul>
+<li>根据数据情况，预估可能会访问到的区间范围，从而估计节点数量</li>
+<li>根节点的数组索引是 1</li>
+<li>子节点索引不确定，父节点内维护有左右子节点的索引 l 和 r</li>
+<li>维护有一个 size 大小，表示当前节点数量，也可用于计算下一个节点的索引</li>
+<li>动态开点时，新节点的索引就等于 <code>size + 1</code>，比如  <code>node.lp = ++size</code></li>
+<li>不算是完全动态，数组一开始就已经申请好空间了，动态的只有创建 <code>Node</code> 节点而已</li>
+</ul>
+<h4 id="3-2-2-区间估点"><a href="#3-2-2-区间估点" class="headerlink" title="3.2.2 区间估点"></a>3.2.2 区间估点</h4><p>静态线段树的数组长度是按照满二叉树的节点数量来设置的。</p>
+<p>但是在实际上未必会用到这么多节点，因此有了一种估点的方式。</p>
+<ul>
+<li>估点：就是估计实际会用到线段树的区间节点范围</li>
+</ul>
+<p>比如说，线段树的区间范围定义是 <code>[1, 1000]</code>，但是实际查询数据范围只有 <code>[1, 200]</code>。</p>
+<p>在这种情况下，完全没必要为线段树创建 <code>4000</code> 个节点。</p>
+<ul>
+<li>可以根据实际数据的查询范围，估计一个合理的节点数量</li>
+<li>在线段树初始化数组时，就采用估点值来初始化数组长度</li>
+</ul>
+<p>网上提供了一些公式，比如 <code>6 * m * logn</code>。其中，m 是查询次数，n 是区间值域大小。</p>
+<h4 id="3-2-3-动态建点"><a href="#3-2-3-动态建点" class="headerlink" title="3.2.3 动态建点"></a>3.2.3 动态建点</h4><p>动态线段树的节点是动态创建的，所以不再维护满二叉树的结构了。</p>
+<ul>
+<li>新创建的节点都放在数组末尾</li>
+</ul>
+<p>但是必须在父节点内保存指向左右子节点的索引：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> val; <span class="comment">// 区间值</span></span><br><span class="line">    <span class="keyword">int</span> lp;  <span class="comment">// 左子节点索引</span></span><br><span class="line">    <span class="keyword">int</span> rp;  <span class="comment">// 右子节点索引</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在创建子节点的同时，需要更新父节点的索引：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 更新父节点中的左子节点索引</span></span><br><span class="line">node.lp = ++size;</span><br><span class="line"><span class="comment">// 创建左子节点</span></span><br><span class="line">tree[node.lp] = <span class="keyword">new</span> Node();</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-4-构建过程"><a href="#3-2-4-构建过程" class="headerlink" title="3.2.4 构建过程"></a>3.2.4 构建过程</h4><p>动态估点线段树的构建步骤如下：</p>
+<ol>
+<li>估计区间节点范围</li>
+<li>根据估点值初始化数组长度</li>
+<li>初始化根节点</li>
+<li>访问时动态创建其他节点</li>
+</ol>
+<p>比如构建“区间和”线段树的过程，类似这样：</p>
+<p>(1) 估点 + 初始化</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">SegmentTree</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 直接按照估点创建数组</span></span><br><span class="line">    tree = <span class="keyword">new</span> Node[n];</span><br><span class="line">    <span class="comment">// 初始化根节点</span></span><br><span class="line">    tree[<span class="number">1</span>] = <span class="keyword">new</span> Node();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>(2) 访问节点时动态建点</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">query</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 动态向下更新</span></span><br><span class="line">    pushDown(node, start, end);</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">update</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 动态向下更新</span></span><br><span class="line">    pushDown(node, start, end);</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">pushDown</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 动态开点</span></span><br><span class="line">    <span class="keyword">if</span> (node.left == <span class="number">0</span>) &#123;</span><br><span class="line">        node.left = ++size;</span><br><span class="line">        tree[node.left] = <span class="keyword">new</span> Node();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (node.right == <span class="number">0</span>) &#123;</span><br><span class="line">        node.right = ++size;</span><br><span class="line">        tree[node.right] = <span class="keyword">new</span> Node();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>动态估点线段树的数组不是一棵满二叉树结构，最新创建的节点总是添加到数组末尾。</p>
+<h3 id="3-3-动态开点线段树"><a href="#3-3-动态开点线段树" class="headerlink" title="3.3 动态开点线段树"></a>3.3 动态开点线段树</h3><h4 id="3-3-1-基本思路"><a href="#3-3-1-基本思路" class="headerlink" title="3.3.1 基本思路"></a>3.3.1 基本思路</h4><ul>
+<li>父子节点间采用指针进行链接</li>
+<li>维护有一个根节点</li>
+<li>每个节点维护有左右子节点的指针 left 和 right</li>
+<li>动态开点时，直接创建新节点，比如 <code>node.left = new Node()</code></li>
+</ul>
+<h4 id="3-3-2-动态建点"><a href="#3-3-2-动态建点" class="headerlink" title="3.3.2 动态建点"></a>3.3.2 动态建点</h4><p>基于指针的动态建点再简单不过了，父节点维护好子节点的指针就行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> val;     <span class="comment">// 区间值</span></span><br><span class="line">    Node left;   <span class="comment">// 左子节点</span></span><br><span class="line">    Node right;  <span class="comment">// 右子节点</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在访问到节点前，动态创建节点，链接好父子指针：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建左子节点</span></span><br><span class="line">node.left = <span class="keyword">new</span> Node();</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-3-3-构建过程"><a href="#3-3-3-构建过程" class="headerlink" title="3.3.3 构建过程"></a>3.3.3 构建过程</h4><p>动态开点线段树的构建步骤如下：</p>
+<ol>
+<li>初始化根节点</li>
+<li>访问时动态创建其他节点</li>
+</ol>
+<p>比如构建“区间和”线段树的过程，类似这样：</p>
+<p>(1) 初始化根节点 + 初始化区间</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">SegmentTree</span><span class="params">(<span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.root = <span class="keyword">new</span> Node();</span><br><span class="line">    <span class="keyword">this</span>.low = low;</span><br><span class="line">    <span class="keyword">this</span>.high = high;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>(2) 访问时动态创建其他节点</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">query</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 动态向下更新</span></span><br><span class="line">    pushDown(node, start, end);</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">update</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 动态向下更新</span></span><br><span class="line">    pushDown(node, start, end);</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">pushDown</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 动态开点</span></span><br><span class="line">    <span class="keyword">if</span> (node.left == <span class="keyword">null</span>) &#123;</span><br><span class="line">        node.left = <span class="keyword">new</span> Node();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (node.right == <span class="keyword">null</span>) &#123;</span><br><span class="line">        node.right = <span class="keyword">new</span> Node();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-4-小结"><a href="#3-4-小结" class="headerlink" title="3.4 小结"></a>3.4 小结</h3><p>静态线段树初始化时就要申请好空间，并创建好线段树。虽然用起来简单，但是也有一些缺点：</p>
+<ul>
+<li>占用空间比较大，初始化比较慢</li>
+<li>有些节点未必会访问到，空间利用率低</li>
+</ul>
+<p>所以又引申出了动态线段树：</p>
+<ul>
+<li>用到这个节点时，再申请节点空间以及初始化</li>
+</ul>
+<p>动态线段树的实现方式有 2 种：</p>
+<ul>
+<li>动态估点：基于数组</li>
+<li>动态开点：基于指针</li>
+</ul>
+<p>视不同的情况可以选择不同的线段树。</p>
+<h2 id="四、线段树的优化"><a href="#四、线段树的优化" class="headerlink" title="四、线段树的优化"></a>四、线段树的优化</h2><h3 id="4-1-懒标记更新"><a href="#4-1-懒标记更新" class="headerlink" title="4.1 懒标记更新"></a>4.1 懒标记更新</h3><h4 id="4-1-1-懒更新引入"><a href="#4-1-1-懒更新引入" class="headerlink" title="4.1.1 懒更新引入"></a>4.1.1 懒更新引入</h4><p>线段树本质是一棵缓存树，在数据没有修改的情况下，查询性能确实高。</p>
+<p>但是如果频繁对区间数据进行修改，就可能会对性能造成影响。</p>
+<p>比如说，要把区间 <code>[1, 5]</code> 内的值都更新为 1，且此时在线段树中找到了 <code>[1, 3]</code> 和 <code>[4, 5]</code> 这 2 个区间。</p>
+<p>按照正常的逻辑，需要把以 <code>[1, 3]</code> 和 <code>[4, 5]</code> 为根节点的 2 棵子树的所有节点值都更新为 1。</p>
+<p>但是子树里面就包括了很多子节点，比如 <code>[1, 1]</code>、<code>[2, 2]</code>、<code>[1, 2]</code> … <code>[5, 5]</code> 等等。</p>
+<ul>
+<li>这些节点不一定都会被访问到，也许永远没人访问，白更新了</li>
+<li>每次更新区间都把所有相关子节点都更新一遍的话，势必会影响性能</li>
+</ul>
+<p>为此，提出了一种懒更新的方式：</p>
+<ul>
+<li>更新区间时，先标记根节点被更新了，但是暂时不要同步到子节点里面</li>
+<li>下次访问子节点前，先从父节点上把上次的数据同步到子节点里面</li>
+</ul>
+<p>使用懒更新后，只需要更新 <code>[1, 3]</code> 和 <code>[4, 5]</code> 这 2 个节点就够了，速度就很快。</p>
+<p>等到下次查询区间 <code>[1, 2]</code> 时，才会从 <code>[1, 3]</code> 区间上同步之前的更新下来。</p>
+<h4 id="4-1-2-懒标记实现"><a href="#4-1-2-懒标记实现" class="headerlink" title="4.1.2 懒标记实现"></a>4.1.2 懒标记实现</h4><p>在节点中引入懒标记，同时用于保存更新值：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> val;     <span class="comment">// 区间值</span></span><br><span class="line">    Node left;   <span class="comment">// 左子节点</span></span><br><span class="line">    Node right;  <span class="comment">// 右子节点</span></span><br><span class="line">    <span class="keyword">int</span> add;     <span class="comment">// 懒标记，0 时表示无更新，其他表示有更新</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后在更新时，只更新父节点。等下次访问子节点前再同步到子节点中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (l &lt;= start &amp;&amp; end &lt;= r) &#123;</span><br><span class="line">        <span class="comment">// 更新区间节点值</span></span><br><span class="line">        node.val = val;</span><br><span class="line">        <span class="comment">// 更新懒标记</span></span><br><span class="line">        node.add = val;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 动态向下更新</span></span><br><span class="line">    pushDown(node, start, end);</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">pushDown</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 父节点没有更新</span></span><br><span class="line">    <span class="keyword">if</span> (node.add == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 同步到子节点</span></span><br><span class="line">    node.left.val = node.add;</span><br><span class="line">    node.left.add = node.add;</span><br><span class="line">    node.right.val = node.add;</span><br><span class="line">    node.right.add = node.add;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 重置父节点的懒标记</span></span><br><span class="line">    node.add = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>原理很简单，就是在访问子节点之前，先把父节点之前的懒更新同步下来而已。</p>
+<h2 id="五、线段树模板"><a href="#五、线段树模板" class="headerlink" title="五、线段树模板"></a>五、线段树模板</h2><h3 id="5-1-接口定义"><a href="#5-1-接口定义" class="headerlink" title="5.1 接口定义"></a>5.1 接口定义</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">SegmentTree</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 查询指定区间的值</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> l 目标区间[l, r]的左边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> r 目标区间[l, r]的右边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 区间值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 更新指定区间的值</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> l   目标区间[l, r]的左边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> r   目标区间[l, r]的右边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> val 更新的值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> val)</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-1-动态估点（数组）"><a href="#5-1-动态估点（数组）" class="headerlink" title="5.1 动态估点（数组）"></a>5.1 动态估点（数组）</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">ArraySegmentTree</span> <span class="keyword">implements</span> <span class="title">SegmentTree</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 节点值</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">int</span> val;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 懒惰标记</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">int</span> add;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 左右节点数组下标</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">int</span> left, right;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 树节点数组</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">final</span> Node[] tree;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 区间最小值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">int</span> low;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 区间最大值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">int</span> high;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 当前节点数量</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">int</span> size;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ArraySegmentTree</span><span class="params">(<span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 树节点数量要比区间最大值大很多</span></span><br><span class="line">        <span class="keyword">this</span>.low = low;</span><br><span class="line">        <span class="keyword">this</span>.high = high;</span><br><span class="line">        <span class="keyword">int</span> n = <span class="number">4</span> * high; <span class="comment">// 估点 4n</span></span><br><span class="line">        tree = <span class="keyword">new</span> Node[n];</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 初始化根节点</span></span><br><span class="line">        tree[<span class="number">1</span>] = <span class="keyword">new</span> Node();</span><br><span class="line">        size = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> query(tree[<span class="number">1</span>], low, high, l, r);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 查询指定区间的值</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node  当前节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> start 当前区间[start, end]的左边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> end   当前区间[start, end]的右边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> l     目标区间[l, r]的左边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> r     目标区间[l, r]的右边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 区间值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">query</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (l &lt;= start &amp;&amp; end &lt;= r) &#123;</span><br><span class="line">            <span class="keyword">return</span> node.val;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 动态向下更新</span></span><br><span class="line">        pushDown(node, start, end);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 分别取左右子区间的值</span></span><br><span class="line">        Integer lResult = <span class="keyword">null</span>, rResult = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">int</span> mid = middle(start, end);</span><br><span class="line">        <span class="keyword">if</span> (l &lt;= mid) &#123;</span><br><span class="line">            lResult = query(tree[node.left], start, mid, l, r);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (r &gt; mid) &#123;</span><br><span class="line">            rResult = query(tree[node.right], mid + <span class="number">1</span>, end, l, r);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 合并区间查询结果</span></span><br><span class="line">        <span class="keyword">return</span> mergeQuery(node, start, end, lResult, rResult);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        update(tree[<span class="number">1</span>], low, high, l, r, val);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 更新指定区间的值</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node  当前节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> start 当前区间[start, end]的左边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> end   当前区间[start, end]的右边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> l     目标区间[l, r]的左边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> r     目标区间[l, r]的右边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> val   更新的值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (l &lt;= start &amp;&amp; end &lt;= r) &#123;</span><br><span class="line">            <span class="comment">// 更新符合区间要求的节点值</span></span><br><span class="line">            writeDown(node, start, end, val);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 向下更新</span></span><br><span class="line">        pushDown(node, start, end);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 递归更新左右子区间</span></span><br><span class="line">        <span class="keyword">int</span> mid = middle(start, end);</span><br><span class="line">        <span class="keyword">if</span> (l &lt;= mid) &#123;</span><br><span class="line">            update(tree[node.left], start, mid, l, r, val);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (r &gt; mid) &#123;</span><br><span class="line">            update(tree[node.right], mid + <span class="number">1</span>, end, l, r, val);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 向上更新</span></span><br><span class="line">        pushUp(node, start, end);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 子节点的值上推到父节点</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node  父节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> start 当前区间[start, end]的左边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> end   当前区间[start, end]的右边界</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">pushUp</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">        writeUp(node, start, end);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 父节点的值下推到子节点</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node  当前节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> start 当前区间[start, end]的左边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> end   当前区间[start, end]的右边界</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">pushDown</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 动态开点</span></span><br><span class="line">        <span class="keyword">if</span> (node.left == <span class="number">0</span>) &#123;</span><br><span class="line">            node.left = ++size;</span><br><span class="line">            tree[node.left] = <span class="keyword">new</span> Node();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (node.right == <span class="number">0</span>) &#123;</span><br><span class="line">            node.right = ++size;</span><br><span class="line">            tree[node.right] = <span class="keyword">new</span> Node();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 没有懒标记，无需再往下推</span></span><br><span class="line">        <span class="keyword">if</span> (node.add == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 把懒标记下推给子节点</span></span><br><span class="line">        <span class="keyword">int</span> mid = middle(start, end);</span><br><span class="line">        writeDown(tree[node.left], start, mid, node.add);</span><br><span class="line">        writeDown(tree[node.right], mid + <span class="number">1</span>, end, node.add);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 懒标记已处理</span></span><br><span class="line">        node.add = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 合并指定区间的查询结果</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node  当前节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> start 当前区间[start, end]的左边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> end   当前区间[start, end]的右边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> lVal  左区间的查询结果</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> rVal  右区间的查询结果</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 区间值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">mergeQuery</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end, Integer lVal, Integer rVal)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 向上更新节点的值</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node  当前节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> start 当前区间[start, end]的左边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> end   当前区间[start, end]的右边界</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">writeUp</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 向下更新节点的值</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node  当前节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> start 当前区间[start, end]的左边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> end   当前区间[start, end]的右边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> val   更新的值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">writeDown</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end, <span class="keyword">int</span> val)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 划分左右区间的中点</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> start 左边界[start, end]</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> end   右边界[start, end]</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 中点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">middle</span><span class="params">(<span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> start + (end - start) / <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-3-动态开点（指针）"><a href="#5-3-动态开点（指针）" class="headerlink" title="5.3 动态开点（指针）"></a>5.3 动态开点（指针）</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">LinkSegmentTree</span> <span class="keyword">implements</span> <span class="title">SegmentTree</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 节点值</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">int</span> val;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 懒惰标记</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">int</span> add;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 左右节点</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">public</span> Node left, right;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 根节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">final</span> Node root;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 区间最小值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">int</span> low;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 区间最大值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">int</span> high;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LinkSegmentTree</span><span class="params">(<span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.root = <span class="keyword">new</span> Node();</span><br><span class="line">        <span class="keyword">this</span>.low = low;</span><br><span class="line">        <span class="keyword">this</span>.high = high;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 查询指定区间的值</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> l 目标区间[l, r]的左边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> r 目标区间[l, r]的右边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 区间值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> query(root, low, high, l, r);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 查询指定区间的值</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node  当前节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> start 当前区间[start, end]的左边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> end   当前区间[start, end]的右边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> l     目标区间[l, r]的左边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> r     目标区间[l, r]的右边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 区间值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">query</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (l &lt;= start &amp;&amp; end &lt;= r) &#123;</span><br><span class="line">            <span class="keyword">return</span> node.val;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 动态向下更新</span></span><br><span class="line">        pushDown(node, start, end);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 分别取左右子区间的值</span></span><br><span class="line">        Integer lResult = <span class="keyword">null</span>, rResult = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">int</span> mid = middle(start, end);</span><br><span class="line">        <span class="keyword">if</span> (l &lt;= mid) &#123;</span><br><span class="line">            lResult = query(node.left, start, mid, l, r);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (r &gt; mid) &#123;</span><br><span class="line">            rResult = query(node.right, mid + <span class="number">1</span>, end, l, r);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 合并区间查询结果</span></span><br><span class="line">        <span class="keyword">return</span> mergeQuery(node, start, end, lResult, rResult);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 更新指定区间的值</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> l   目标区间[l, r]的左边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> r   目标区间[l, r]的右边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> val 更新的值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        update(root, low, high, l, r, val);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 更新指定区间的值</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node  当前节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> start 当前区间[start, end]的左边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> end   当前区间[start, end]的右边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> l     目标区间[l, r]的左边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> r     目标区间[l, r]的右边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> val   更新的值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (l &lt;= start &amp;&amp; end &lt;= r) &#123;</span><br><span class="line">            <span class="comment">// 更新符合区间要求的节点值</span></span><br><span class="line">            writeDown(node, start, end, val);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 向下更新</span></span><br><span class="line">        pushDown(node, start, end);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 递归更新左右子区间</span></span><br><span class="line">        <span class="keyword">int</span> mid = middle(start, end);</span><br><span class="line">        <span class="keyword">if</span> (l &lt;= mid) &#123;</span><br><span class="line">            update(node.left, start, mid, l, r, val);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (r &gt; mid) &#123;</span><br><span class="line">            update(node.right, mid + <span class="number">1</span>, end, l, r, val);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 向上更新</span></span><br><span class="line">        pushUp(node, start, end);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 子节点的值上推到父节点</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node  父节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> start 当前区间[start, end]的左边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> end   当前区间[start, end]的右边界</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">pushUp</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">        writeUp(node, start, end);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 父节点的值下推到子节点</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node  当前节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> start 当前区间[start, end]的左边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> end   当前区间[start, end]的右边界</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">pushDown</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 动态开点</span></span><br><span class="line">        <span class="keyword">if</span> (node.left == <span class="keyword">null</span>) &#123;</span><br><span class="line">            node.left = <span class="keyword">new</span> Node();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (node.right == <span class="keyword">null</span>) &#123;</span><br><span class="line">            node.right = <span class="keyword">new</span> Node();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 没有懒标记，无需再往下推</span></span><br><span class="line">        <span class="keyword">if</span> (node.add == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 把懒标记下推给子节点</span></span><br><span class="line">        <span class="keyword">int</span> mid = middle(start, end);</span><br><span class="line">        writeDown(node.left, start, mid, node.add);</span><br><span class="line">        writeDown(node.right, mid + <span class="number">1</span>, end, node.add);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 懒标记已处理</span></span><br><span class="line">        node.add = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 合并指定区间的查询结果</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node  当前节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> start 当前区间[start, end]的左边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> end   当前区间[start, end]的右边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> lVal  左区间的查询结果</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> rVal  右区间的查询结果</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 区间值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">mergeQuery</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end, Integer lVal, Integer rVal)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 向上更新节点的值</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node  当前节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> start 当前区间[start, end]的左边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> end   当前区间[start, end]的右边界</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">writeUp</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 向下更新节点的值</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node  当前节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> start 当前区间[start, end]的左边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> end   当前区间[start, end]的右边界</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> val   更新的值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">writeDown</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end, <span class="keyword">int</span> val)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 划分左右区间的中点</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> start 左边界[start, end]</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> end   右边界[start, end]</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 中点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">middle</span><span class="params">(<span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> start + (end - start) / <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="六、实际案例"><a href="#六、实际案例" class="headerlink" title="六、实际案例"></a>六、实际案例</h2><h3 id="6-1-LC-307-区域和检索"><a href="#6-1-LC-307-区域和检索" class="headerlink" title="6.1 LC 307. 区域和检索"></a>6.1 LC 307. 区域和检索</h3><blockquote>
+<p>题目描述</p>
+</blockquote>
+<p>给你一个数组 nums ，请你完成两类查询。 </p>
+<p>其中一类查询要求 更新 数组 nums 下标对应的值</p>
+<p>另一类查询要求返回数组 nums 中索引 left 和索引 right 之间（ 包含 ）的nums元素的 和 ，其中 left &lt;= right</p>
+<p>实现 NumArray 类：</p>
+<p>NumArray(int[] nums) 用整数数组 nums 初始化对象</p>
+<p>void update(int index, int val) 将 nums[index] 的值 更新 为 val</p>
+<p>int sumRange(int left, int right) 返回数组 nums 中索引 left 和索引 right 之间（ 包含 ）的&gt; nums元素的 和 （即，nums[left] + nums[left + 1], …, nums[right]</p>
+<p>提示：</p>
+<ul>
+<li>1 &lt;= nums.length &lt;= 3 * 104</li>
+<li>-100 &lt;= nums[i] &lt;= 100</li>
+<li>0 &lt;= index &lt; nums.length</li>
+<li>-100 &lt;= val &lt;= 100</li>
+<li>0 &lt;= left &lt;= right &lt; nums.length</li>
+<li>调用 update 和 sumRange 方法次数不大于 3 * 104 </li>
+</ul>
+<blockquote>
+<p>问题分析</p>
+</blockquote>
+<p>问题中涉及了 2 个操作：</p>
+<ul>
+<li>单点更新</li>
+<li>区间求和</li>
+</ul>
+<p>单点更新，可以当成是长度为 1 区间更新，所以这 2 种操作都可认为是区间操作。</p>
+<p>正好线段树可以用来实现区间更新和区间求和。</p>
+<ul>
+<li>区间节点需要缓存的是什么数据？</li>
+</ul>
+<p>从题目可知，区间查询的结果是区间和，所以：</p>
+<ul>
+<li>父节点缓存的应该是子节点的区间和</li>
+</ul>
+<p>确定节点缓存的数据之后，套用模板修改即可。</p>
+<blockquote>
+<p>代码实现</p>
+</blockquote>
+<p>这里是采用了动态开点作为例子，实际上可能直接用简单线段树更快一些。</p>
+<p>因为区间范围只有 <code>3 * 10^4</code>，不是很大，直接构建好线段树也没关系。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 区间和线段树</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 父节点缓存的是子树所有节点的和</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SumLinkSegmentTree</span> <span class="keyword">extends</span> <span class="title">LinkSegmentTree</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SumLinkSegmentTree</span><span class="params">(<span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(low, high);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">mergeQuery</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end, Integer lVal, Integer rVal)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 合并子树节点的区间和</span></span><br><span class="line">        <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (lVal != <span class="keyword">null</span>) &#123;</span><br><span class="line">            sum += lVal;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (rVal != <span class="keyword">null</span>) &#123;</span><br><span class="line">            sum += rVal;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sum;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">writeUp</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 子树的区间和发生变化后，父节点也要更新</span></span><br><span class="line">        node.val = node.left.val + node.right.val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">writeDown</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// end - start + 1 表示子树中叶子节点的数量</span></span><br><span class="line">        <span class="comment">// 区间内所有叶子节点都设为 val 的话</span></span><br><span class="line">        <span class="comment">// 那么父节点应该等于所有叶子节点的 val 总和</span></span><br><span class="line">        node.val = (end - start + <span class="number">1</span>) * val;</span><br><span class="line">        node.add = val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>区间和线段树实现好了，下面直接按题目要求调用即可：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NumArray</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    SumSegmentTree segmentTree;</span><br><span class="line">    <span class="keyword">int</span> low = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> high = (<span class="keyword">int</span>) <span class="number">3e4</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">NumArray</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">        segmentTree = <span class="keyword">new</span> SumSegmentTree(low, high);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">            <span class="keyword">this</span>.update(i, nums[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> index, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        segmentTree.update(index, index, val);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">sumRange</span><span class="params">(<span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> segmentTree.query(left, right);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这道题的解决方案还有其他方法，线段树的性能并不是最优的。</p>
+<p>但是这道题涉及到的区间操作，确实是线段树擅长的，用它解决也无可厚非。</p>
+<h3 id="6-2-LC-699-掉落的方块"><a href="#6-2-LC-699-掉落的方块" class="headerlink" title="6.2 LC 699. 掉落的方块"></a>6.2 LC 699. 掉落的方块</h3><blockquote>
+<p>题目描述</p>
+</blockquote>
+<p>在二维平面上的 x 轴上，放置着一些方块。</p>
+<p>给你一个二维整数数组 positions ，其中 positions[i] = [lefti, sideLengthi] 表示：第 i 个方块边长为 sideLengthi ，其左侧边与 x 轴上坐标点 lefti 对齐。</p>
+<p>每个方块都从一个比目前所有的落地方块更高的高度掉落而下。方块沿 y 轴负方向下落，直到着陆到 另一个正方形的顶边 或者是 x 轴上 。一个方块仅仅是擦过另一个方块的左侧边或右侧边不算着陆。一旦着陆，它就会固定在原地，无法移动。</p>
+<p>在每个方块掉落后，你必须记录目前所有已经落稳的 方块堆叠的最高高度 。</p>
+<p>返回一个整数数组 ans ，其中 ans[i] 表示在第 i 块方块掉落后堆叠的最高高度。</p>
+<p>提示：</p>
+<ul>
+<li>1 &lt;= positions.length &lt;= 1000</li>
+<li>1 &lt;= lefti &lt;= 108</li>
+<li>1 &lt;= sideLengthi &lt;= 106</li>
+</ul>
+<blockquote>
+<p>问题分析</p>
+</blockquote>
+<p>问题中出现的 2 个行为：</p>
+<ul>
+<li>方块掉落在坐标轴上，占用了一个区间，这实际上就是区间更新</li>
+<li>查询所有方块堆叠的最高高度，实际就是在查找区间内的最大值</li>
+</ul>
+<p>所以也可以用线段树来实现区间更新和区间求最大值。</p>
+<ul>
+<li>区间节点需要缓存的是什么数据？</li>
+</ul>
+<p>从题目可知，查询的是区间最大值，所以：</p>
+<ul>
+<li>父节点缓存的应该是子节点的区间最大值</li>
+</ul>
+<p>确定节点缓存的数据之后，开始套用模板修改。</p>
+<blockquote>
+<p>代码实现</p>
+</blockquote>
+<p>这里的区间范围有 <code>10^8</code>，很大，不太适合用简单线段树，采用动态开点会更好一些。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 区间最大值线段树</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 父节点缓存的是子树的最大值</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MaxLinkSegmentTree</span> <span class="keyword">extends</span> <span class="title">LinkSegmentTree</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MaxLinkSegmentTree</span><span class="params">(<span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(low, high);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">mergeQuery</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end, Integer lVal, Integer rVal)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 取左右子树中的最大值</span></span><br><span class="line">        <span class="keyword">int</span> max = Integer.MIN_VALUE;</span><br><span class="line">        <span class="keyword">if</span> (lVal != <span class="keyword">null</span>) &#123;</span><br><span class="line">            max = lVal;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (rVal != <span class="keyword">null</span>) &#123;</span><br><span class="line">            max = Math.max(rVal, max);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> max;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">writeUp</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 子节点更新后，父节点也要更新最大值</span></span><br><span class="line">        node.val = Math.max(node.left.val, node.right.val);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">writeDown</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 子节点都更新为 val 的话，那么所有值都会相等</span></span><br><span class="line">        <span class="comment">// 此时区间最大值就是 val</span></span><br><span class="line">        node.val = val;</span><br><span class="line">        node.add = val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接着按照题目要求实现调用代码即可：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">fallingSquares</span><span class="params">(<span class="keyword">int</span>[][] positions)</span> </span>&#123;</span><br><span class="line">    List&lt;Integer&gt; ans = <span class="keyword">new</span> ArrayList&lt;&gt;(positions.length);</span><br><span class="line">    <span class="keyword">int</span> low = <span class="number">1</span>, high = (<span class="keyword">int</span>) <span class="number">1e8</span>;</span><br><span class="line">    MaxLinkSegmentTree segmentTree = <span class="keyword">new</span> MaxLinkSegmentTree(low, high);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span>[] position : positions) &#123;</span><br><span class="line">        <span class="keyword">int</span> x = position[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">int</span> w = position[<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 找到区间内的最大值</span></span><br><span class="line">        <span class="keyword">int</span> maxH = segmentTree.query(x, x + w - <span class="number">1</span>);</span><br><span class="line">        <span class="comment">// 堆叠新落下的方块高度</span></span><br><span class="line">        segmentTree.update(x, x + w - <span class="number">1</span>, maxH + w);</span><br><span class="line"></span><br><span class="line">        ans.add(segmentTree.query(low, high));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-3-LC-715-Range-模块"><a href="#6-3-LC-715-Range-模块" class="headerlink" title="6.3 LC 715. Range 模块"></a>6.3 LC 715. Range 模块</h3><blockquote>
+<p>题目描述</p>
+</blockquote>
+<p>Range模块是跟踪数字范围的模块。</p>
+<p>设计一个数据结构来跟踪表示为 半开区间 的范围并查询它们。</p>
+<p>半开区间 [left, right) 表示所有 left &lt;= x &lt; right 的实数 x 。</p>
+<p>实现 RangeModule 类:</p>
+<p>RangeModule() 初始化数据结构的对象。</p>
+<p>void addRange(int left, int right) 添加 半开区间 [left, right)，跟踪该区间中的每个实数。添加与当前跟踪的数字部分重叠的区间时，应当添加在区间 [left, right) 中尚未跟踪的任何数字到该区间中。</p>
+<p>boolean queryRange(int left, int right) 只有在当前正在跟踪区间 [left, right) 中的每一个实数时，才返回 true ，否则返回 false 。</p>
+<p>void removeRange(int left, int right) 停止跟踪 半开区间 [left, right) 中当前正在跟踪的每个实数。</p>
+<p>提示：</p>
+<ul>
+<li>1 &lt;= left &lt; right &lt;= 10^9</li>
+<li>在单个测试用例中，对 addRange 、queryRange 和 removeRange 的调用总数不超过 104 次</li>
+</ul>
+<blockquote>
+<p>问题分析</p>
+</blockquote>
+<p>问题已经说的很清楚了，就是区间查询和区间更新。</p>
+<p>现在还需要确认一下：</p>
+<ul>
+<li>区间节点需要缓存什么样的数据？</li>
+</ul>
+<p>跟踪区间，可以理解为区间被标记了。那么可以这样来标记：</p>
+<ul>
+<li>区间值为 1 时：表示被跟踪了</li>
+<li>区间值小于 1 时：表示未跟踪</li>
+</ul>
+<p>这个时候，只要查出区间内的最小值，就能知道区间是否被跟踪了：</p>
+<ul>
+<li>最小值小于 1，区间未被跟踪</li>
+<li>最小值等于 1，区间已被跟踪</li>
+</ul>
+<p>所以，</p>
+<ul>
+<li>父节点缓存的应该是子节点的区间最小值</li>
+</ul>
+<p>确定节点缓存的数据之后，开始套用模板修改。</p>
+<blockquote>
+<p>代码实现</p>
+</blockquote>
+<p>这里的区间范围有 <code>10^9</code>，很大，不适合用简单线段树，采用动态开点会更好一些。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 区间最小值线段树</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 父节点缓存的是子树的最小值</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MaxLinkSegmentTree</span> <span class="keyword">extends</span> <span class="title">LinkSegmentTree</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MaxLinkSegmentTree</span><span class="params">(<span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(low, high);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">mergeQuery</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end, Integer lVal, Integer rVal)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 取左右子树中的最小值</span></span><br><span class="line">        <span class="keyword">int</span> min = Integer.MAX_VALUE;</span><br><span class="line">        <span class="keyword">if</span> (lVal != <span class="keyword">null</span>) &#123;</span><br><span class="line">            min = lVal;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (rVal != <span class="keyword">null</span>) &#123;</span><br><span class="line">            min = Math.min(rVal, min);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> min;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">writeUp</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 子节点更新后，父节点也要更新最小值</span></span><br><span class="line">        node.val = Math.min(node.left.val, node.right.val);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">writeDown</span><span class="params">(Node node, <span class="keyword">int</span> start, <span class="keyword">int</span> end, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 子节点都更新为 val 的话，那么所有值都会相等</span></span><br><span class="line">        <span class="comment">// 此时区间最小值就是 val</span></span><br><span class="line">        node.val = val;</span><br><span class="line">        node.add = val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接着按照题目要求，实现其他的调用代码即可：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RangeModule</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> low = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> high = (<span class="keyword">int</span>) <span class="number">1e9</span>;</span><br><span class="line">    MaxLinkSegmentTree segmentTree;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">RangeModule</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        segmentTree = <span class="keyword">new</span> MinLinkSegmentTree(low, high);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addRange</span><span class="params">(<span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">        segmentTree.update(left, right - <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">queryRange</span><span class="params">(<span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ret = segmentTree.query(left, right - <span class="number">1</span>);</span><br><span class="line">        <span class="comment">// 区间最小值大于 0 表示被跟踪了</span></span><br><span class="line">        <span class="keyword">return</span> ret &gt; <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeRange</span><span class="params">(<span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 这里更新的值必须使用小于 0 的整数</span></span><br><span class="line">        <span class="comment">// 不能用 0，因为懒标志用 0 表示无更新了</span></span><br><span class="line">        <span class="comment">// 设成 0 的话会导致线段树不更新数据</span></span><br><span class="line">        <span class="comment">// 相当于 0 已经被懒标志占用了，使用 0 会造成冲突</span></span><br><span class="line">        segmentTree.update(left, right - <span class="number">1</span>, -<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-4-小结"><a href="#6-4-小结" class="headerlink" title="6.4 小结"></a>6.4 小结</h3><p>上面列举了几种线段树的几种常见使用场景：</p>
+<ul>
+<li>区间和</li>
+<li>区间最大值</li>
+<li>区间最小值</li>
+</ul>
+<p>线段树本质就是区间缓存，所以对于：</p>
+<ul>
+<li>多次区间查询</li>
+<li>多次区间更新</li>
+</ul>
+<p>就比较适用，不过具体用哪种，视情况而定。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 数据结构</a>
+              <a href="/tags/%E7%BA%BF%E6%AE%B5%E6%A0%91/" rel="tag"># 线段树</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/algorithm/binary_search/" rel="prev" title="二分查找">
+      <i class="fa fa-chevron-left"></i> 二分查找
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E6%AE%B5%E6%A0%91"><span class="nav-text">线段树</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E7%BA%BF%E6%AE%B5%E6%A0%91%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-text">一、线段树是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8%E7%BA%BF%E6%AE%B5%E6%A0%91%EF%BC%9F"><span class="nav-text">二、为什么要用线段树？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E7%BA%BF%E6%AE%B5%E6%A0%91%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%EF%BC%9F"><span class="nav-text">三、线段树如何实现？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E7%AE%80%E5%8D%95%E7%BA%BF%E6%AE%B5%E6%A0%91"><span class="nav-text">3.1 简单线段树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-1-%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF"><span class="nav-text">3.1.1 基本思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-2-%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84"><span class="nav-text">3.1.2 存储结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-3-%E8%8A%82%E7%82%B9%E6%95%B0%E9%87%8F"><span class="nav-text">3.1.3 节点数量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-4-%E6%9E%84%E5%BB%BA%E8%BF%87%E7%A8%8B"><span class="nav-text">3.1.4 构建过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E5%8A%A8%E6%80%81%E4%BC%B0%E7%82%B9%E7%BA%BF%E6%AE%B5%E6%A0%91"><span class="nav-text">3.2 动态估点线段树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-1-%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF"><span class="nav-text">3.2.1 基本思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-2-%E5%8C%BA%E9%97%B4%E4%BC%B0%E7%82%B9"><span class="nav-text">3.2.2 区间估点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-3-%E5%8A%A8%E6%80%81%E5%BB%BA%E7%82%B9"><span class="nav-text">3.2.3 动态建点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-4-%E6%9E%84%E5%BB%BA%E8%BF%87%E7%A8%8B"><span class="nav-text">3.2.4 构建过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E5%8A%A8%E6%80%81%E5%BC%80%E7%82%B9%E7%BA%BF%E6%AE%B5%E6%A0%91"><span class="nav-text">3.3 动态开点线段树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-1-%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF"><span class="nav-text">3.3.1 基本思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-2-%E5%8A%A8%E6%80%81%E5%BB%BA%E7%82%B9"><span class="nav-text">3.3.2 动态建点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-3-%E6%9E%84%E5%BB%BA%E8%BF%87%E7%A8%8B"><span class="nav-text">3.3.3 构建过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-%E5%B0%8F%E7%BB%93"><span class="nav-text">3.4 小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E7%BA%BF%E6%AE%B5%E6%A0%91%E7%9A%84%E4%BC%98%E5%8C%96"><span class="nav-text">四、线段树的优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E6%87%92%E6%A0%87%E8%AE%B0%E6%9B%B4%E6%96%B0"><span class="nav-text">4.1 懒标记更新</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-1-%E6%87%92%E6%9B%B4%E6%96%B0%E5%BC%95%E5%85%A5"><span class="nav-text">4.1.1 懒更新引入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-2-%E6%87%92%E6%A0%87%E8%AE%B0%E5%AE%9E%E7%8E%B0"><span class="nav-text">4.1.2 懒标记实现</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E7%BA%BF%E6%AE%B5%E6%A0%91%E6%A8%A1%E6%9D%BF"><span class="nav-text">五、线段树模板</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E6%8E%A5%E5%8F%A3%E5%AE%9A%E4%B9%89"><span class="nav-text">5.1 接口定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E5%8A%A8%E6%80%81%E4%BC%B0%E7%82%B9%EF%BC%88%E6%95%B0%E7%BB%84%EF%BC%89"><span class="nav-text">5.1 动态估点（数组）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-%E5%8A%A8%E6%80%81%E5%BC%80%E7%82%B9%EF%BC%88%E6%8C%87%E9%92%88%EF%BC%89"><span class="nav-text">5.3 动态开点（指针）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E5%AE%9E%E9%99%85%E6%A1%88%E4%BE%8B"><span class="nav-text">六、实际案例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-LC-307-%E5%8C%BA%E5%9F%9F%E5%92%8C%E6%A3%80%E7%B4%A2"><span class="nav-text">6.1 LC 307. 区域和检索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-LC-699-%E6%8E%89%E8%90%BD%E7%9A%84%E6%96%B9%E5%9D%97"><span class="nav-text">6.2 LC 699. 掉落的方块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-LC-715-Range-%E6%A8%A1%E5%9D%97"><span class="nav-text">6.3 LC 715. Range 模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-4-%E5%B0%8F%E7%BB%93"><span class="nav-text">6.4 小结</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jiaduo"
+      src="/images/lufei.jpeg">
+  <p class="site-author-name" itemprop="name">jiaduo</p>
+  <div class="site-description" itemprop="description">不积跬步，无以至千里</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">82</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021/08 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiaduo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">378k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">5:44</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
