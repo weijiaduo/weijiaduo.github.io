@@ -17,7 +17,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="不积跬步，无以至千里">
@@ -102,6 +102,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -136,11 +137,38 @@
     <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
 
 </div>
     </header>
@@ -164,7 +192,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/source/jdk8/collection/AbstractList/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/practice/leetcode/array/122.MaxProfit2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/lufei.jpeg">
@@ -178,7 +206,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/lang/java/source/jdk8/collection/AbstractList/" class="post-title-link" itemprop="url">AbstractList</a>
+            <a href="/practice/leetcode/array/122.MaxProfit2/" class="post-title-link" itemprop="url">122. 买卖股票的最佳时机 II</a>
         </h2>
 
         <div class="post-meta">
@@ -189,7 +217,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-09-05 20:10:23 / 修改时间：20:11:45" itemprop="dateCreated datePublished" datetime="2021-09-05T20:10:23+08:00">2021-09-05</time>
+              <time title="创建时间：2022-09-18 03:05:30 / 修改时间：03:09:30" itemprop="dateCreated datePublished" datetime="2022-09-18T03:05:30+08:00">2022-09-18</time>
             </span>
 
           <br>
@@ -198,93 +226,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>4.2k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="AbstractList"><a href="#AbstractList" class="headerlink" title="AbstractList"></a>AbstractList</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><p><code>AbstractList</code> 是一个抽象类，是一个 <code>List</code>。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractList</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractCollection</span>&lt;<span class="title">E</span>&gt; <span class="keyword">implements</span> <span class="title">List</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="二、属性"><a href="#二、属性" class="headerlink" title="二、属性"></a>二、属性</h2><p>在 <code>AbstractList</code> 中，有一个特殊的属性 <code>modCount</code>，用于统计列表被修改的次数（例如删除、添加等）。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="keyword">transient</span> <span class="keyword">int</span> modCount = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
-
-<p><code>modCount</code> 属性的作用是为了在并发修改列表时，能够快速失败（fail-fast）并抛出并发异常。例如多个线程同时修改列表时，就有可能对正在访问列表元素的线程造成影响，<code>modCount</code> 属性可用于判断当前列表是否是异常状态。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/lang/java/source/jdk8/collection/AbstractList/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/core/enumerated/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/lang/java/core/enumerated/" class="post-title-link" itemprop="url">注解@Enumerated</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-09-05 19:41:42 / 修改时间：20:10:22" itemprop="dateCreated datePublished" datetime="2021-09-05T19:41:42+08:00">2021-09-05</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>1.4k</span>
+              <span>709</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -303,15 +245,12 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="Enumerated"><a href="#Enumerated" class="headerlink" title="@Enumerated"></a>@Enumerated</h1><p><code>@Enumerated</code> 是JDK中 <code>javax.persistence</code> 包下的注解，用在持久化实体类属性或字段上，表示该属性或字段应该按照枚举类型 <code>Enum</code> 来持久化。例如：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">Gender</span> </span>&#123;</span><br><span class="line">    MALE,</span><br><span class="line">    FEMALE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Column</span></span><br><span class="line">    <span class="meta">@Enumerated</span></span><br><span class="line">    <span class="keyword">private</span> Gender gender;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 省略其他属性方法，后面也是</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>属性或字段按照枚举类型来持久化时，可以分为两种情况：原始类型和字符串类型。</p>
+          <h1 id="122-买卖股票的最佳时机-II"><a href="#122-买卖股票的最佳时机-II" class="headerlink" title="122. 买卖股票的最佳时机 II"></a>122. 买卖股票的最佳时机 II</h1><h2 id="一、题目描述"><a href="#一、题目描述" class="headerlink" title="一、题目描述"></a>一、题目描述</h2><p>给定一个数组 prices ，其中prices[i] 是一支给定股票第 i 天的价格。</p>
+<p>设计一个算法来计算你所能获取的最大利润。你可以尽可能地完成更多的交易（多次买卖一支股票）。</p>
+<p>注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/lang/java/core/enumerated/#more" rel="contents">
+              <a class="btn" href="/practice/leetcode/array/122.MaxProfit2/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -335,7 +274,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/core/native/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/practice/leetcode/array/121.MaxProfit/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/lufei.jpeg">
@@ -349,7 +288,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/lang/java/core/native/" class="post-title-link" itemprop="url">关键字native</a>
+            <a href="/practice/leetcode/array/121.MaxProfit/" class="post-title-link" itemprop="url">121. 买卖股票的最佳时机</a>
         </h2>
 
         <div class="post-meta">
@@ -360,7 +299,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-09-05 19:30:09 / 修改时间：20:10:33" itemprop="dateCreated datePublished" datetime="2021-09-05T19:30:09+08:00">2021-09-05</time>
+              <time title="创建时间：2022-09-18 03:03:30 / 修改时间：03:09:25" itemprop="dateCreated datePublished" datetime="2022-09-18T03:03:30+08:00">2022-09-18</time>
             </span>
 
           <br>
@@ -369,14 +308,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>3.4k</span>
+              <span>1.3k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
+              <span>1 分钟</span>
             </span>
 
         </div>
@@ -388,14 +327,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="native"><a href="#native" class="headerlink" title="native"></a>native</h1><h2 id="1-含义"><a href="#1-含义" class="headerlink" title="1. 含义"></a>1. 含义</h2><p>在 JDK 源代码中，有一些方法是被关键字 native 修饰的，就比如 <code>Object</code> 类：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// java.lang.Object</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>那 <code>native</code> 关键字的作用是什么呢？</p>
-<p><em><strong><code>native</code> 修饰的方法表示这个方法是原生函数，其具体实现由非 Java 语言实现，比如 C 语言，其代码定义不在 Java 类中，而是在外部文件中（一般是动态链接库 .dll 文件）。</strong></em></p>
+          <h1 id="121-买卖股票的最佳时机"><a href="#121-买卖股票的最佳时机" class="headerlink" title="121. 买卖股票的最佳时机"></a>121. 买卖股票的最佳时机</h1><h2 id="一、题目描述"><a href="#一、题目描述" class="headerlink" title="一、题目描述"></a>一、题目描述</h2><p>给定一个数组 prices ，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格。</p>
+<p>你只能选择 某一天 买入这只股票，并选择在 未来的某一个不同的日子 卖出该股票。</p>
+<p>设计一个算法来计算你所能获取的最大利润。</p>
+<p>返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0 。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/lang/java/core/native/#more" rel="contents">
+              <a class="btn" href="/practice/leetcode/array/121.MaxProfit/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -419,7 +357,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/js/json_data/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/practice/leetcode/array/18.FourSum/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/lufei.jpeg">
@@ -433,7 +371,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/lang/js/json_data/" class="post-title-link" itemprop="url">JSON数据格式</a>
+            <a href="/practice/leetcode/array/18.FourSum/" class="post-title-link" itemprop="url">18. 四数之和</a>
         </h2>
 
         <div class="post-meta">
@@ -444,7 +382,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-08-28 16:37:46 / 修改时间：21:00:48" itemprop="dateCreated datePublished" datetime="2021-08-28T16:37:46+08:00">2021-08-28</time>
+              <time title="创建时间：2022-09-18 02:35:30 / 修改时间：02:38:36" itemprop="dateCreated datePublished" datetime="2022-09-18T02:35:30+08:00">2022-09-18</time>
             </span>
 
           <br>
@@ -453,94 +391,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>3.7k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="JSON"><a href="#JSON" class="headerlink" title="JSON"></a>JSON</h1><p>JSON 是一种数据格式，不是一种编程语言。一般用于Web服务的前后端的数据交流格式。</p>
-<h2 id="一、类型"><a href="#一、类型" class="headerlink" title="一、类型"></a>一、类型</h2><p>JSON 的语法可以有3种类型的值：</p>
-<ul>
-<li>简单值：包括字符串、数值、布尔值和 null（但是不支持 Javascript 中的 undefined）</li>
-<li>对象：表示一组无序的键值对</li>
-<li>数组：表示一组有序的值的列表</li>
-</ul>
-<h2 id="二、与-Jsvacript-的区别"><a href="#二、与-Jsvacript-的区别" class="headerlink" title="二、与 Jsvacript 的区别"></a>二、与 Jsvacript 的区别</h2>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/lang/js/json_data/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/js/error/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/lang/js/error/" class="post-title-link" itemprop="url">js如何处理错误</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-08-28 16:32:16 / 修改时间：21:02:50" itemprop="dateCreated datePublished" datetime="2021-08-28T16:32:16+08:00">2021-08-28</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>2.4k</span>
+              <span>2.3k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -559,15 +410,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h1><p>在 Javascript 中，处理异常的方式一般有两种：</p>
+          <h1 id="18-四数之和"><a href="#18-四数之和" class="headerlink" title="18. 四数之和"></a>18. 四数之和</h1><h2 id="一、题目描述"><a href="#一、题目描述" class="headerlink" title="一、题目描述"></a>一、题目描述</h2><p>给定一个包含 n 个整数的数组 nums 和一个目标值 target，判断 nums 中是否存在四个元素 a，b，c 和 d ，使得 a + b + c + d 的值与 target 相等？找出所有满足条件且不重复的四元组。</p>
+<p>注意：答案中不可以包含重复的四元组。</p>
 <ul>
-<li>try-catch 语句捕获异常</li>
-<li>onerror 事件捕获异常</li>
+<li>0 &lt;= nums.length &lt;= 200</li>
+<li>-109 &lt;= nums[i] &lt;= 109</li>
+<li>-109 &lt;= target &lt;= 109</li>
 </ul>
-<h2 id="一、try-catch-语句"><a href="#一、try-catch-语句" class="headerlink" title="一、try-catch 语句"></a>一、try-catch 语句</h2>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/lang/js/error/#more" rel="contents">
+              <a class="btn" href="/practice/leetcode/array/18.FourSum/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -591,7 +443,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/js/events/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/practice/leetcode/array/16.ThreeSumClosest/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/lufei.jpeg">
@@ -605,7 +457,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/lang/js/events/" class="post-title-link" itemprop="url">事件的监听以及处理</a>
+            <a href="/practice/leetcode/array/16.ThreeSumClosest/" class="post-title-link" itemprop="url">16. 最接近的三数之和</a>
         </h2>
 
         <div class="post-meta">
@@ -616,7 +468,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-08-28 16:27:33 / 修改时间：21:02:41" itemprop="dateCreated datePublished" datetime="2021-08-28T16:27:33+08:00">2021-08-28</time>
+              <time title="创建时间：2022-09-18 02:30:30 / 修改时间：02:38:30" itemprop="dateCreated datePublished" datetime="2022-09-18T02:30:30+08:00">2022-09-18</time>
             </span>
 
           <br>
@@ -625,14 +477,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>11k</span>
+              <span>1.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>10 分钟</span>
+              <span>1 分钟</span>
             </span>
 
         </div>
@@ -644,17 +496,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h1><p>事件，是文档或浏览器窗口中发生的一些特定的交互瞬间。</p>
-<p>下面分别介绍事件中的几个重要特性：</p>
+          <h1 id="16-最接近的三数之和"><a href="#16-最接近的三数之和" class="headerlink" title="16. 最接近的三数之和"></a>16. 最接近的三数之和</h1><h2 id="一、题目描述"><a href="#一、题目描述" class="headerlink" title="一、题目描述"></a>一、题目描述</h2><p>给定一个包括 n 个整数的数组 nums 和 一个目标值 target。找出 nums 中的三个整数，使得它们的和与 target 最接近。返回这三个数的和</p>
+<p>假定每组输入只存在唯一答案。</p>
 <ul>
-<li>事件流</li>
-<li>事件处理程序</li>
-<li>事件对象</li>
+<li>3 &lt;= nums.length &lt;= 10^3</li>
+<li>-10^3 &lt;= nums[i] &lt;= 10^3</li>
+<li>-10^4 &lt;= target &lt;= 10^4</li>
 </ul>
-<h2 id="一、事件流"><a href="#一、事件流" class="headerlink" title="一、事件流"></a>一、事件流</h2><p>事件流是用于描述页面接收事件的顺序。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/lang/js/events/#more" rel="contents">
+              <a class="btn" href="/practice/leetcode/array/16.ThreeSumClosest/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -678,7 +529,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/js/bom/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/practice/leetcode/array/15.ThreeSum/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/lufei.jpeg">
@@ -692,7 +543,435 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/lang/js/bom/" class="post-title-link" itemprop="url">浏览器中的BOM对象</a>
+            <a href="/practice/leetcode/array/15.ThreeSum/" class="post-title-link" itemprop="url">15. 三数之和</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-09-18 02:30:30 / 修改时间：02:38:23" itemprop="dateCreated datePublished" datetime="2022-09-18T02:30:30+08:00">2022-09-18</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="15-三数之和"><a href="#15-三数之和" class="headerlink" title="15. 三数之和"></a>15. 三数之和</h1><h2 id="一、题目描述"><a href="#一、题目描述" class="headerlink" title="一、题目描述"></a>一、题目描述</h2><p>给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有和为 0 且不重复的三元组。</p>
+<p>注意：答案中不可以包含重复的三元组。</p>
+<ul>
+<li>0 &lt;= nums.length &lt;= 3000</li>
+<li>-105 &lt;= nums[i] &lt;= 105</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/practice/leetcode/array/15.ThreeSum/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/practice/leetcode/bit/6186.SmallestSubarrays/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/practice/leetcode/bit/6186.SmallestSubarrays/" class="post-title-link" itemprop="url">6186. 按位或最大的最小子数组长度</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-09-18 01:45:30 / 修改时间：03:11:26" itemprop="dateCreated datePublished" datetime="2022-09-18T01:45:30+08:00">2022-09-18</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="6186-按位或最大的最小子数组长度"><a href="#6186-按位或最大的最小子数组长度" class="headerlink" title="6186. 按位或最大的最小子数组长度"></a>6186. 按位或最大的最小子数组长度</h1><h2 id="一、题目描述"><a href="#一、题目描述" class="headerlink" title="一、题目描述"></a>一、题目描述</h2><p>给你一个长度为 n 下标从 0 开始的数组 nums ，数组中所有数字均为非负整数。</p>
+<p>对于 0 到 n - 1 之间的每一个下标 i ，你需要找出 nums 中一个 最小 非空子数组，它的起始位置为 i （包含这个位置），同时有 最大 的 按位或运算值 。</p>
+<p>换言之，令 Bij 表示子数组 nums[i…j] 的按位或运算的结果，你需要找到一个起始位置为 i 的最小子数组，这个子数组的按位或运算的结果等于 max(Bik) ，其中 i &lt;= k &lt;= n - 1 。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/practice/leetcode/bit/6186.SmallestSubarrays/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/jvm/selfjvm/05_instruction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/lang/java/jvm/selfjvm/05_instruction/" class="post-title-link" itemprop="url">05_指令集和解释器</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-02-21 00:13:21 / 修改时间：00:05:17" itemprop="dateCreated datePublished" datetime="2022-02-21T00:13:21+08:00">2022-02-21</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>28k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>26 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="指令集和解释器"><a href="#指令集和解释器" class="headerlink" title="指令集和解释器"></a>指令集和解释器</h1><p>Java虚拟机顾名思义，就是一台虚拟的机器，而字节码（bytecode）就是运行在这台虚拟机器上的机器码。</p>
+<h2 id="一、字节码指令"><a href="#一、字节码指令" class="headerlink" title="一、字节码指令"></a>一、字节码指令</h2><h3 id="1-1-指令结构"><a href="#1-1-指令结构" class="headerlink" title="1.1 指令结构"></a>1.1 指令结构</h3><p>字节码中存放编码后的 Java 虚拟机指令：</p>
+<ul>
+<li><p>每条指令都以一个单字节的操作码（opcode）开头。</p>
+</li>
+<li><p>由于只使用一字节表示操作码，Java 虚拟机最多只能支持 256 条指令。</p>
+</li>
+</ul>
+<p>到第八版为止，Java 虚拟机规范已经定义了205条指令，操作码分别是<code>0(0x00)</code>到 <code>202(0xCA)</code>、<code>254(0xFE)</code>和 <code>255(0xFF)</code>。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/lang/java/jvm/selfjvm/05_instruction/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/jvm/selfjvm/04_runtimedata/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/lang/java/jvm/selfjvm/04_runtimedata/" class="post-title-link" itemprop="url">04_运行时数据区</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-01-15 11:13:21 / 修改时间：11:13:43" itemprop="dateCreated datePublished" datetime="2022-01-15T11:13:21+08:00">2022-01-15</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>9.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="运行时数据区"><a href="#运行时数据区" class="headerlink" title="运行时数据区"></a>运行时数据区</h1><h2 id="一、数据结构"><a href="#一、数据结构" class="headerlink" title="一、数据结构"></a>一、数据结构</h2><p>在运行Java程序时，Java虚拟机需要使用内存来存放各式各样的数据。Java虚拟机规范把这些内存区域叫作运行时数据区。</p>
+<p>运行时数据区可以分为两类：一类是多线程共享的，另一类则是线程私有的。</p>
+<ul>
+<li>多线程共享的运行时数据区需要在Java虚拟机启动时创建好，在Java虚拟机退出时销毁</li>
+<li>线程私有的运行时数据区则在创建线程时才创建，线程退出时销毁</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/lang/java/jvm/selfjvm/04_runtimedata/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/core/basic/02_operators/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/lang/java/core/basic/02_operators/" class="post-title-link" itemprop="url">02_操作符</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-10-15 00:09:33 / 修改时间：00:10:38" itemprop="dateCreated datePublished" datetime="2021-10-15T00:09:33+08:00">2021-10-15</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="操作符"><a href="#操作符" class="headerlink" title="操作符"></a>操作符</h1><p>Java 中的操作符有很多，大概可以分成以下几种：</p>
+<ul>
+<li>关系操作符：&gt;、&lt;、&gt;=、&lt;=、==、!=</li>
+<li>逻辑操作符：!、&amp;、|、&amp;&amp;、||</li>
+<li>条件操作符：?:</li>
+<li>算术操作符：-、++、–、+、-、*、/、%</li>
+<li>位操作符：~、&amp;、|、^、&lt;&lt;、&gt;&gt;、&gt;&gt;&gt;</li>
+<li>赋值操作符：=、+=、-=、*=、/=、&amp;=、|=、^=、&lt;&lt;=、&gt;&gt;=、&gt;&gt;&gt;=</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/lang/java/core/basic/02_operators/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/core/basic/01_types/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/lang/java/core/basic/01_types/" class="post-title-link" itemprop="url">01_基本类型</a>
         </h2>
 
         <div class="post-meta">
@@ -702,14 +981,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2021-08-28 16:24:55" itemprop="dateCreated datePublished" datetime="2021-08-28T16:24:55+08:00">2021-08-28</time>
+              <time title="创建时间：2021-10-08 18:21:34" itemprop="dateCreated datePublished" datetime="2021-10-08T18:21:34+08:00">2021-10-08</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-01-21 02:59:29" itemprop="dateModified" datetime="2022-01-21T02:59:29+08:00">2022-01-21</time>
+                <time title="修改时间：2021-10-15 00:10:15" itemprop="dateModified" datetime="2021-10-15T00:10:15+08:00">2021-10-15</time>
               </span>
 
           <br>
@@ -718,14 +997,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>6.5k</span>
+              <span>2.9k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>6 分钟</span>
+              <span>3 分钟</span>
             </span>
 
         </div>
@@ -737,269 +1016,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="BOM"><a href="#BOM" class="headerlink" title="BOM"></a>BOM</h1><p>BOM 是指浏览器对象模型。</p>
-<p>主要用于开发人员控制浏览器显示的界面以外的部分，例如浏览器窗口的位置、浏览器的地址信息、浏览历史界面的前进后退等。</p>
-<h2 id="一、window"><a href="#一、window" class="headerlink" title="一、window"></a>一、window</h2><p>window 对象是 BOM 的核心对象，表示浏览器的一个实例。</p>
-<h3 id="1-1-全局声明"><a href="#1-1-全局声明" class="headerlink" title="1.1 全局声明"></a>1.1 全局声明</h3><p>window 既是访问浏览器窗口的接口，也是 ECMAScript 的全局对象（Global）。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/lang/js/bom/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/js/dom/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/lang/js/dom/" class="post-title-link" itemprop="url">HTML中的DOM对象</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-08-28 16:23:19" itemprop="dateCreated datePublished" datetime="2021-08-28T16:23:19+08:00">2021-08-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-01-21 02:59:39" itemprop="dateModified" datetime="2022-01-21T02:59:39+08:00">2022-01-21</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>13k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>12 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="DOM"><a href="#DOM" class="headerlink" title="DOM"></a>DOM</h1><p>DOM（文档对象模型）是针对 HTML 和 XML 文档的一个API。</p>
+          <h1 id="基本类型"><a href="#基本类型" class="headerlink" title="基本类型"></a>基本类型</h1><h2 id="一、类型大小"><a href="#一、类型大小" class="headerlink" title="一、类型大小"></a>一、类型大小</h2><p>在 Java 中，通过 <code>new</code> 生成的对象数据是存储在“堆”中，而基本类型则是直接把“值”保存在栈中。</p>
+<p>Java 中每种基本类型所占用的存储空间大小都是确定的，不会随着机器硬件架构变化而变化。</p>
 <ul>
-<li>主流浏览器都完成了 DOM1 级的实现</li>
-<li>IE 的 DOM 对象都是以 COM 对象的形式存在，和原始的 DOM 对象行为并不一致</li>
+<li>存储空间大小不变性，为Java的可移植性提供了很大的帮助</li>
 </ul>
-<h2 id="一、节点层次"><a href="#一、节点层次" class="headerlink" title="一、节点层次"></a>一、节点层次</h2><p>DOM 可以将 HTML 或 XML 文档描绘成一个由多层节点构成的结构，简单点说，就是一个树结构。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/lang/js/dom/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/framework/vuejs/dection03/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/framework/vuejs/dection03/" class="post-title-link" itemprop="url">对象变化侦测原理（三）</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-08-28 16:18:22 / 修改时间：21:03:52" itemprop="dateCreated datePublished" datetime="2021-08-28T16:18:22+08:00">2021-08-28</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>7k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>6 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="三、Array-数组侦测"><a href="#三、Array-数组侦测" class="headerlink" title="三、Array 数组侦测"></a>三、Array 数组侦测</h2><p>数组 Array 虽然也是属于对象类型，但还是存在一些差别，它没办法像 Object 对象那样，通过 <code>setter/getter</code> 的方式来监听属性的变化，因此对于 Array 而言，需要用到另外一套变化侦测方案。</p>
-<h3 id="3-1-如何追踪变化"><a href="#3-1-如何追踪变化" class="headerlink" title="3.1 如何追踪变化"></a>3.1 如何追踪变化</h3><p>我们知道，Array 数组有很多个内置方法可以改变数组的值，比如 <code>push</code>,<code>pop</code>,<code>shift</code>等，这些方法都可以改变数组的内容，所以可以尝试通过监听这些方法的调用，来达到监听数组变化的目的。</p>
-<p>但是，这些方法都是内置方法，而且 js 中并没有提供接口给我们覆盖，因此要如何修改这些方法，以达到我们需要的效果呢？</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/framework/vuejs/dection03/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/framework/vuejs/dection02/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/framework/vuejs/dection02/" class="post-title-link" itemprop="url">对象变化侦测原理（二）</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-08-28 16:15:19 / 修改时间：21:03:26" itemprop="dateCreated datePublished" datetime="2021-08-28T16:15:19+08:00">2021-08-28</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>5.8k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>5 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="二、Object-变化侦测"><a href="#二、Object-变化侦测" class="headerlink" title="二、Object 变化侦测"></a>二、Object 变化侦测</h2><p>变化侦测指的是，当运行时的状态发生变化时，应用程序可以知道哪个状态发生了变化，并作出相应的动作。</p>
-<p>变化侦测的方式可以分为2种：一种是“推（push）”，一种是“拉（pull）”。</p>
-<p>Vue 的变化侦测就属于“推，当状态发生变化时，它就会通知相应的依赖对象进行更新。</p>
-<h3 id="2-1-追踪变化"><a href="#2-1-追踪变化" class="headerlink" title="2.1 追踪变化"></a>2.1 追踪变化</h3>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/framework/vuejs/dection02/#more" rel="contents">
+              <a class="btn" href="/lang/java/core/basic/01_types/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1022,7 +1046,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1090,14 +1114,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-count">109</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1106,6 +1130,42 @@
 
 
       </div>
+
+      
+      
+      
+        <div class="recent_posts_list links-of-blogroll motion-element links-of-blogroll-block">
+          <div class="links-of-blogroll-title">
+            <!-- modify icon to fire by szw -->
+            <i class="fa fa-history fa-" aria-hidden="true"></i>
+            近期文章
+          </div>
+          <ul class="links-of-blogroll-list">
+            
+            
+              <li class="recent_posts_li">
+                <a href="/practice/leetcode/array/922.SortArrayByParityII/" title="922. 按奇偶排序数组 II" target="_blank">922. 按奇偶排序数组 II</a>
+              </li>
+            
+              <li class="recent_posts_li">
+                <a href="/practice/leetcode/array/905.SortArrayByParity/" title="905. 按奇偶排序数组" target="_blank">905. 按奇偶排序数组</a>
+              </li>
+            
+              <li class="recent_posts_li">
+                <a href="/practice/leetcode/array/896.Monotonic/" title="896. 单调数列" target="_blank">896. 单调数列</a>
+              </li>
+            
+              <li class="recent_posts_li">
+                <a href="/practice/leetcode/array/746.MinCostClimbingStairs/" title="746. 使用最小花费爬楼梯" target="_blank">746. 使用最小花费爬楼梯</a>
+              </li>
+            
+              <li class="recent_posts_li">
+                <a href="/practice/leetcode/array/724.PivotIndex/" title="724. 寻找数组的中心下标" target="_blank">724. 寻找数组的中心下标</a>
+              </li>
+            
+          </ul>
+        </div>
+      
 
     </div>
   </aside>
@@ -1133,12 +1193,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">387k</span>
+    <span title="站点总字数">408k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">5:52</span>
+    <span title="站点阅读时长">6:11</span>
 </div>
 
         
@@ -1176,6 +1236,10 @@
   
 
 
+
+
+  
+<script src="/js/local-search.js"></script>
 
 
 
