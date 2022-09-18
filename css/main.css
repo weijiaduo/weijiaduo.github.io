@@ -1169,7 +1169,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ffd070;
+  background: #0ff;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2711,12 +2711,6 @@ ul.breadcrumb li + li:last-child {
 .site-author-image:hover {
   transform: rotate(360deg);
 }
-.sidebar-inner.affix-top + .sidebar-inner.recent_posts_pin {
-  -webkit-animation-name: fadeIn; /* 动画名称 */
-  -webkit-animation-duration: 2s; /* 动画持续时间 */
-  -webkit-animation-iteration-count: 1; /* 动画次数 */
-  -webkit-animation-delay: 0s; /* 延迟时间 */
-}
 .sidebar-inner.affix + .sidebar-inner.recent_posts_pin {
   display: none;
 }
@@ -2732,6 +2726,16 @@ ul.breadcrumb li + li:last-child {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.sidebar-inner.recent_posts_pin {
+  animation-name: fadeIn; /* 动画名称 */
+  -webkit-animation-name: fadeIn; /* 动画名称 */
+  animation-duration: 2s; /* 动画持续时间 */
+  -webkit-animation-duration: 2s; /* 动画持续时间 */
+  animation-iteration-count: 1; /* 动画次数 */
+  -webkit-animation-iteration-count: 1; /* 动画次数 */
+  animation-delay: 0s; /* 延迟时间 */
+  -webkit-animation-delay: 0s; /* 延迟时间 */
 }
 @-moz-keyframes fadeIn {
   0% {

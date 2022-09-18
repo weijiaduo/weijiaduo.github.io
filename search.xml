@@ -2468,6 +2468,95 @@
       </tags>
   </entry>
   <entry>
+    <title>07_01_任务取消</title>
+    <url>/lang/java/core/concurrency/07_01_%E4%BB%BB%E5%8A%A1%E5%8F%96%E6%B6%88/</url>
+    <content><![CDATA[<h1 id="任务取消"><a href="#任务取消" class="headerlink" title="任务取消"></a>任务取消</h1><p>任务、线程、服务、应用程序之间的关系：</p>
+<ul>
+<li>任务是最小的执行单元</li>
+<li>任务在线程中执行</li>
+<li>线程在服务（比如线程池服务）中运行</li>
+<li>服务在应用程序（JVM）中运行</li>
+</ul>
+<span id="more"></span>
+
+<p>取消某个操作的请求有很多，比如：</p>
+<ul>
+<li>用户请求取消</li>
+<li>有时间限制的操作</li>
+<li>应用程序事件</li>
+<li>运行错误</li>
+<li>应用程序关闭</li>
+</ul>
+<p>不同层次的取消操作，可能会导致不同的结果。</p>
+<p>Java 中没有一种安全的抢占式方法来停止线程，所以也没有安全的方式可以直接取消任务。</p>
+<p>只有一些协作式的机制，取消任务只能通过这种方式来安全实现。</p>
+<h2 id="一、取消策略"><a href="#一、取消策略" class="headerlink" title="一、取消策略"></a>一、取消策略</h2><p>一个可取消的任务必须有取消策略（Cancellation Policy）：</p>
+<ul>
+<li>How：其他代码如何（How）请求取消任务</li>
+<li>When：任务在何时（When）检查是否已经请求了取消</li>
+<li>What：响应取消请求时，应该执行哪些（What）操作</li>
+</ul>
+<p>取消策略详细定义了任务取消的整个流程。</p>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CancellationTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> cancelled;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (!cancelled) &#123;</span><br><span class="line">            <span class="comment">// do something</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cancel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        cancelled = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>取消策略的各个部分分别是：</p>
+<ul>
+<li>How：调用 <code>cancel()</code> 方法取消任务</li>
+<li>When：在循环前验证取消标志 <code>while (!cancelled)</code></li>
+<li>What：没有其他操作，直接结束任务</li>
+</ul>
+<p>对于每一种取消策略，都必须有它的 <code>How</code>，<code>When</code>，<code>What</code>。</p>
+<h2 id="二、取消标志策略"><a href="#二、取消标志策略" class="headerlink" title="二、取消标志策略"></a>二、取消标志策略</h2><p>最简单的取消策略，就是使用一个取消标志，而任务定期检查这个标志。</p>
+<p>如果设置了取消标志，那么任务就将提前结束。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MarkCancellationTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 取消标志</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> cancelled;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> List&lt;BigInteger&gt; primes = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        BigInteger p = BigInteger.ONE;</span><br><span class="line">        <span class="keyword">while</span> (!cancelled) &#123;</span><br><span class="line">            p = p.nextProbablePrime();</span><br><span class="line">            <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">                primes.add(p);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cancel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        cancelled = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过在任务中检查取消标志，就可以实现取消任务的简单方式。</p>
+<p>但是这种方式存在一个问题，那就是如果任务中执行了阻塞操作，任务就可能取消不了：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MarkBlockCancellationTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 取消标志</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> cancelled;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> BlockingDeque&lt;BigInteger&gt; queue;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MarkBlockCancellationTask</span><span class="params">(BlockingDeque&lt;BigInteger&gt; queue)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.queue = queue;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            BigInteger p = BigInteger.ONE;</span><br><span class="line">            <span class="keyword">while</span> (!cancelled) &#123;</span><br><span class="line">                p = p.nextProbablePrime();</span><br><span class="line">                <span class="comment">// 阻塞操作，可能会一致阻塞</span></span><br><span class="line">                queue.put(p);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            <span class="comment">//</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cancel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        cancelled = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>比如这里执行了阻塞操作 <code>queue.put()</code>，假设操作一直阻塞，那么检查取消标志 <code>canceled</code> 的动作就一直不会触发。</p>
+<p>这种情况下，任务没办法取消，只能一直等到阻塞结束后，才能够取消。</p>
+<p>这其实和我们想要的效果不一样，我们想要的是那种取消后，任务就准备结束了。</p>
+<h2 id="三、线程中断策略"><a href="#三、线程中断策略" class="headerlink" title="三、线程中断策略"></a>三、线程中断策略</h2><p>为了解决阻塞导致任务无法取消的问题，需要用到线程的中断：</p>
+<ul>
+<li>每个线程都有一个中断状态标志</li>
+<li>大部分阻塞操作都支持抛出线程中断异常 <code>InterruptedException</code></li>
+<li>JVM 不能保证阻塞方法检测到中断的速度，但是总是可以检测到中断的</li>
+<li>线程中断并不会直接中断任务运行，而只是传递了请求中断的消息</li>
+</ul>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadInterruptCancellationTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> BlockingDeque&lt;BigInteger&gt; queue;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ThreadInterruptCancellationTask</span><span class="params">(BlockingDeque&lt;BigInteger&gt; queue)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.queue = queue;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            BigInteger p = BigInteger.ONE;</span><br><span class="line">            <span class="comment">// 1. 和取消标志一样，定期检查中断标志</span></span><br><span class="line">            <span class="keyword">while</span> (!Thread.currentThread().isInterrupted()) &#123;</span><br><span class="line">                p = p.nextProbablePrime();</span><br><span class="line">                <span class="comment">// 阻塞操作，可能会一致阻塞</span></span><br><span class="line">                queue.put(p);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            <span class="comment">// 2. 还提供了中断异常的取消方式</span></span><br><span class="line">            Thread.currentThread().interrupt();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>和取消标志差不多，只是线程中断提供的取消功能更全面：它可以取消阻塞的任务。</p>
+<ul>
+<li> 通常，中断是实现任务取消的最合理方式</li>
+</ul>
+<p>所以，如果任务代码能够响应中断，最好使用中断作为取消策略。</p>
+<h2 id="四、处理不可中断的操作"><a href="#四、处理不可中断的操作" class="headerlink" title="四、处理不可中断的操作"></a>四、处理不可中断的操作</h2><p>中断虽然能满足大部分的需求，但是：</p>
+<ul>
+<li>不是所有方法或阻塞操作都支持响应中断</li>
+</ul>
+<p>比如 Socket I/O 等方法，都不支持中断。</p>
+<p>但是，可以使用类似中断的手段来取消任务，比如 Socket 可以用 <code>close()</code> 方法结束阻塞：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SocketReaderThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">interrupt</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            socket.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">super</span>.interrupt();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不过这种模拟中断的方式，需要事先了解线程阻塞的原因以及如何结束线程阻塞才行。</p>
+<p>类似这种不可中断的阻塞，在 Java 类库中大约有这几种：</p>
+<ul>
+<li>Java.io 包中的 Socket I/O</li>
+<li>Java.io 包中的同步 I/O</li>
+<li>Selector 包中的异步 I/O</li>
+<li>获取某个锁，指的是 Lock</li>
+</ul>
+<p>针对这些情况，可以利用类似上面的方式来封装中断处理。</p>
+]]></content>
+      <tags>
+        <tag>java</tag>
+        <tag>并发编程</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>05_基础构建模块</title>
     <url>/lang/java/core/concurrency/05_%E5%9F%BA%E7%A1%80%E6%9E%84%E5%BB%BA%E6%A8%A1%E5%9D%97/</url>
     <content><![CDATA[<h1 id="基础构建模块"><a href="#基础构建模块" class="headerlink" title="基础构建模块"></a>基础构建模块</h1><h2 id="一、同步容器"><a href="#一、同步容器" class="headerlink" title="一、同步容器"></a>一、同步容器</h2><ul>
@@ -2567,95 +2656,6 @@
 <p>与闭锁不同，闭锁需要等到某个事件通知，如 countDown()，线程才会继续往下执行。</p>
 <p>而栅栏等待的就是线程，只要所有线程都到达栅栏位置，就可以继续执行下去。</p>
 <h2 id="四、缓存案例"><a href="#四、缓存案例" class="headerlink" title="四、缓存案例"></a>四、缓存案例</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Memoizer</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ConcurrentHashMap&lt;K, Future&lt;V&gt;&gt; cache = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Computable&lt;K, V&gt; computer;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Memoizer</span><span class="params">(Computable&lt;K, V&gt; c)</span> </span>&#123;</span><br><span class="line">        computer = c;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> V <span class="title">get</span><span class="params">(K key)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            Future&lt;V&gt; result = cache.get(key);</span><br><span class="line">            <span class="keyword">if</span> (result == <span class="keyword">null</span>) &#123;</span><br><span class="line">                FutureTask&lt;V&gt; task = <span class="keyword">new</span> FutureTask&lt;&gt;(() -&gt; computer.compute(key));</span><br><span class="line">                result = cache.putIfAbsent(key, task);</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 处理并发访问的情况</span></span><br><span class="line">                <span class="keyword">if</span> (result == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    result = task;</span><br><span class="line">                    <span class="keyword">new</span> Thread(task).start();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// 等待计算完成</span></span><br><span class="line">                <span class="keyword">return</span> result.get();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-      <tags>
-        <tag>java</tag>
-        <tag>并发编程</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>07_01_任务取消</title>
-    <url>/lang/java/core/concurrency/07_01_%E4%BB%BB%E5%8A%A1%E5%8F%96%E6%B6%88/</url>
-    <content><![CDATA[<h1 id="任务取消"><a href="#任务取消" class="headerlink" title="任务取消"></a>任务取消</h1><p>任务、线程、服务、应用程序之间的关系：</p>
-<ul>
-<li>任务是最小的执行单元</li>
-<li>任务在线程中执行</li>
-<li>线程在服务（比如线程池服务）中运行</li>
-<li>服务在应用程序（JVM）中运行</li>
-</ul>
-<span id="more"></span>
-
-<p>取消某个操作的请求有很多，比如：</p>
-<ul>
-<li>用户请求取消</li>
-<li>有时间限制的操作</li>
-<li>应用程序事件</li>
-<li>运行错误</li>
-<li>应用程序关闭</li>
-</ul>
-<p>不同层次的取消操作，可能会导致不同的结果。</p>
-<p>Java 中没有一种安全的抢占式方法来停止线程，所以也没有安全的方式可以直接取消任务。</p>
-<p>只有一些协作式的机制，取消任务只能通过这种方式来安全实现。</p>
-<h2 id="一、取消策略"><a href="#一、取消策略" class="headerlink" title="一、取消策略"></a>一、取消策略</h2><p>一个可取消的任务必须有取消策略（Cancellation Policy）：</p>
-<ul>
-<li>How：其他代码如何（How）请求取消任务</li>
-<li>When：任务在何时（When）检查是否已经请求了取消</li>
-<li>What：响应取消请求时，应该执行哪些（What）操作</li>
-</ul>
-<p>取消策略详细定义了任务取消的整个流程。</p>
-<p>代码示例：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CancellationTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> cancelled;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (!cancelled) &#123;</span><br><span class="line">            <span class="comment">// do something</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cancel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        cancelled = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>取消策略的各个部分分别是：</p>
-<ul>
-<li>How：调用 <code>cancel()</code> 方法取消任务</li>
-<li>When：在循环前验证取消标志 <code>while (!cancelled)</code></li>
-<li>What：没有其他操作，直接结束任务</li>
-</ul>
-<p>对于每一种取消策略，都必须有它的 <code>How</code>，<code>When</code>，<code>What</code>。</p>
-<h2 id="二、取消标志策略"><a href="#二、取消标志策略" class="headerlink" title="二、取消标志策略"></a>二、取消标志策略</h2><p>最简单的取消策略，就是使用一个取消标志，而任务定期检查这个标志。</p>
-<p>如果设置了取消标志，那么任务就将提前结束。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MarkCancellationTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 取消标志</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> cancelled;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> List&lt;BigInteger&gt; primes = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        BigInteger p = BigInteger.ONE;</span><br><span class="line">        <span class="keyword">while</span> (!cancelled) &#123;</span><br><span class="line">            p = p.nextProbablePrime();</span><br><span class="line">            <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">                primes.add(p);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cancel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        cancelled = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>通过在任务中检查取消标志，就可以实现取消任务的简单方式。</p>
-<p>但是这种方式存在一个问题，那就是如果任务中执行了阻塞操作，任务就可能取消不了：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MarkBlockCancellationTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 取消标志</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> cancelled;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> BlockingDeque&lt;BigInteger&gt; queue;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MarkBlockCancellationTask</span><span class="params">(BlockingDeque&lt;BigInteger&gt; queue)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.queue = queue;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            BigInteger p = BigInteger.ONE;</span><br><span class="line">            <span class="keyword">while</span> (!cancelled) &#123;</span><br><span class="line">                p = p.nextProbablePrime();</span><br><span class="line">                <span class="comment">// 阻塞操作，可能会一致阻塞</span></span><br><span class="line">                queue.put(p);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            <span class="comment">//</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cancel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        cancelled = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>比如这里执行了阻塞操作 <code>queue.put()</code>，假设操作一直阻塞，那么检查取消标志 <code>canceled</code> 的动作就一直不会触发。</p>
-<p>这种情况下，任务没办法取消，只能一直等到阻塞结束后，才能够取消。</p>
-<p>这其实和我们想要的效果不一样，我们想要的是那种取消后，任务就准备结束了。</p>
-<h2 id="三、线程中断策略"><a href="#三、线程中断策略" class="headerlink" title="三、线程中断策略"></a>三、线程中断策略</h2><p>为了解决阻塞导致任务无法取消的问题，需要用到线程的中断：</p>
-<ul>
-<li>每个线程都有一个中断状态标志</li>
-<li>大部分阻塞操作都支持抛出线程中断异常 <code>InterruptedException</code></li>
-<li>JVM 不能保证阻塞方法检测到中断的速度，但是总是可以检测到中断的</li>
-<li>线程中断并不会直接中断任务运行，而只是传递了请求中断的消息</li>
-</ul>
-<p>代码示例：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadInterruptCancellationTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> BlockingDeque&lt;BigInteger&gt; queue;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ThreadInterruptCancellationTask</span><span class="params">(BlockingDeque&lt;BigInteger&gt; queue)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.queue = queue;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            BigInteger p = BigInteger.ONE;</span><br><span class="line">            <span class="comment">// 1. 和取消标志一样，定期检查中断标志</span></span><br><span class="line">            <span class="keyword">while</span> (!Thread.currentThread().isInterrupted()) &#123;</span><br><span class="line">                p = p.nextProbablePrime();</span><br><span class="line">                <span class="comment">// 阻塞操作，可能会一致阻塞</span></span><br><span class="line">                queue.put(p);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            <span class="comment">// 2. 还提供了中断异常的取消方式</span></span><br><span class="line">            Thread.currentThread().interrupt();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>和取消标志差不多，只是线程中断提供的取消功能更全面：它可以取消阻塞的任务。</p>
-<ul>
-<li> 通常，中断是实现任务取消的最合理方式</li>
-</ul>
-<p>所以，如果任务代码能够响应中断，最好使用中断作为取消策略。</p>
-<h2 id="四、处理不可中断的操作"><a href="#四、处理不可中断的操作" class="headerlink" title="四、处理不可中断的操作"></a>四、处理不可中断的操作</h2><p>中断虽然能满足大部分的需求，但是：</p>
-<ul>
-<li>不是所有方法或阻塞操作都支持响应中断</li>
-</ul>
-<p>比如 Socket I/O 等方法，都不支持中断。</p>
-<p>但是，可以使用类似中断的手段来取消任务，比如 Socket 可以用 <code>close()</code> 方法结束阻塞：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SocketReaderThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">interrupt</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            socket.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">super</span>.interrupt();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>不过这种模拟中断的方式，需要事先了解线程阻塞的原因以及如何结束线程阻塞才行。</p>
-<p>类似这种不可中断的阻塞，在 Java 类库中大约有这几种：</p>
-<ul>
-<li>Java.io 包中的 Socket I/O</li>
-<li>Java.io 包中的同步 I/O</li>
-<li>Selector 包中的异步 I/O</li>
-<li>获取某个锁，指的是 Lock</li>
-</ul>
-<p>针对这些情况，可以利用类似上面的方式来封装中断处理。</p>
-]]></content>
       <tags>
         <tag>java</tag>
         <tag>并发编程</tag>
