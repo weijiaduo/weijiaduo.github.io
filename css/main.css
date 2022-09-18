@@ -1169,7 +1169,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #cbff3c;
+  background: #ffd070;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -1218,14 +1218,6 @@ pre .javascript .function {
   list-style: none;
   margin: 0;
   padding: 0;
-}
-.recent_posts_list li.recent_posts_li {
-  text-align: center;
-  display: block;
-  word-break: keep-all;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 #sidebar-dimmer {
   display: none;
@@ -2718,4 +2710,70 @@ ul.breadcrumb li + li:last-child {
 }
 .site-author-image:hover {
   transform: rotate(360deg);
+}
+.sidebar-inner.affix-top + .sidebar-inner.recent_posts_pin {
+  -webkit-animation-name: fadeIn; /* 动画名称 */
+  -webkit-animation-duration: 2s; /* 动画持续时间 */
+  -webkit-animation-iteration-count: 1; /* 动画次数 */
+  -webkit-animation-delay: 0s; /* 延迟时间 */
+}
+.sidebar-inner.affix + .sidebar-inner.recent_posts_pin {
+  display: none;
+}
+.sidebar-inner.recent_posts_pin {
+  opacity: 1;
+  transform: initial;
+  margin-top: 12px;
+}
+.recent_posts_list li.recent_posts_li {
+  text-align: center;
+  display: block;
+  word-break: keep-all;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@-moz-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-o-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
