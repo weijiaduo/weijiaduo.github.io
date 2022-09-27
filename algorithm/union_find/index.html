@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="并查集一、什么是并查集？并查集是一种简单的集合表示。 它支持以下 3 种操作：  Initial(S)：将集合 S 中的所有元素初始化为一个个单元素集合 Union(S, Root1, Root2)：把集合 S 中的子集合 Root2 并入子集合 Root1 中 Find(S, x)：查找集合 S 中单元素 x 所在的子集合，并返回子集合的名字">
+<meta property="og:type" content="article">
+<meta property="og:title" content="并查集">
+<meta property="og:url" content="http://example.com/algorithm/union_find/index.html">
+<meta property="og:site_name" content="Strive">
+<meta property="og:description" content="并查集一、什么是并查集？并查集是一种简单的集合表示。 它支持以下 3 种操作：  Initial(S)：将集合 S 中的所有元素初始化为一个个单元素集合 Union(S, Root1, Root2)：把集合 S 中的子集合 Root2 并入子集合 Root1 中 Find(S, x)：查找集合 S 中单元素 x 所在的子集合，并返回子集合的名字">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-09-27T00:38:23.000Z">
+<meta property="article:modified_time" content="2022-09-27T00:39:12.816Z">
+<meta property="article:author" content="jiaduo">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="数据结构">
+<meta property="article:tag" content="并查集">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/algorithm/union_find/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>并查集 | Strive</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Strive</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Rome was not built in one day</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/algorithm/union_find/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          并查集
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-09-27 08:38:23 / 修改时间：08:39:12" itemprop="dateCreated datePublished" datetime="2022-09-27T08:38:23+08:00">2022-09-27</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="并查集"><a href="#并查集" class="headerlink" title="并查集"></a>并查集</h1><h2 id="一、什么是并查集？"><a href="#一、什么是并查集？" class="headerlink" title="一、什么是并查集？"></a>一、什么是并查集？</h2><p>并查集是一种简单的集合表示。</p>
+<p>它支持以下 3 种操作：</p>
+<ul>
+<li><code>Initial(S)</code>：将集合 S 中的所有元素初始化为一个个单元素集合</li>
+<li><code>Union(S, Root1, Root2)</code>：把集合 S 中的子集合 Root2 并入子集合 Root1 中</li>
+<li><code>Find(S, x)</code>：查找集合 S 中单元素 x 所在的子集合，并返回子集合的名字</li>
+</ul>
+<span id="more"></span>
+
+<p>通常用树表示每个子集合，子集合的合并就是树的合并。</p>
+<p>子集合 Root2 合并到子集合 Root1，只需要把 Root2 的根节点指向 Root1 的根节点即可。</p>
+<h2 id="二、为什么要用并查集？"><a href="#二、为什么要用并查集？" class="headerlink" title="二、为什么要用并查集？"></a>二、为什么要用并查集？</h2><ul>
+<li>并查集主要用于解决一些元素分组的问题</li>
+<li>并查集可用于管理一系列不相交的集合，执行集合的合并以及搜索元素所在集合</li>
+</ul>
+<h2 id="三、如何实现并查集？"><a href="#三、如何实现并查集？" class="headerlink" title="三、如何实现并查集？"></a>三、如何实现并查集？</h2><h3 id="3-1-集合初始化-Initial-S"><a href="#3-1-集合初始化-Initial-S" class="headerlink" title="3.1 集合初始化 Initial(S)"></a>3.1 集合初始化 <code>Initial(S)</code></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">initial</span> <span class="params">(<span class="keyword">int</span>[] s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length; i++) &#123;</span><br><span class="line">        s[i] = i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>初始化后单个元素就是一个集合</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">集合 S 存储：</span><br><span class="line"></span><br><span class="line">[0, 1, 2, 3, 4]</span><br><span class="line"></span><br><span class="line">------------------------------------------</span><br><span class="line"></span><br><span class="line">集合示意图：</span><br><span class="line"> ___      ___      ___      ___      ___</span><br><span class="line">| 0 |    | 1 |    | 2 |    | 3 |    | 4 |</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-子集合合并-Union-S-Root1-Root2"><a href="#3-2-子集合合并-Union-S-Root1-Root2" class="headerlink" title="3.2 子集合合并 Union(S, Root1, Root2)"></a>3.2 子集合合并 <code>Union(S, Root1, Root2)</code></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">union</span><span class="params">(<span class="keyword">int</span>[] s, <span class="keyword">int</span> root1, <span class="keyword">int</span> root2)</span> </span>&#123;</span><br><span class="line">    s[root2] = root1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>比如合并 <code>0</code> 和 <code>1</code> 得到子集合 <code>0</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">集合 S 存储：</span><br><span class="line"></span><br><span class="line">[0, 0, 2, 3, 4]</span><br><span class="line"></span><br><span class="line">------------------------------------------</span><br><span class="line"></span><br><span class="line">集合示意图：</span><br><span class="line"> ___      ___      ___      ___</span><br><span class="line">| 0 |    | 2 |    | 3 |    | 4 |</span><br><span class="line">  ^</span><br><span class="line">  |</span><br><span class="line"> ___</span><br><span class="line">| 1 |</span><br></pre></td></tr></table></figure>
+
+<p>再合并 <code>3</code> 和 <code>4</code> 得到子集合 <code>3</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">集合 S 存储：</span><br><span class="line"></span><br><span class="line">[0, 0, 2, 3, 3]</span><br><span class="line"></span><br><span class="line">------------------------------------------</span><br><span class="line"></span><br><span class="line">集合示意图：</span><br><span class="line"> ___      ___      ___</span><br><span class="line">| 0 |    | 2 |    | 3 |</span><br><span class="line">  ^                 ^</span><br><span class="line">  |                 |</span><br><span class="line"> ___               ___</span><br><span class="line">| 1 |             | 4 |</span><br></pre></td></tr></table></figure>
+
+<p>还可以把子集合 <code>0</code> 和子集合 <code>3</code> 也合并起来：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">集合 S 存储：</span><br><span class="line"></span><br><span class="line">[0, 0, 2, 0, 3]</span><br><span class="line"></span><br><span class="line">------------------------------------------</span><br><span class="line"></span><br><span class="line">集合示意图：</span><br><span class="line">       ___           ___</span><br><span class="line">      | 0 |         | 2 |</span><br><span class="line">        ^</span><br><span class="line">       / \</span><br><span class="line">      /   \</span><br><span class="line">    ___   ___</span><br><span class="line">   | 1 | | 3 |</span><br><span class="line">           ^</span><br><span class="line">           |</span><br><span class="line">          ___</span><br><span class="line">         | 4 |</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-查找子集合-Find-S-x"><a href="#3-3-查找子集合-Find-S-x" class="headerlink" title="3.3 查找子集合 Find(S, x)"></a>3.3 查找子集合 <code>Find(S, x)</code></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span>[] s, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (s[x] != x) &#123;</span><br><span class="line">        x = s[x];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>比如查找 <code>4</code> 所在集合时，过程是这样的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">  ___________________   _____</span><br><span class="line"> |                   | |     |</span><br><span class="line"> v                   | v     |</span><br><span class="line">[0,     0,     2,     0,     3]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>一直往上找，直到根节点为止，就能得到 <code>4</code> 所在的集合。</p>
+<h3 id="3-4-元素合并-Union-S-X1-X2"><a href="#3-4-元素合并-Union-S-X1-X2" class="headerlink" title="3.4 元素合并 Union(S, X1, X2)"></a>3.4 元素合并 <code>Union(S, X1, X2)</code></h3><p>判断两个元素是否属于同一个集合，只需要看它们的根节点是否相同即可。</p>
+<ul>
+<li>合并两个元素时，找到它们的根节点合并即可</li>
+</ul>
+<p>所以上面的子集合合并代码可以改成这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">union</span><span class="params">(<span class="keyword">int</span>[] s, <span class="keyword">int</span> x1, <span class="keyword">int</span> x2)</span> </span>&#123;</span><br><span class="line">    s[find(x2)] = find(x1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="四、路径压缩"><a href="#四、路径压缩" class="headerlink" title="四、路径压缩"></a>四、路径压缩</h2><p>简单的并查集，在某些场景下的性能是比较差的，例如：</p>
+<ul>
+<li>链条变得越来越长的时候，查找根节点也变得越来越耗时</li>
+</ul>
+<p>比如，下面查找元素 5 所在的子集合时，每次都需要经过好几个节点：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"> ___</span><br><span class="line">| 1 |</span><br><span class="line">  ^</span><br><span class="line">  |</span><br><span class="line"> ___</span><br><span class="line">| 3 |</span><br><span class="line">  ^</span><br><span class="line">  |</span><br><span class="line"> ___</span><br><span class="line">| 4 |</span><br><span class="line">  ^</span><br><span class="line">  |</span><br><span class="line"> ___</span><br><span class="line">| 5 |</span><br></pre></td></tr></table></figure>
+
+<p>在并查集链比较长的时候，每次搜索元素的根节点，都比较耗时。</p>
+<p>那怎么解决这个问题呢？</p>
+<ul>
+<li>并查集中只关注根节点，因此可以采用路径压缩，将元素直接指向根节点</li>
+</ul>
+<p>而实现的方法也很简单，就是：</p>
+<ul>
+<li>在查询时，把路径上所有节点的父节点都指向根节点</li>
+</ul>
+<p>代码上实现的话，可以采用递归，类似这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span>[] s, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s[x] == x) &#123;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        s[x] = find(s, s[x]);</span><br><span class="line">        <span class="keyword">return</span> s[x];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>相当于把上面的一条直链，变成了多叉树：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">       ___</span><br><span class="line">      | 1 |</span><br><span class="line">        ^</span><br><span class="line">      / | \  </span><br><span class="line">     /  |  \</span><br><span class="line">    /   |   \</span><br><span class="line"> ___   ___   ___</span><br><span class="line">| 3 | | 4 | | 5 |</span><br></pre></td></tr></table></figure>
+
+<p>经过路径压缩后，就基本解决了链条过长引起的性能问题。</p>
+<h2 id="五、按秩合并"><a href="#五、按秩合并" class="headerlink" title="五、按秩合并"></a>五、按秩合并</h2><p>路径压缩虽然能解决查询时链条过长的问题，但是路径压缩是在查询时才做的。</p>
+<ul>
+<li>当没有查询时，路径不会压缩，还是会出现链路很长的情况</li>
+<li>每次查询时，只压缩一条路径，其他路径的链路还是很长</li>
+</ul>
+<p>这种情况要如何避免呢？</p>
+<p>在两个子集合进行合并时，只要尽量满足：</p>
+<ul>
+<li>把简单的树往复杂的树上合并</li>
+</ul>
+<p>就能避免并查集的树深度过大，影响查询的效率。</p>
+<p>比如说，2 个子集合长这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> ___               ___</span><br><span class="line">| 0 |             | 3 |</span><br><span class="line">  ^</span><br><span class="line">  |</span><br><span class="line"> ___</span><br><span class="line">| 1 |</span><br><span class="line">  ^</span><br><span class="line">  |</span><br><span class="line"> ___ </span><br><span class="line">| 4 |</span><br></pre></td></tr></table></figure>
+
+<p>子集合的合并可分为 2 种情况：</p>
+<ol>
+<li><code>3</code> 合并到 <code>0</code>，树深度是还是 <code>2</code>，深度不变</li>
+<li><code>0</code> 合并到 <code>3</code>，树深度变成了 <code>3</code>，深度加深了</li>
+</ol>
+<p>所以肯定是把深度小的 <code>3</code> 合并到深度大的 <code>0</code> 更好一些，因为这样可以避免节点深度变得更大。</p>
+<p>那怎么知道哪个集合的深度更高呢？</p>
+<ul>
+<li>采用一个额外的数组，记录每个根节点的深度，合并子集合时同时更新</li>
+</ul>
+<p>比如说，采用数组 <code>rank</code> 记录节点深度：</p>
+<ul>
+<li>初始化时，把所有元素的 <code>rank</code>（秩）设为默认值 1</li>
+<li>合并子集合时，比较两个根节点，把 <code>rank</code> 较小合并到较大的上面</li>
+</ul>
+<p>代码实现的话就类似这样：</p>
+<p>初始化：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">initial</span> <span class="params">(<span class="keyword">int</span>[] s, <span class="keyword">int</span>[] rank)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length; i++) &#123;</span><br><span class="line">        s[i] = i;</span><br><span class="line">        rank[i] = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>合并子集合：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">union</span><span class="params">(<span class="keyword">int</span>[] s, <span class="keyword">int</span>[] rank, <span class="keyword">int</span> x1, <span class="keyword">int</span> x2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> root1 = find(x1);</span><br><span class="line">    <span class="keyword">int</span> root2 = find(x2);</span><br><span class="line">    <span class="keyword">if</span> (rank[root1] &gt;= rank[root2]) &#123;</span><br><span class="line">        s[root2] = root1;</span><br><span class="line">        <span class="comment">// 两棵树深度一样的时候，合并起来会加深一层</span></span><br><span class="line">        <span class="keyword">if</span> (rank[root1] == rank[root2] &amp;&amp; root1 != root2) &#123;</span><br><span class="line">            rank[root1]++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        s[root1] = root2;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>两棵树深度一样的时候，合并起来会加深一层：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> ___               ___</span><br><span class="line">| 0 |             | 3 |</span><br><span class="line">  ^                 ^</span><br><span class="line">  |                 |</span><br><span class="line"> ___               ___</span><br><span class="line">| 1 |             | 4 |</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">    ___</span><br><span class="line">   | 0 |</span><br><span class="line">     ^</span><br><span class="line">    / \</span><br><span class="line">   /   \</span><br><span class="line"> ___   ___</span><br><span class="line">| 1 | | 3 |</span><br><span class="line">        ^</span><br><span class="line">        |</span><br><span class="line">       ___</span><br><span class="line">      | 4 |</span><br></pre></td></tr></table></figure>
+
+<p>按秩合并和路径压缩一起用的时候，路径压缩会影响到 <code>rank</code> 值，导致它不准确。</p>
+<p>虽然 <code>rank</code> 值不准确，但是不影响 2 者结合一起用。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>并查集是一种简单的集合表示，包括 3 种操作：</p>
+<ul>
+<li><code>Initial(S)</code>：将集合 S 中的所有元素初始化为一个个单元素集合</li>
+<li><code>Union(S, Root1, Root2)</code>：把集合 S 中的子集合 Root2 并入子集合 Root1 中</li>
+<li><code>Find(S, x)</code>：查找集合 S 中单元素 x 所在的子集合，并返回子集合的名字</li>
+</ul>
+<p>并查集的作用：</p>
+<ul>
+<li>并查集主要用于解决一些元素分组的问题</li>
+<li>并查集可用于管理一系列不相交的集合，执行集合的合并以及搜索元素所在集合</li>
+</ul>
+<p>并查集有 2 种方法优化方式：</p>
+<ul>
+<li>路径压缩：查询时压缩节点路径，直接指向根节点</li>
+<li>按秩合并：合并时，深度小的合并到深度大的树上面</li>
+</ul>
+<p>按秩合并和路径压缩一起用：</p>
+<ul>
+<li>路径压缩会影响到按秩合并的 <code>rank</code> 值，导致它不准确</li>
+<li>虽然 <code>rank</code> 值不准确了，但是不影响 2 者结合一起用</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><blockquote>
+<p>《数据结构》王道考研系列</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/93647900">https://zhuanlan.zhihu.com/p/93647900</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_38279101/article/details/112546053">https://blog.csdn.net/weixin_38279101/article/details/112546053</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_40378034/article/details/103224445">https://blog.csdn.net/qq_40378034/article/details/103224445</a></p>
+<p><a target="_blank" rel="noopener" href="https://destiny1020.blog.csdn.net/article/details/7655764">https://destiny1020.blog.csdn.net/article/details/7655764</a></p>
+</blockquote>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 并查集-路径压缩 + 按秩合并</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 节点存储</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] id;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 节点深度</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] rank;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">UnionFind</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        init(n);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 初始化并查集</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> n 元素个数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        id = <span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line">        rank = <span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">            id[i] = i;</span><br><span class="line">            rank[i] = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 查找元素</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> x 指定元素</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 元素根节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (id[x] == x) &#123;</span><br><span class="line">            <span class="keyword">return</span> x;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 路径压缩，会导致 rank 有误差</span></span><br><span class="line">            id[x] = find(x);</span><br><span class="line">            <span class="keyword">return</span> id[x];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 合并元素子集合</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> x1 元素</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> x2 元素</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">union</span><span class="params">(<span class="keyword">int</span> x1, <span class="keyword">int</span> x2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> root1 = find(x1);</span><br><span class="line">        <span class="keyword">int</span> root2 = find(x2);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 按秩合并</span></span><br><span class="line">        <span class="keyword">if</span> (rank[root1] &gt; rank[root2]) &#123;</span><br><span class="line">            id[root2] = root1;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (rank[root1] &lt; rank[root2]) &#123;</span><br><span class="line">            id[root1] = root2;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 深度一样的时候，合并起来会加深一层</span></span><br><span class="line">            id[root2] = root1;</span><br><span class="line">            <span class="keyword">if</span> (root1 != root2) &#123;</span><br><span class="line">                rank[root1]++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 数据结构</a>
+              <a href="/tags/%E5%B9%B6%E6%9F%A5%E9%9B%86/" rel="tag"># 并查集</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/algorithm/shell_sort/" rel="prev" title="希尔排序">
+      <i class="fa fa-chevron-left"></i> 希尔排序
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B9%B6%E6%9F%A5%E9%9B%86"><span class="nav-text">并查集</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AF%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%9F"><span class="nav-text">一、什么是并查集？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%9F"><span class="nav-text">二、为什么要用并查集？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E5%B9%B6%E6%9F%A5%E9%9B%86%EF%BC%9F"><span class="nav-text">三、如何实现并查集？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E9%9B%86%E5%90%88%E5%88%9D%E5%A7%8B%E5%8C%96-Initial-S"><span class="nav-text">3.1 集合初始化 Initial(S)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E5%AD%90%E9%9B%86%E5%90%88%E5%90%88%E5%B9%B6-Union-S-Root1-Root2"><span class="nav-text">3.2 子集合合并 Union(S, Root1, Root2)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E6%9F%A5%E6%89%BE%E5%AD%90%E9%9B%86%E5%90%88-Find-S-x"><span class="nav-text">3.3 查找子集合 Find(S, x)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-%E5%85%83%E7%B4%A0%E5%90%88%E5%B9%B6-Union-S-X1-X2"><span class="nav-text">3.4 元素合并 Union(S, X1, X2)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E8%B7%AF%E5%BE%84%E5%8E%8B%E7%BC%A9"><span class="nav-text">四、路径压缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E6%8C%89%E7%A7%A9%E5%90%88%E5%B9%B6"><span class="nav-text">五、按秩合并</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-text">参考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E5%BD%95"><span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81"><span class="nav-text">完整代码</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jiaduo"
+      src="/images/lufei.jpeg">
+  <p class="site-author-name" itemprop="name">jiaduo</p>
+  <div class="site-description" itemprop="description">不积跬步，无以至千里</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">116</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+
+    
+    
+    
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021/08 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiaduo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">441k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">6:41</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

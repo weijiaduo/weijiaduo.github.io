@@ -1,6 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>并查集</title>
+    <url>/algorithm/union_find/</url>
+    <content><![CDATA[<h1 id="并查集"><a href="#并查集" class="headerlink" title="并查集"></a>并查集</h1><h2 id="一、什么是并查集？"><a href="#一、什么是并查集？" class="headerlink" title="一、什么是并查集？"></a>一、什么是并查集？</h2><p>并查集是一种简单的集合表示。</p>
+<p>它支持以下 3 种操作：</p>
+<ul>
+<li><code>Initial(S)</code>：将集合 S 中的所有元素初始化为一个个单元素集合</li>
+<li><code>Union(S, Root1, Root2)</code>：把集合 S 中的子集合 Root2 并入子集合 Root1 中</li>
+<li><code>Find(S, x)</code>：查找集合 S 中单元素 x 所在的子集合，并返回子集合的名字</li>
+</ul>
+<span id="more"></span>
+
+<p>通常用树表示每个子集合，子集合的合并就是树的合并。</p>
+<p>子集合 Root2 合并到子集合 Root1，只需要把 Root2 的根节点指向 Root1 的根节点即可。</p>
+<h2 id="二、为什么要用并查集？"><a href="#二、为什么要用并查集？" class="headerlink" title="二、为什么要用并查集？"></a>二、为什么要用并查集？</h2><ul>
+<li>并查集主要用于解决一些元素分组的问题</li>
+<li>并查集可用于管理一系列不相交的集合，执行集合的合并以及搜索元素所在集合</li>
+</ul>
+<h2 id="三、如何实现并查集？"><a href="#三、如何实现并查集？" class="headerlink" title="三、如何实现并查集？"></a>三、如何实现并查集？</h2><h3 id="3-1-集合初始化-Initial-S"><a href="#3-1-集合初始化-Initial-S" class="headerlink" title="3.1 集合初始化 Initial(S)"></a>3.1 集合初始化 <code>Initial(S)</code></h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">initial</span> <span class="params">(<span class="keyword">int</span>[] s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length; i++) &#123;</span><br><span class="line">        s[i] = i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>初始化后单个元素就是一个集合</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">集合 S 存储：</span><br><span class="line"></span><br><span class="line">[0, 1, 2, 3, 4]</span><br><span class="line"></span><br><span class="line">------------------------------------------</span><br><span class="line"></span><br><span class="line">集合示意图：</span><br><span class="line"> ___      ___      ___      ___      ___</span><br><span class="line">| 0 |    | 1 |    | 2 |    | 3 |    | 4 |</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-子集合合并-Union-S-Root1-Root2"><a href="#3-2-子集合合并-Union-S-Root1-Root2" class="headerlink" title="3.2 子集合合并 Union(S, Root1, Root2)"></a>3.2 子集合合并 <code>Union(S, Root1, Root2)</code></h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">union</span><span class="params">(<span class="keyword">int</span>[] s, <span class="keyword">int</span> root1, <span class="keyword">int</span> root2)</span> </span>&#123;</span><br><span class="line">    s[root2] = root1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>比如合并 <code>0</code> 和 <code>1</code> 得到子集合 <code>0</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">集合 S 存储：</span><br><span class="line"></span><br><span class="line">[0, 0, 2, 3, 4]</span><br><span class="line"></span><br><span class="line">------------------------------------------</span><br><span class="line"></span><br><span class="line">集合示意图：</span><br><span class="line"> ___      ___      ___      ___</span><br><span class="line">| 0 |    | 2 |    | 3 |    | 4 |</span><br><span class="line">  ^</span><br><span class="line">  |</span><br><span class="line"> ___</span><br><span class="line">| 1 |</span><br></pre></td></tr></table></figure>
+
+<p>再合并 <code>3</code> 和 <code>4</code> 得到子集合 <code>3</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">集合 S 存储：</span><br><span class="line"></span><br><span class="line">[0, 0, 2, 3, 3]</span><br><span class="line"></span><br><span class="line">------------------------------------------</span><br><span class="line"></span><br><span class="line">集合示意图：</span><br><span class="line"> ___      ___      ___</span><br><span class="line">| 0 |    | 2 |    | 3 |</span><br><span class="line">  ^                 ^</span><br><span class="line">  |                 |</span><br><span class="line"> ___               ___</span><br><span class="line">| 1 |             | 4 |</span><br></pre></td></tr></table></figure>
+
+<p>还可以把子集合 <code>0</code> 和子集合 <code>3</code> 也合并起来：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">集合 S 存储：</span><br><span class="line"></span><br><span class="line">[0, 0, 2, 0, 3]</span><br><span class="line"></span><br><span class="line">------------------------------------------</span><br><span class="line"></span><br><span class="line">集合示意图：</span><br><span class="line">       ___           ___</span><br><span class="line">      | 0 |         | 2 |</span><br><span class="line">        ^</span><br><span class="line">       / \</span><br><span class="line">      /   \</span><br><span class="line">    ___   ___</span><br><span class="line">   | 1 | | 3 |</span><br><span class="line">           ^</span><br><span class="line">           |</span><br><span class="line">          ___</span><br><span class="line">         | 4 |</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-查找子集合-Find-S-x"><a href="#3-3-查找子集合-Find-S-x" class="headerlink" title="3.3 查找子集合 Find(S, x)"></a>3.3 查找子集合 <code>Find(S, x)</code></h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span>[] s, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (s[x] != x) &#123;</span><br><span class="line">        x = s[x];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>比如查找 <code>4</code> 所在集合时，过程是这样的：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">  ___________________   _____</span><br><span class="line"> |                   | |     |</span><br><span class="line"> v                   | v     |</span><br><span class="line">[0,     0,     2,     0,     3]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>一直往上找，直到根节点为止，就能得到 <code>4</code> 所在的集合。</p>
+<h3 id="3-4-元素合并-Union-S-X1-X2"><a href="#3-4-元素合并-Union-S-X1-X2" class="headerlink" title="3.4 元素合并 Union(S, X1, X2)"></a>3.4 元素合并 <code>Union(S, X1, X2)</code></h3><p>判断两个元素是否属于同一个集合，只需要看它们的根节点是否相同即可。</p>
+<ul>
+<li>合并两个元素时，找到它们的根节点合并即可</li>
+</ul>
+<p>所以上面的子集合合并代码可以改成这样：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">union</span><span class="params">(<span class="keyword">int</span>[] s, <span class="keyword">int</span> x1, <span class="keyword">int</span> x2)</span> </span>&#123;</span><br><span class="line">    s[find(x2)] = find(x1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="四、路径压缩"><a href="#四、路径压缩" class="headerlink" title="四、路径压缩"></a>四、路径压缩</h2><p>简单的并查集，在某些场景下的性能是比较差的，例如：</p>
+<ul>
+<li>链条变得越来越长的时候，查找根节点也变得越来越耗时</li>
+</ul>
+<p>比如，下面查找元素 5 所在的子集合时，每次都需要经过好几个节点：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"> ___</span><br><span class="line">| 1 |</span><br><span class="line">  ^</span><br><span class="line">  |</span><br><span class="line"> ___</span><br><span class="line">| 3 |</span><br><span class="line">  ^</span><br><span class="line">  |</span><br><span class="line"> ___</span><br><span class="line">| 4 |</span><br><span class="line">  ^</span><br><span class="line">  |</span><br><span class="line"> ___</span><br><span class="line">| 5 |</span><br></pre></td></tr></table></figure>
+
+<p>在并查集链比较长的时候，每次搜索元素的根节点，都比较耗时。</p>
+<p>那怎么解决这个问题呢？</p>
+<ul>
+<li>并查集中只关注根节点，因此可以采用路径压缩，将元素直接指向根节点</li>
+</ul>
+<p>而实现的方法也很简单，就是：</p>
+<ul>
+<li>在查询时，把路径上所有节点的父节点都指向根节点</li>
+</ul>
+<p>代码上实现的话，可以采用递归，类似这样：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span>[] s, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s[x] == x) &#123;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        s[x] = find(s, s[x]);</span><br><span class="line">        <span class="keyword">return</span> s[x];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>相当于把上面的一条直链，变成了多叉树：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">       ___</span><br><span class="line">      | 1 |</span><br><span class="line">        ^</span><br><span class="line">      / | \  </span><br><span class="line">     /  |  \</span><br><span class="line">    /   |   \</span><br><span class="line"> ___   ___   ___</span><br><span class="line">| 3 | | 4 | | 5 |</span><br></pre></td></tr></table></figure>
+
+<p>经过路径压缩后，就基本解决了链条过长引起的性能问题。</p>
+<h2 id="五、按秩合并"><a href="#五、按秩合并" class="headerlink" title="五、按秩合并"></a>五、按秩合并</h2><p>路径压缩虽然能解决查询时链条过长的问题，但是路径压缩是在查询时才做的。</p>
+<ul>
+<li>当没有查询时，路径不会压缩，还是会出现链路很长的情况</li>
+<li>每次查询时，只压缩一条路径，其他路径的链路还是很长</li>
+</ul>
+<p>这种情况要如何避免呢？</p>
+<p>在两个子集合进行合并时，只要尽量满足：</p>
+<ul>
+<li>把简单的树往复杂的树上合并</li>
+</ul>
+<p>就能避免并查集的树深度过大，影响查询的效率。</p>
+<p>比如说，2 个子集合长这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"> ___               ___</span><br><span class="line">| 0 |             | 3 |</span><br><span class="line">  ^</span><br><span class="line">  |</span><br><span class="line"> ___</span><br><span class="line">| 1 |</span><br><span class="line">  ^</span><br><span class="line">  |</span><br><span class="line"> ___ </span><br><span class="line">| 4 |</span><br></pre></td></tr></table></figure>
+
+<p>子集合的合并可分为 2 种情况：</p>
+<ol>
+<li><code>3</code> 合并到 <code>0</code>，树深度是还是 <code>2</code>，深度不变</li>
+<li><code>0</code> 合并到 <code>3</code>，树深度变成了 <code>3</code>，深度加深了</li>
+</ol>
+<p>所以肯定是把深度小的 <code>3</code> 合并到深度大的 <code>0</code> 更好一些，因为这样可以避免节点深度变得更大。</p>
+<p>那怎么知道哪个集合的深度更高呢？</p>
+<ul>
+<li>采用一个额外的数组，记录每个根节点的深度，合并子集合时同时更新</li>
+</ul>
+<p>比如说，采用数组 <code>rank</code> 记录节点深度：</p>
+<ul>
+<li>初始化时，把所有元素的 <code>rank</code>（秩）设为默认值 1</li>
+<li>合并子集合时，比较两个根节点，把 <code>rank</code> 较小合并到较大的上面</li>
+</ul>
+<p>代码实现的话就类似这样：</p>
+<p>初始化：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">initial</span> <span class="params">(<span class="keyword">int</span>[] s, <span class="keyword">int</span>[] rank)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length; i++) &#123;</span><br><span class="line">        s[i] = i;</span><br><span class="line">        rank[i] = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>合并子集合：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">union</span><span class="params">(<span class="keyword">int</span>[] s, <span class="keyword">int</span>[] rank, <span class="keyword">int</span> x1, <span class="keyword">int</span> x2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> root1 = find(x1);</span><br><span class="line">    <span class="keyword">int</span> root2 = find(x2);</span><br><span class="line">    <span class="keyword">if</span> (rank[root1] &gt;= rank[root2]) &#123;</span><br><span class="line">        s[root2] = root1;</span><br><span class="line">        <span class="comment">// 两棵树深度一样的时候，合并起来会加深一层</span></span><br><span class="line">        <span class="keyword">if</span> (rank[root1] == rank[root2] &amp;&amp; root1 != root2) &#123;</span><br><span class="line">            rank[root1]++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        s[root1] = root2;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>两棵树深度一样的时候，合并起来会加深一层：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"> ___               ___</span><br><span class="line">| 0 |             | 3 |</span><br><span class="line">  ^                 ^</span><br><span class="line">  |                 |</span><br><span class="line"> ___               ___</span><br><span class="line">| 1 |             | 4 |</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">    ___</span><br><span class="line">   | 0 |</span><br><span class="line">     ^</span><br><span class="line">    / \</span><br><span class="line">   /   \</span><br><span class="line"> ___   ___</span><br><span class="line">| 1 | | 3 |</span><br><span class="line">        ^</span><br><span class="line">        |</span><br><span class="line">       ___</span><br><span class="line">      | 4 |</span><br></pre></td></tr></table></figure>
+
+<p>按秩合并和路径压缩一起用的时候，路径压缩会影响到 <code>rank</code> 值，导致它不准确。</p>
+<p>虽然 <code>rank</code> 值不准确，但是不影响 2 者结合一起用。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>并查集是一种简单的集合表示，包括 3 种操作：</p>
+<ul>
+<li><code>Initial(S)</code>：将集合 S 中的所有元素初始化为一个个单元素集合</li>
+<li><code>Union(S, Root1, Root2)</code>：把集合 S 中的子集合 Root2 并入子集合 Root1 中</li>
+<li><code>Find(S, x)</code>：查找集合 S 中单元素 x 所在的子集合，并返回子集合的名字</li>
+</ul>
+<p>并查集的作用：</p>
+<ul>
+<li>并查集主要用于解决一些元素分组的问题</li>
+<li>并查集可用于管理一系列不相交的集合，执行集合的合并以及搜索元素所在集合</li>
+</ul>
+<p>并查集有 2 种方法优化方式：</p>
+<ul>
+<li>路径压缩：查询时压缩节点路径，直接指向根节点</li>
+<li>按秩合并：合并时，深度小的合并到深度大的树上面</li>
+</ul>
+<p>按秩合并和路径压缩一起用：</p>
+<ul>
+<li>路径压缩会影响到按秩合并的 <code>rank</code> 值，导致它不准确</li>
+<li>虽然 <code>rank</code> 值不准确了，但是不影响 2 者结合一起用</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><blockquote>
+<p>《数据结构》王道考研系列</p>
+<p><a href="https://zhuanlan.zhihu.com/p/93647900">https://zhuanlan.zhihu.com/p/93647900</a></p>
+<p><a href="https://blog.csdn.net/weixin_38279101/article/details/112546053">https://blog.csdn.net/weixin_38279101/article/details/112546053</a></p>
+<p><a href="https://blog.csdn.net/qq_40378034/article/details/103224445">https://blog.csdn.net/qq_40378034/article/details/103224445</a></p>
+<p><a href="https://destiny1020.blog.csdn.net/article/details/7655764">https://destiny1020.blog.csdn.net/article/details/7655764</a></p>
+</blockquote>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 并查集-路径压缩 + 按秩合并</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 节点存储</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] id;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 节点深度</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] rank;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">UnionFind</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        init(n);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 初始化并查集</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> n 元素个数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        id = <span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line">        rank = <span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">            id[i] = i;</span><br><span class="line">            rank[i] = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 查找元素</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> x 指定元素</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 元素根节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (id[x] == x) &#123;</span><br><span class="line">            <span class="keyword">return</span> x;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 路径压缩，会导致 rank 有误差</span></span><br><span class="line">            id[x] = find(x);</span><br><span class="line">            <span class="keyword">return</span> id[x];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 合并元素子集合</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> x1 元素</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> x2 元素</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">union</span><span class="params">(<span class="keyword">int</span> x1, <span class="keyword">int</span> x2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> root1 = find(x1);</span><br><span class="line">        <span class="keyword">int</span> root2 = find(x2);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 按秩合并</span></span><br><span class="line">        <span class="keyword">if</span> (rank[root1] &gt; rank[root2]) &#123;</span><br><span class="line">            id[root2] = root1;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (rank[root1] &lt; rank[root2]) &#123;</span><br><span class="line">            id[root1] = root2;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 深度一样的时候，合并起来会加深一层</span></span><br><span class="line">            id[root2] = root1;</span><br><span class="line">            <span class="keyword">if</span> (root1 != root2) &#123;</span><br><span class="line">                rank[root1]++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <tags>
+        <tag>算法</tag>
+        <tag>数据结构</tag>
+        <tag>并查集</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>希尔排序</title>
     <url>/algorithm/shell_sort/</url>
     <content><![CDATA[<h1 id="希尔排序"><a href="#希尔排序" class="headerlink" title="希尔排序"></a>希尔排序</h1><h2 id="一、什么是希尔排序？"><a href="#一、什么是希尔排序？" class="headerlink" title="一、什么是希尔排序？"></a>一、什么是希尔排序？</h2><ul>
@@ -6400,6 +6548,35 @@
       </tags>
   </entry>
   <entry>
+    <title>16. 最接近的三数之和</title>
+    <url>/practice/leetcode/array/16.ThreeSumClosest/</url>
+    <content><![CDATA[<h1 id="16-最接近的三数之和"><a href="#16-最接近的三数之和" class="headerlink" title="16. 最接近的三数之和"></a>16. 最接近的三数之和</h1><h2 id="一、题目描述"><a href="#一、题目描述" class="headerlink" title="一、题目描述"></a>一、题目描述</h2><p>给定一个包括 n 个整数的数组 nums 和 一个目标值 target。找出 nums 中的三个整数，使得它们的和与 target 最接近。返回这三个数的和</p>
+<p>假定每组输入只存在唯一答案。</p>
+<ul>
+<li>3 &lt;= nums.length &lt;= 10^3</li>
+<li>-10^3 &lt;= nums[i] &lt;= 10^3</li>
+<li>-10^4 &lt;= target &lt;= 10^4</li>
+</ul>
+<span id="more"></span>
+
+
+<h2 id="二、解题思路"><a href="#二、解题思路" class="headerlink" title="二、解题思路"></a>二、解题思路</h2><p>原理和求3数之和一样，把它转换成找2数之和，问题就变得稍微容易一些。</p>
+<ul>
+<li><code>a + b + c = target</code> 可以转成 <code>b + c = target - a</code>，那么就相当于查找2数之和</li>
+</ul>
+<p>2数之和就快很多了。</p>
+<h2 id="三、复杂度分析"><a href="#三、复杂度分析" class="headerlink" title="三、复杂度分析"></a>三、复杂度分析</h2><ul>
+<li>时间 <code>O(n^2)</code></li>
+<li>空间 <code>O(1)</code></li>
+</ul>
+<h2 id="四、参考代码"><a href="#四、参考代码" class="headerlink" title="四、参考代码"></a>四、参考代码</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 最近的3数之和</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> nums 数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> target 目标值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 3数之和</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">threeSumClosest</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> closestSum = <span class="number">0</span>;</span><br><span class="line">    Arrays.sort(nums);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length - <span class="number">2</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> sum = twoSumClosest(nums, target - nums[i], i + <span class="number">1</span>, nums.length - <span class="number">1</span>);</span><br><span class="line">        sum += nums[i];</span><br><span class="line">        <span class="keyword">if</span> (sum == target) &#123;</span><br><span class="line">            <span class="keyword">return</span> sum;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 取最接近的值</span></span><br><span class="line">        <span class="keyword">if</span> (i == <span class="number">0</span> || Math.abs(sum - target) &lt; Math.abs(closestSum - target)) &#123;</span><br><span class="line">            closestSum = sum;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> closestSum;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 最近的2数之和</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> nums 排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> target 目标值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> start 起始索引</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> end 终止索引</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 2数之和</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">twoSumClosest</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> lp = start, rp = end;</span><br><span class="line">    <span class="keyword">int</span> sum = nums[lp] + nums[rp];</span><br><span class="line">    <span class="keyword">while</span> (lp &lt; rp) &#123;</span><br><span class="line">        <span class="keyword">int</span> temp = nums[lp] + nums[rp];</span><br><span class="line">        <span class="keyword">if</span> (temp == target) &#123;</span><br><span class="line">            <span class="keyword">return</span> target;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (Math.abs(temp - target) &lt; Math.abs(sum - target)) &#123;</span><br><span class="line">            sum = temp;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (temp &lt; target) &#123;</span><br><span class="line">            lp++;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            rp--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>算法</tag>
+        <tag>LeetCode</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>15. 三数之和</title>
     <url>/practice/leetcode/array/15.ThreeSum/</url>
     <content><![CDATA[<h1 id="15-三数之和"><a href="#15-三数之和" class="headerlink" title="15. 三数之和"></a>15. 三数之和</h1><h2 id="一、题目描述"><a href="#一、题目描述" class="headerlink" title="一、题目描述"></a>一、题目描述</h2><p>给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有和为 0 且不重复的三元组。</p>
@@ -6429,35 +6606,6 @@
 <li>空间 <code>O(1)</code></li>
 </ul>
 <h2 id="四、参考代码"><a href="#四、参考代码" class="headerlink" title="四、参考代码"></a>四、参考代码</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 三数之和</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> nums 数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 所有三元组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> List&lt;List&lt;Integer&gt;&gt; threeSum(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">    List&lt;List&lt;Integer&gt;&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="keyword">if</span> (nums.length &lt; <span class="number">3</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">    Arrays.sort(nums);</span><br><span class="line">    <span class="keyword">if</span> (nums[<span class="number">0</span>] &gt; <span class="number">0</span> || nums[nums.length - <span class="number">1</span>] &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length &amp;&amp; nums[i] &lt;= <span class="number">0</span>; i++) &#123;</span><br><span class="line">        List&lt;List&lt;Integer&gt;&gt; sumList = twoSum(nums, -nums[i], i + <span class="number">1</span>, nums.length - <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">if</span> (sumList.size() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            result.addAll(sumList);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 去重</span></span><br><span class="line">        <span class="keyword">while</span> (i &lt; nums.length - <span class="number">1</span> &amp;&amp; nums[i] == nums[i + <span class="number">1</span>]) &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 求2数之和</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> nums 升序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> sum 两数和</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> start 起始地址</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> end 结束地址</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 两数，或null</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> List&lt;List&lt;Integer&gt;&gt; twoSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> sum, <span class="keyword">int</span> start, <span class="keyword">int</span> end) &#123;</span><br><span class="line">    List&lt;List&lt;Integer&gt;&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="keyword">int</span> lp = start, rp = end;</span><br><span class="line">    <span class="keyword">while</span> (lp &lt; rp) &#123;</span><br><span class="line">        <span class="keyword">int</span> temp = nums[lp] + nums[rp];</span><br><span class="line">        <span class="keyword">if</span> (temp == sum) &#123;</span><br><span class="line">            List&lt;Integer&gt; sumList = <span class="keyword">new</span> ArrayList&lt;&gt;(<span class="number">3</span>);</span><br><span class="line">            sumList.add(-sum);</span><br><span class="line">            sumList.add(nums[lp]);</span><br><span class="line">            sumList.add(nums[rp]);</span><br><span class="line">            result.add(sumList);</span><br><span class="line">            <span class="comment">// 去重</span></span><br><span class="line">            <span class="keyword">while</span> (lp &lt; rp &amp;&amp; nums[lp] == nums[++lp]);</span><br><span class="line">            <span class="keyword">while</span> (lp &lt; rp &amp;&amp; nums[rp] == nums[--rp]);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (temp &lt; sum) &#123;</span><br><span class="line">            lp++;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            rp--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>算法</tag>
-        <tag>LeetCode</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>16. 最接近的三数之和</title>
-    <url>/practice/leetcode/array/16.ThreeSumClosest/</url>
-    <content><![CDATA[<h1 id="16-最接近的三数之和"><a href="#16-最接近的三数之和" class="headerlink" title="16. 最接近的三数之和"></a>16. 最接近的三数之和</h1><h2 id="一、题目描述"><a href="#一、题目描述" class="headerlink" title="一、题目描述"></a>一、题目描述</h2><p>给定一个包括 n 个整数的数组 nums 和 一个目标值 target。找出 nums 中的三个整数，使得它们的和与 target 最接近。返回这三个数的和</p>
-<p>假定每组输入只存在唯一答案。</p>
-<ul>
-<li>3 &lt;= nums.length &lt;= 10^3</li>
-<li>-10^3 &lt;= nums[i] &lt;= 10^3</li>
-<li>-10^4 &lt;= target &lt;= 10^4</li>
-</ul>
-<span id="more"></span>
-
-
-<h2 id="二、解题思路"><a href="#二、解题思路" class="headerlink" title="二、解题思路"></a>二、解题思路</h2><p>原理和求3数之和一样，把它转换成找2数之和，问题就变得稍微容易一些。</p>
-<ul>
-<li><code>a + b + c = target</code> 可以转成 <code>b + c = target - a</code>，那么就相当于查找2数之和</li>
-</ul>
-<p>2数之和就快很多了。</p>
-<h2 id="三、复杂度分析"><a href="#三、复杂度分析" class="headerlink" title="三、复杂度分析"></a>三、复杂度分析</h2><ul>
-<li>时间 <code>O(n^2)</code></li>
-<li>空间 <code>O(1)</code></li>
-</ul>
-<h2 id="四、参考代码"><a href="#四、参考代码" class="headerlink" title="四、参考代码"></a>四、参考代码</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 最近的3数之和</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> nums 数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> target 目标值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 3数之和</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">threeSumClosest</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> closestSum = <span class="number">0</span>;</span><br><span class="line">    Arrays.sort(nums);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length - <span class="number">2</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> sum = twoSumClosest(nums, target - nums[i], i + <span class="number">1</span>, nums.length - <span class="number">1</span>);</span><br><span class="line">        sum += nums[i];</span><br><span class="line">        <span class="keyword">if</span> (sum == target) &#123;</span><br><span class="line">            <span class="keyword">return</span> sum;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 取最接近的值</span></span><br><span class="line">        <span class="keyword">if</span> (i == <span class="number">0</span> || Math.abs(sum - target) &lt; Math.abs(closestSum - target)) &#123;</span><br><span class="line">            closestSum = sum;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> closestSum;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 最近的2数之和</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> nums 排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> target 目标值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> start 起始索引</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> end 终止索引</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 2数之和</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">twoSumClosest</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> lp = start, rp = end;</span><br><span class="line">    <span class="keyword">int</span> sum = nums[lp] + nums[rp];</span><br><span class="line">    <span class="keyword">while</span> (lp &lt; rp) &#123;</span><br><span class="line">        <span class="keyword">int</span> temp = nums[lp] + nums[rp];</span><br><span class="line">        <span class="keyword">if</span> (temp == target) &#123;</span><br><span class="line">            <span class="keyword">return</span> target;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (Math.abs(temp - target) &lt; Math.abs(sum - target)) &#123;</span><br><span class="line">            sum = temp;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (temp &lt; target) &#123;</span><br><span class="line">            lp++;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            rp--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 ]]></content>
       <tags>
         <tag>算法</tag>
