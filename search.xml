@@ -1,6 +1,594 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>设计原则总结</title>
+    <url>/design_pattern/principle/principles/</url>
+    <content><![CDATA[<h1 id="设计原则总结"><a href="#设计原则总结" class="headerlink" title="设计原则总结"></a>设计原则总结</h1><h2 id="“单一职责原则”、“接口隔离原则”、“迪米特法则”的区别"><a href="#“单一职责原则”、“接口隔离原则”、“迪米特法则”的区别" class="headerlink" title="“单一职责原则”、“接口隔离原则”、“迪米特法则”的区别"></a>“单一职责原则”、“接口隔离原则”、“迪米特法则”的区别</h2><p>从目的上来说，它们都是为了实现高内聚、低耦合，只是不同角度而已：</p>
+<ul>
+<li><p>单一职责</p>
+<ul>
+<li>角度：自身</li>
+<li>方式：相关功能应该聚合在一起</li>
+<li>侧重点：高内聚</li>
+</ul>
+</li>
+<li><p>接口隔离</p>
+<ul>
+<li>角度：调用者</li>
+<li>方式：不需要的功能不应该依赖</li>
+<li>侧重点：低耦合</li>
+</ul>
+</li>
+<li><p>迪米特法则</p>
+<ul>
+<li>角度：关系</li>
+<li>方式：依赖关系尽可能地少</li>
+<li>侧重点：低耦合</li>
+</ul>
+</li>
+</ul>
+<p>大部分设计模式的目的都差不多，很多只是思考的角度不同而已。</p>
+]]></content>
+      <tags>
+        <tag>Design Pattern</tag>
+        <tag>设计模式</tag>
+        <tag>设计原则</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>迪米特法则</title>
+    <url>/design_pattern/principle/lod/</url>
+    <content><![CDATA[<h1 id="迪米特法则"><a href="#迪米特法则" class="headerlink" title="迪米特法则"></a>迪米特法则</h1><p>迪米特法则（<code>Law of Demeter</code>，<code>LOD</code>），或者 <code>The Least Knowledge Principle</code>。</p>
+<p>英文描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Each unit should have only limited knowledge about other units: only units “closely” related to the current unit.</span><br><span class="line">Or: Each unit should only talk to its friends; Don’t talk to strangers.</span><br></pre></td></tr></table></figure>
+
+<p>中文翻译：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">每个模块（unit）只应该了解那些与它关系密切的模块的有限知识（knowledge）。</span><br><span class="line">或者说，每个模块只和自己的朋友“说话”（talk），不和陌生人“说话”（talk）。</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h2 id="一、如何理解迪米特法则？"><a href="#一、如何理解迪米特法则？" class="headerlink" title="一、如何理解迪米特法则？"></a>一、如何理解迪米特法则？</h2><p>不和陌生人说话，其含义就是：</p>
+<ul>
+<li>每个模块与其他模块的关系尽可能地少</li>
+<li>每个模块只需要依赖必要的模块</li>
+</ul>
+<p>简单点说就是：</p>
+<ul>
+<li>模块之间的关系尽可能地少</li>
+</ul>
+<p>要尽可能地减少模块依赖关系。</p>
+<p>比如，用户模块的接口：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserService</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">register</span><span class="params">(String userName, String password)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">login</span><span class="params">(String userName, String password)</span></span>;</span><br><span class="line">    <span class="function">User <span class="title">getUser</span><span class="params">(String userId)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">deleteUser</span><span class="params">(String userId)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>假如有某一个模块需要登录功能，但又不需要其他的用户功能。</p>
+<p>如果用 <code>UserService</code> 接口的话，就会显得依赖的东西比较多。</p>
+<p>这个时候可以将接口拆分出一个登录接口 <code>LoginService</code>：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">LoginService</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">register</span><span class="params">(String userName, String password)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">login</span><span class="params">(String userName, String password)</span></span>;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>需要登录的模块只需要 <code>LoginService</code> 这个接口就足够了。</p>
+<p>迪米特法则要求模块之间的依赖关系要尽可能地少。</p>
+<h2 id="二、为什么要迪米特法则？"><a href="#二、为什么要迪米特法则？" class="headerlink" title="二、为什么要迪米特法则？"></a>二、为什么要迪米特法则？</h2><ul>
+<li>依赖关系越少，模块之间就越符合高内聚、低耦合</li>
+<li>依赖关系越少，改动单个模块时就越不容易影响其他模块，整体就越稳定</li>
+</ul>
+<h2 id="三、如何做到迪米特法则？"><a href="#三、如何做到迪米特法则？" class="headerlink" title="三、如何做到迪米特法则？"></a>三、如何做到迪米特法则？</h2><p>迪米特法则目的就是要减少模块之间的依赖关系。</p>
+<p>因此只要能减少依赖关系，就是符合迪米特法则的：</p>
+<ul>
+<li>面向接口编程，模块之间只调用对外的接口</li>
+<li>不要设计大而全的接口，接口粒度尽可能小，满足业务需求即可</li>
+<li>…</li>
+</ul>
+<p>总而言之，迪米特法则的目的还是为了实现低耦合，只要能降低耦合度就行。</p>
+]]></content>
+      <tags>
+        <tag>Design Pattern</tag>
+        <tag>设计模式</tag>
+        <tag>设计原则</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>DRY 原则</title>
+    <url>/design_pattern/principle/dry/</url>
+    <content><![CDATA[<h1 id="DRY-原则"><a href="#DRY-原则" class="headerlink" title="DRY 原则"></a>DRY 原则</h1><p>DRY 英文描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Don’t Repeat Yourself</span><br></pre></td></tr></table></figure>
+
+<p>中文翻译：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">不要重复自己</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h2 id="一、如何理解-“DRY”？"><a href="#一、如何理解-“DRY”？" class="headerlink" title="一、如何理解 “DRY”？"></a>一、如何理解 “DRY”？</h2><p>从编程的角度去理解的话，其含义就是：</p>
+<ul>
+<li>不要编写重复的代码</li>
+</ul>
+<p>这个概念很简单，就是不要做重复的事情。</p>
+<p>DRY 原则实际上是要求尽量复用代码，而不要重复造轮子。</p>
+<p>什么样的代码，才算是重复？</p>
+<ul>
+<li>实现逻辑重复：不同的方法里面，写了多份一样的代码</li>
+<li>功能语义重复：同样的功能，采用了不同的实现方式（比如正则判断、字符串对比）</li>
+<li>代码执行重复：在一个方法里面，执行了多次同一个方法</li>
+</ul>
+<p>这几种情况都违反了 DRY 原则吗？</p>
+<ul>
+<li>实现逻辑重复：不算违反 DRY 原则，因为是属于不同的功能里面，只是逻辑有点类似而已</li>
+<li>功能语义重复：算是违反了 DRY 原则，同样的功能却弄了多个不同的实现</li>
+<li>代码执行重复：也算是违反了 DRY 原则，一次执行里面没必要调用多次同一个方法</li>
+</ul>
+<p>那这几种情况一般要怎么处理呢？</p>
+<ul>
+<li>实现逻辑重复：只能说代码没有复用到，可以把公共代码提取到一个新方法里，供不同地方调用</li>
+<li>功能语义重复：只保留一份实现就可以了，其他的都删掉</li>
+<li>代码执行重复：应该将多次调用的方法结果保存到局部变量，避免多次执行</li>
+</ul>
+<p>不管有没有违反 DRY 原则，在编写代码时，都应该尽量复用已有代码。</p>
+<h2 id="二、为什么要-“DRY”？"><a href="#二、为什么要-“DRY”？" class="headerlink" title="二、为什么要 “DRY”？"></a>二、为什么要 “DRY”？</h2><ul>
+<li>降低维护成本，去掉重复代码后，就不需要修改多个地方</li>
+<li>避免逻辑不一致，这种问题的原因往往是因为漏改了其中一个地方的代码</li>
+<li>提高代码可读性，重复代码的实现可能是不一样的，会让人感到疑惑</li>
+</ul>
+<h2 id="三、如何实现-“DRY”？"><a href="#三、如何实现-“DRY”？" class="headerlink" title="三、如何实现 “DRY”？"></a>三、如何实现 “DRY”？</h2><p>DRY 原则要求尽量复用已有代码，这就要求代码要有可复用性，否则就没办法复用了。</p>
+<p>所以要实现 DRY，首先就要提高代码的可复用性。</p>
+<p>常见的提供代码复用性的方法：</p>
+<ul>
+<li>减少代码耦合</li>
+<li>满足单一职责原则</li>
+<li>模块化</li>
+<li>业务与非业务逻辑分离</li>
+<li>通用代码下沉</li>
+<li>抽象、封装、继承、多态</li>
+<li>应用设计模式</li>
+</ul>
+<p>如何识别什么时候要执行 DRY 原则呢？</p>
+<ul>
+<li>多次在不同地方看到同样的代码（<code>Rule of Three</code>）</li>
+</ul>
+<p>多次是多少次？一般来说，超过 2 次都算是多次了。</p>
+<p>一旦发现多个地方有重复代码，就应该用上面的方法进行重构，改造成可复用的代码。</p>
+]]></content>
+      <tags>
+        <tag>Design Pattern</tag>
+        <tag>设计模式</tag>
+        <tag>设计原则</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>YAGNI 原则</title>
+    <url>/design_pattern/principle/yagni/</url>
+    <content><![CDATA[<h1 id="YAGNI-原则"><a href="#YAGNI-原则" class="headerlink" title="YAGNI 原则"></a>YAGNI 原则</h1><p>YAGNI 的英文描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">You Ain’t Gonna Need It</span><br></pre></td></tr></table></figure>
+
+<p>中文翻译：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">你不会需要它</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h2 id="一、如何理解-“YAGNI”？"><a href="#一、如何理解-“YAGNI”？" class="headerlink" title="一、如何理解 “YAGNI”？"></a>一、如何理解 “YAGNI”？</h2><p>从开发方面去理解的话，其含义是：</p>
+<ul>
+<li>不要去设计当前用不到的功能</li>
+<li>不要去编写当前用不到的代码</li>
+</ul>
+<p>核心思想是：</p>
+<ul>
+<li>不要做过度设计</li>
+</ul>
+<p>实际执行时，就是：不要做多余的事。</p>
+<h2 id="二、为什么要-“YAGNI”？"><a href="#二、为什么要-“YAGNI”？" class="headerlink" title="二、为什么要 “YAGNI”？"></a>二、为什么要 “YAGNI”？</h2><ul>
+<li>过度设计会导致结构复杂，代码难以理解</li>
+<li>多余的代码会影响阅读理解，因为分散了注意力</li>
+<li>提前实现在未来未必会用到，白费功夫</li>
+</ul>
+<h2 id="三、如何做到-“YAGNI”？"><a href="#三、如何做到-“YAGNI”？" class="headerlink" title="三、如何做到 “YAGNI”？"></a>三、如何做到 “YAGNI”？</h2><p>遵循 YAGNI 原则，很简单，只要做到：</p>
+<ul>
+<li>不要过度设计</li>
+<li>不要提前实现</li>
+</ul>
+<p>但是不要过度设计，不代表着不考虑扩展性。</p>
+<p>在实践时，应该考虑这么做：</p>
+<ul>
+<li>设计时留出扩展点，但是不需要立即实现</li>
+<li>等后面有需求推动了，再实现对应的扩展</li>
+<li>如果未来需求变动了，大不了只是放弃这个扩展点而已</li>
+</ul>
+<p>总之，在设计时尽量考虑扩展性，但是可以先不实现，留待未来。</p>
+]]></content>
+      <tags>
+        <tag>Design Pattern</tag>
+        <tag>设计模式</tag>
+        <tag>设计原则</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>KISS 原则</title>
+    <url>/design_pattern/principle/kiss/</url>
+    <content><![CDATA[<h1 id="KISS-原则"><a href="#KISS-原则" class="headerlink" title="KISS 原则"></a>KISS 原则</h1><p>KISS 的英文描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Keep It Simple and Stupid.</span><br><span class="line">Keep It Short and Simple.</span><br><span class="line">Keep It Simple and Straightforward.</span><br></pre></td></tr></table></figure>
+
+<p>中文意思：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">尽量保持简单</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h2 id="一、如何理解-“KISS”？"><a href="#一、如何理解-“KISS”？" class="headerlink" title="一、如何理解 “KISS”？"></a>一、如何理解 “KISS”？</h2><p>KISS 的设计理念就是：</p>
+<ul>
+<li>保持方案尽可能的简单、易于理解</li>
+</ul>
+<p>简单的含义是：</p>
+<ul>
+<li>结构清晰</li>
+<li>可读性强</li>
+<li>易于理解</li>
+<li>易于维护</li>
+</ul>
+<p>KISS 原则要求把复杂问题简单化，大问题拆分成小问题去解决。</p>
+<p>KISS 原则是侧重于可读性和可维护性设计的。</p>
+<h2 id="二、为什么要-“KISS”？"><a href="#二、为什么要-“KISS”？" class="headerlink" title="二、为什么要 “KISS”？"></a>二、为什么要 “KISS”？</h2><ul>
+<li>越简单，就越容易理解方案的设计思路，更容易看懂</li>
+<li>越简单，越不容易出现问题，维护起来就越轻松</li>
+<li>即使出现问题，修改起来也很容易</li>
+</ul>
+<h2 id="三、如何做到-“KISS”？"><a href="#三、如何做到-“KISS”？" class="headerlink" title="三、如何做到 “KISS”？"></a>三、如何做到 “KISS”？</h2><p>怎么样才算是简单，并没有一个明确的标准。</p>
+<ul>
+<li>代码越少，就是简单？</li>
+<li>性能越好，就是简单？</li>
+</ul>
+<p>这两个问题的答案都是否定的。</p>
+<p>由于没有一个标准，所以只能尽量避免违反 KISS 原则的情况：</p>
+<ul>
+<li>不要过度设计，适应当前需求和基本满足近期未来需求即可</li>
+<li>不要使用奇淫技巧，难以理解的实现（除非是性能优化需要）</li>
+<li>不要重复造轮子，尽量使用已有的工具类</li>
+</ul>
+<p>正常来说，除了性能优化比较特殊以外，代码都应该尽量简单和可读。</p>
+<p>在工作上实践 KISS 原则时，就应该做到：</p>
+<ul>
+<li>尽量缩短方法，每个方法解决一个问题就可以了</li>
+<li>控制类的大小，不要太肥了</li>
+<li>删除无用和多余的代码</li>
+<li>保持代码的整洁、风格统一</li>
+<li>先拆分问题，再根据步骤实现</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>Design Pattern</tag>
+        <tag>设计模式</tag>
+        <tag>设计原则</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>依赖反转原则</title>
+    <url>/design_pattern/principle/dip/</url>
+    <content><![CDATA[<h1 id="依赖反转原则"><a href="#依赖反转原则" class="headerlink" title="依赖反转原则"></a>依赖反转原则</h1><p>依赖反转原则（<code>Dependency Inversion Principle</code>，<code>DIP</code>），也称为依赖倒置原则。</p>
+<p>英文描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">High-level modules shouldn’t depend on low-level modules. Both modules should depend on abstractions. </span><br><span class="line">In addition, abstractions shouldn’t depend on details. Details depend on abstractions.</span><br></pre></td></tr></table></figure>
+
+<p>中文翻译：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">高层模块（high-level modules）不要依赖低层模块（low-level）。高层模块和低层模块应该通过抽象（abstractions）来互相依赖。</span><br><span class="line">除此之外，抽象（abstractions）不要依赖具体实现细节（details），具体实现细节（details）依赖抽象（abstractions）。</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h2 id="一、如何理解“依赖反转”？"><a href="#一、如何理解“依赖反转”？" class="headerlink" title="一、如何理解“依赖反转”？"></a>一、如何理解“依赖反转”？</h2><p>依赖反转原则的设计理念：</p>
+<ul>
+<li>相对于细节的多变性，抽象的东西要稳定的多</li>
+</ul>
+<p>现实中，经常存在这么一种场景：</p>
+<ul>
+<li>整体流程是基本不变的，但是细节实现可能会发生变化</li>
+</ul>
+<p>比如说，Tomcat 容器和部署的应用程序。</p>
+<p>从调用上来说，Tomcat 会调用应用程序，所以 Tomcat 依赖于应用程序：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Tomcat  ---&gt;  应用程序</span><br></pre></td></tr></table></figure>
+
+<p>但是如果 Tomcat 依赖于某个应用程序的具体实现，它就不可能是一个通用的容器。</p>
+<p>所以现实中，Tomcat 和应用程序实际是依赖于同一个抽象 Servlet：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Tomcat  ---&gt;  Servlet  &lt;--- 应用程序</span><br></pre></td></tr></table></figure>
+
+<p>这种将低层抽象出来一层，作为公共依赖的方式，就是依赖反转。</p>
+<p>低层的应用程序反过来依赖了 Servlet 这个中间层。</p>
+<p>反转的意思是：</p>
+<ul>
+<li>低层根据高层的调用方式，抽象出调用接口，提供给高层</li>
+</ul>
+<p>这是一种反向思考的方式：</p>
+<ul>
+<li>正常来说，都是先设计的低层接口，然后高层去调用低层接口</li>
+<li>但依赖反转的思想则是，根据高层的调用，从低层抽象出一层</li>
+</ul>
+<p>依赖反转实际是低层反转依赖公共中间层的意思。</p>
+<h2 id="二、为什么要“依赖反转”？"><a href="#二、为什么要“依赖反转”？" class="headerlink" title="二、为什么要“依赖反转”？"></a>二、为什么要“依赖反转”？</h2><p>依赖反转的目的和作用：</p>
+<ul>
+<li>低层次模块更加通用，适用性更广</li>
+<li>高层次模块没有依赖低层次模块的具体实现，方便低层次模块的替换</li>
+</ul>
+<p>一般来说，依赖反转原则主要用于指导框架的设计。</p>
+<p>框架属于高层，实现细节则是属于低层。</p>
+<h2 id="三、如何实现“依赖反转”？"><a href="#三、如何实现“依赖反转”？" class="headerlink" title="三、如何实现“依赖反转”？"></a>三、如何实现“依赖反转”？</h2><p>很多时候，不需要用到依赖反转原则。</p>
+<p>像平时的业务开发，高层代码直接调用低层代码是很常见的事情。</p>
+<p>依赖反转原则主要适用于这样的场景：</p>
+<ul>
+<li>高层的结构和流程基本不变，但是低层是可变的</li>
+<li>或者说整体流程是固定不变的，但是细节实现是可变的</li>
+</ul>
+<p>依赖反转原则在设计框架时尤其有用，其他的普通情况反而不怎么用到。</p>
+<p>依赖反转的实现也很简单：</p>
+<ul>
+<li>将低层抽象出一层中间层，然后高低层都依赖于这个中间层</li>
+</ul>
+<p>这种实现方式，在重构代码时可能会经常用到。</p>
+]]></content>
+      <tags>
+        <tag>Design Pattern</tag>
+        <tag>设计模式</tag>
+        <tag>设计原则</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>接口隔离原则</title>
+    <url>/design_pattern/principle/isp/</url>
+    <content><![CDATA[<h1 id="接口隔离原则"><a href="#接口隔离原则" class="headerlink" title="接口隔离原则"></a>接口隔离原则</h1><p>接口隔离原则（<code>Interface Segregation Principle</code>，<code>ISP</code>）。</p>
+<p>英文描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Clients should not be forced to depend upon interfaces that they do not use</span><br></pre></td></tr></table></figure>
+
+<p>中文翻译：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">客户端不应该被强迫依赖它不需要的接口</span><br></pre></td></tr></table></figure>
+
+<p>其中的“客户端”，可以理解为接口的调用者或者使用者。</p>
+<span id="more"></span>
+
+<h2 id="一、如何理解“接口隔离”？"><a href="#一、如何理解“接口隔离”？" class="headerlink" title="一、如何理解“接口隔离”？"></a>一、如何理解“接口隔离”？</h2><p>接口含义：</p>
+<ul>
+<li>对外开放的</li>
+<li>提供给别人调用的</li>
+</ul>
+<p>比如说 API 接口，类的 public 方法等，都属于接口。</p>
+<p>接口隔离：</p>
+<ul>
+<li>将不同业务或功能的接口分离，拆分成更细粒度的接口</li>
+<li>客户端不应该调用大而全的接口，而是细粒度的接口</li>
+</ul>
+<p>接口隔离原则实际上是要求服务提供者限制对外开放的接口。</p>
+<p>比如说，用户服务对外提供了几个接口：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserService</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">register</span><span class="params">(String userName, String password)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">login</span><span class="params">(String userName, String password)</span></span>;</span><br><span class="line">    <span class="function">User <span class="title">getUser</span><span class="params">(String userId)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">deleteUser</span><span class="params">(String userId)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>deleteUser</code> 接口需要相应的删除权限。</p>
+<p>最简单的方式就是在 <code>deleteUser</code> 里面或代理这个接口来实现权限管理。</p>
+<p>不过还可以从接口设计层面来处理，将接口隔离开来设计，比如说：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserService</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">register</span><span class="params">(String userName, String password)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">login</span><span class="params">(String userName, String password)</span></span>;</span><br><span class="line">    <span class="function">User <span class="title">getUser</span><span class="params">(String userId)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RestrictedUserService</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">deleteUser</span><span class="params">(String userId)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种方式就是接口隔离，服务提供者将不同业务的接口分离开来，限制客户端的调用。</p>
+<h2 id="二、为什么要“接口隔离”"><a href="#二、为什么要“接口隔离”" class="headerlink" title="二、为什么要“接口隔离”?"></a>二、为什么要“接口隔离”?</h2><ul>
+<li>防止对外暴露不应该开放的接口，比如权限限制</li>
+<li>减少对外开放的无用接口，比如大型接口服务提供了很多接口，但是很多接口很少用</li>
+<li>避免实现类依赖多余的接口，比如类接口很多，但是很多是子类不需要实现的</li>
+<li>提供更灵活的接口搭配，比如不同业务的子类可以实现通用的接口</li>
+</ul>
+<h2 id="三、如何判断“接口隔离”？"><a href="#三、如何判断“接口隔离”？" class="headerlink" title="三、如何判断“接口隔离”？"></a>三、如何判断“接口隔离”？</h2><p>判断是否满足“接口隔离原则”，可以通过调用者使用接口的方式来判断：</p>
+<ul>
+<li>经常是集中调用了部分接口，接口调用频率不一样</li>
+<li>有些接口相比于其他接口，需要额外的处理某些逻辑，比如权限控制之类的</li>
+<li>部分接口调用后直接抛异常，提示不支持</li>
+</ul>
+<p>这些情况，说明接口可能存在业务或逻辑不一样的部分，可以考虑一下做接口隔离。</p>
+<h2 id="四、如何实现“接口隔离”？"><a href="#四、如何实现“接口隔离”？" class="headerlink" title="四、如何实现“接口隔离”？"></a>四、如何实现“接口隔离”？</h2><p>接口是否要隔离，可以从这几个方面去检查：</p>
+<ul>
+<li>按照业务功能进行接口分类，不同业务的应该隔离</li>
+<li>隔离必要接口和非必要接口，子类不用实现非必要接口</li>
+<li>分析常用接口和不常用接口，可以考虑做接口隔离</li>
+</ul>
+<p>实际上接口是否要隔离，还是和业务挂钩的，如果没有需求推动，有时候也不一定要做接口隔离。</p>
+<p>一般来说，设计接口时，</p>
+<ul>
+<li>一开始提供少量接口，随着业务发展，逐渐添加新接口</li>
+<li>然后等到某一天有需求驱动了，再将业务接口进行隔离</li>
+</ul>
+<p>所以不一定要在一开始就完全设计好接口隔离，视情况而做。</p>
+]]></content>
+      <tags>
+        <tag>Design Pattern</tag>
+        <tag>设计模式</tag>
+        <tag>设计原则</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>里氏替换原则</title>
+    <url>/design_pattern/principle/lsp/</url>
+    <content><![CDATA[<h1 id="里氏替换原则"><a href="#里氏替换原则" class="headerlink" title="里氏替换原则"></a>里氏替换原则</h1><p>里式替换原则（<code>Liskov Substitution Principle</code>，<code>LSP</code>）。</p>
+<p>英文描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Functions that use pointers of references to base classes must be able to use objects of derived classes without knowing it</span><br></pre></td></tr></table></figure>
+
+<p>中文翻译：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">子类对象（`object of subtype`/`derived class`）能够替换程序中父类对象（`object of base`/`parent class`）出现的任何地方，并且保证原来程序的逻辑行为不变及正确性不被破坏。</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h2 id="一、如何理解“里式替换原则”？"><a href="#一、如何理解“里式替换原则”？" class="headerlink" title="一、如何理解“里式替换原则”？"></a>一、如何理解“里式替换原则”？</h2><p>里式替换是一种设计原则，是用来指导继承关系中子类该如何设计的。</p>
+<ul>
+<li>子类的设计要保证在替换父类的时候，不改变原有程序的逻辑以及不破坏原有程序的正确性</li>
+</ul>
+<p>里式替换原则还有一个更实在的描述：</p>
+<ul>
+<li>“Design By Contract”，即“按照协议来设计”</li>
+</ul>
+<p>协议的意思就是，当父类定义了函数的行为约定时，</p>
+<ul>
+<li>子类可以改变函数的内部实现逻辑，但不能改变父类函数原有的行为约定</li>
+</ul>
+<p>一般来说，父类设计的行为约定包括：</p>
+<ul>
+<li>父类函数声明要实现的功能</li>
+<li>父类对输入、输出、异常的约定</li>
+<li>父类注释中所罗列的任何特殊说明，比如范围、格式等</li>
+</ul>
+<p>子类设计不遵循这些约定时，都算是违反了里氏替换原则。</p>
+<h2 id="二、如何判断是否违反了-LSP？"><a href="#二、如何判断是否违反了-LSP？" class="headerlink" title="二、如何判断是否违反了 LSP？"></a>二、如何判断是否违反了 LSP？</h2><p>判断子类的设计违反了里氏替换原则的几种情况：</p>
+<ol>
+<li>子类违背父类声明要实现的功能</li>
+<li>子类违背父类对输入、输出、异常的约定</li>
+<li>子类违背父类注释中所罗列的任何特殊说明</li>
+</ol>
+<p>额外的小窍门：</p>
+<ul>
+<li>拿父类的单元测试去验证子类的代码，如果运行失败，那就是违反了里氏替换原则</li>
+</ul>
+<p>可能的情况就是，子类的实现没有完全地遵守父类的约定。</p>
+]]></content>
+      <tags>
+        <tag>Design Pattern</tag>
+        <tag>设计模式</tag>
+        <tag>设计原则</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>开闭原则</title>
+    <url>/design_pattern/principle/ocp/</url>
+    <content><![CDATA[<h1 id="开闭原则"><a href="#开闭原则" class="headerlink" title="开闭原则"></a>开闭原则</h1><p>开闭原则（<code>Open Closed Principle</code>，<code>OCP</code>）。</p>
+<p>英文描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">software entities (modules, classes, functions, etc.) should be open for extension , but closed for modification</span><br></pre></td></tr></table></figure>
+
+<p>中文翻译：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">软件实体（模块、类、方法等）应该“对扩展开放、对修改关闭”</span><br></pre></td></tr></table></figure>
+
+<p>扩展性是代码质量最重要的衡量标准之一。</p>
+<p>在 23 种经典设计模式中，大部分设计模式都是为了解决代码的扩展性问题而存在的，主要遵从的设计原则就是开闭原则。</p>
+<span id="more"></span>
+
+<h2 id="一、如何理解“对扩展开放、对修改关闭”"><a href="#一、如何理解“对扩展开放、对修改关闭”" class="headerlink" title="一、如何理解“对扩展开放、对修改关闭”"></a>一、如何理解“对扩展开放、对修改关闭”</h2><p>添加一个新的功能时，应该做到：</p>
+<ul>
+<li>在已有代码基础上扩展代码（新增模块、类、方法等）</li>
+<li>而非修改已有代码（修改模块、类、方法等）</li>
+</ul>
+<p>尽量避免修改已有的代码，而是追加新代码。</p>
+<h2 id="二、为什么要“对扩展开放、对修改关闭”？"><a href="#二、为什么要“对扩展开放、对修改关闭”？" class="headerlink" title="二、为什么要“对扩展开放、对修改关闭”？"></a>二、为什么要“对扩展开放、对修改关闭”？</h2><ul>
+<li>对扩展开放是为了应对变化(需求)</li>
+<li>对修改关闭是为了保证已有代码的稳定性</li>
+<li>最终结果是为了让系统更有弹性</li>
+</ul>
+<h2 id="三、修改代码就意味着违背开闭原则吗？"><a href="#三、修改代码就意味着违背开闭原则吗？" class="headerlink" title="三、修改代码就意味着违背开闭原则吗？"></a>三、修改代码就意味着违背开闭原则吗？</h2><ul>
+<li>添加一个新功能，不可能任何模块、类、方法的代码都不“修改”，这个是做不到的</li>
+<li>要做的是尽量让修改操作更集中、更少、更上层</li>
+<li>尽量让最核心、最复杂的那部分逻辑代码满足开闭原则</li>
+</ul>
+<h2 id="四、如何做到“对扩展开放、对修改关闭”？"><a href="#四、如何做到“对扩展开放、对修改关闭”？" class="headerlink" title="四、如何做到“对扩展开放、对修改关闭”？"></a>四、如何做到“对扩展开放、对修改关闭”？</h2><p>开闭原则讲的就是代码的扩展性问题，写出扩展性好的代码就是遵循开闭原则：</p>
+<ul>
+<li>要时刻具备扩展意识、抽象意识、封装意识</li>
+<li>多思考未来需求，猜测未来可能出现的扩展点，在设计时预先留好这些扩展点</li>
+<li>尽量识别出可变部分和不可变部分，将可变部分封装起来，隔离变化，同时提供抽象化的不可变接口</li>
+</ul>
+<p>常用来提高代码扩展性的方法有：</p>
+<ul>
+<li>多态</li>
+<li>依赖注入</li>
+<li>基于接口而非实现编程</li>
+<li>大部分的设计模式（比如，装饰、策略、模板、职责链、状态等）</li>
+</ul>
+<p>这些方式实际上都是同一种设计思路，只是从不同的角度、不同的层面来阐述而已。</p>
+<h2 id="五、如何在项目中灵活应用开闭原则？"><a href="#五、如何在项目中灵活应用开闭原则？" class="headerlink" title="五、如何在项目中灵活应用开闭原则？"></a>五、如何在项目中灵活应用开闭原则？</h2><p>要想识别出尽可能多的扩展点，就要对业务有足够的了解：</p>
+<ul>
+<li>了解当下以及未来可能要支持的业务需求</li>
+<li>它们会被如何使用？</li>
+<li>今后打算添加哪些功能？</li>
+<li>未来会有哪些更多的功能需求？</li>
+</ul>
+<p>了解需求以后，就可以去设计扩展点，但是要辨别出可扩展设计和过度设计。</p>
+<p>可做的扩展设计：</p>
+<ul>
+<li>比较确定的、短期内就可能会扩展的</li>
+<li>需求改动对代码结构影响比较大的</li>
+<li>实现成本不高的扩展点</li>
+</ul>
+<p>过度设计的情况：</p>
+<ul>
+<li>不确定未来是否要支持的需求</li>
+<li>实现起来比较复杂的扩展点</li>
+</ul>
+<p>过度设计的情况，可以等到有需求驱动的时候，再重构代码来支持扩展需求。</p>
+<h2 id="六、开闭原则可能带来的弊端"><a href="#六、开闭原则可能带来的弊端" class="headerlink" title="六、开闭原则可能带来的弊端"></a>六、开闭原则可能带来的弊端</h2><ul>
+<li>有些情况下，代码的扩展性会跟可读性相冲突，理解起来比以前难一些</li>
+<li>重构之后的代码要比之前的代码，在结构上可能会复杂很多</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>Design Pattern</tag>
+        <tag>设计模式</tag>
+        <tag>设计原则</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>单一职责原则</title>
+    <url>/design_pattern/principle/srp/</url>
+    <content><![CDATA[<h1 id="单一职责原则"><a href="#单一职责原则" class="headerlink" title="单一职责原则"></a>单一职责原则</h1><p>单一职责原则（<code>Single Responsibility Principle</code>，<code>SRP</code>）。</p>
+<p>英文描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">A class or module should have a single responsibility</span><br></pre></td></tr></table></figure>
+
+<p>中文翻译：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">一个类或者模块只负责一个职责（或者功能）</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h2 id="一、如何理解单一职责原则（SRP）？"><a href="#一、如何理解单一职责原则（SRP）？" class="headerlink" title="一、如何理解单一职责原则（SRP）？"></a>一、如何理解单一职责原则（SRP）？</h2><p>单一职责原则的含义：</p>
+<ul>
+<li>一个类只负责完成一个职责或者功能</li>
+<li>不要设计大而全的类，而是设计粒度小、功能单一的类</li>
+</ul>
+<p>比如，一个类里既包含订单的一些操作，又包含用户的一些操作。</p>
+<p>订单和用户是两个独立的业务领域，将它们的功能都放在同一个类中，那就违反了单一职责原则。</p>
+<p>需要将这个类拆分成两个粒度更细、功能更加单一的两个类：订单类和用户类。</p>
+<h2 id="二、为什么要用单一职责原则？"><a href="#二、为什么要用单一职责原则？" class="headerlink" title="二、为什么要用单一职责原则？"></a>二、为什么要用单一职责原则？</h2><ul>
+<li>实现代码高内聚、低耦合</li>
+<li>提高代码的复用性、可读性、可维护性</li>
+</ul>
+<h2 id="三、如何判定类的职责是否足够单一？"><a href="#三、如何判定类的职责是否足够单一？" class="headerlink" title="三、如何判定类的职责是否足够单一？"></a>三、如何判定类的职责是否足够单一？</h2><p>大部分情况下，类里的方法是否归为同一类，并不是那么容易判定的。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> userId;</span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line">    <span class="keyword">private</span> String email;</span><br><span class="line">    <span class="keyword">private</span> String telephone;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> createTime;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> lastLoginTime;</span><br><span class="line">    <span class="keyword">private</span> String avatarUrl;</span><br><span class="line">    <span class="keyword">private</span> String provinceOfAddress; <span class="comment">// 省</span></span><br><span class="line">    <span class="keyword">private</span> String cityOfAddress; <span class="comment">// 市</span></span><br><span class="line">    <span class="keyword">private</span> String regionOfAddress; <span class="comment">// 区 </span></span><br><span class="line">    <span class="keyword">private</span> String detailedAddress; <span class="comment">// 详细地址</span></span><br><span class="line">    <span class="comment">// ...省略其他属性和方法...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>UserInfo 类的设计是否满足单一职责原则呢？</p>
+<p>对于这个问题，有两种不同的观点：</p>
+<ol>
+<li>UserInfo 类中都是跟用户相关的信息，都隶属于用户这样一个业务模型，满足单一职责原则</li>
+<li>地址信息所占的比重较高，可以拆分成独立的 UserAddress 类，拆分后的两个类的职责更单一</li>
+</ol>
+<p>这 2 种观点都可以说是正确的。</p>
+<p>类的职责是否足够单一，实际上并没有一个明确的、可量化的标准：</p>
+<ul>
+<li>不同应用场景下，对同一个类的职责是否单一的判定，可能都是不一样的</li>
+</ul>
+<p>在某种应用场景下，一个类的设计可能已经满足单一职责原则了，但如果换个应用场景，可能就不满足了。</p>
+<p>可以用一些侧面指标，来判定类的设计是否满足单一职责原则：</p>
+<ul>
+<li>类中的代码行数、函数或者属性过多，多到不知道用哪个的时候</li>
+<li>类依赖的其他类过多，或者依赖类的其他类过多</li>
+<li>私有方法过多，就要考虑能否将私有方法独立到新的类中</li>
+<li>比较难给类起一个合适的名字，或者只能用一些笼统的 Manager、Context 之类的词语来命名</li>
+<li>经常集中操作类中的某几个属性，可以考虑将这几个属性单独抽出来做成一个类</li>
+</ul>
+<p>满足这些情况之一，就说明类设计不符合单一职责原则，需要拆分。</p>
+<p>但是也不必过于未雨绸缪，刚开始时不必过度设计：</p>
+<ul>
+<li>可以先写一个粗粒度的类，暂时满足业务需求</li>
+<li>随着业务的发展，代码越来越多，再考虑拆分成几个更细粒度的类</li>
+</ul>
+<p>这种方式就是所谓的持续重构。</p>
+<h2 id="四、类的职责是否越单一越好？"><a href="#四、类的职责是否越单一越好？" class="headerlink" title="四、类的职责是否越单一越好？"></a>四、类的职责是否越单一越好？</h2><p>单一职责原则通过避免设计大而全的类，避免将不相关的功能耦合在一起，来提高类的内聚性。</p>
+<ul>
+<li>但是如果拆分得过细，可能会适得其反，反倒会降低内聚性，也会影响代码的可维护性</li>
+</ul>
+<p>比如，序列化这个功能可以拆分成2个类（一个序列化类，一个反序列化类），但是：</p>
+<ul>
+<li>拆分成 2 个类，那序列化这整个功能就有点违反了“高内聚”的原则</li>
+<li>序列化算法发生了改变，需要同时修改 2 个类的实现，在“可维护性”上也变差了</li>
+</ul>
+<p>所以不是拆分得越细越好，要恰到好处的均衡。</p>
+<ul>
+<li>不管怎么样，最终目的还是为了提高代码的可读性、可扩展性、复用性、可维护性等</li>
+</ul>
+<p>在考虑应用某一个设计原则是否合理的时候，也可以以此作为最终的考量标准。</p>
+]]></content>
+      <tags>
+        <tag>Design Pattern</tag>
+        <tag>设计模式</tag>
+        <tag>设计原则</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>树状数组</title>
     <url>/algorithm/binary_index_tree/</url>
     <content><![CDATA[<h1 id="树状数组"><a href="#树状数组" class="headerlink" title="树状数组"></a>树状数组</h1><h2 id="一、什么是树状数组"><a href="#一、什么是树状数组" class="headerlink" title="一、什么是树状数组"></a>一、什么是树状数组</h2><p>树状数组，其英文是 <code>Binary Indexed Tree</code>（简称 <code>BIT</code>），也称为 二叉索引树/二叉下标树。</p>
@@ -3253,95 +3841,6 @@
       </tags>
   </entry>
   <entry>
-    <title>07_01_任务取消</title>
-    <url>/lang/java/core/concurrency/07_01_%E4%BB%BB%E5%8A%A1%E5%8F%96%E6%B6%88/</url>
-    <content><![CDATA[<h1 id="任务取消"><a href="#任务取消" class="headerlink" title="任务取消"></a>任务取消</h1><p>任务、线程、服务、应用程序之间的关系：</p>
-<ul>
-<li>任务是最小的执行单元</li>
-<li>任务在线程中执行</li>
-<li>线程在服务（比如线程池服务）中运行</li>
-<li>服务在应用程序（JVM）中运行</li>
-</ul>
-<span id="more"></span>
-
-<p>取消某个操作的请求有很多，比如：</p>
-<ul>
-<li>用户请求取消</li>
-<li>有时间限制的操作</li>
-<li>应用程序事件</li>
-<li>运行错误</li>
-<li>应用程序关闭</li>
-</ul>
-<p>不同层次的取消操作，可能会导致不同的结果。</p>
-<p>Java 中没有一种安全的抢占式方法来停止线程，所以也没有安全的方式可以直接取消任务。</p>
-<p>只有一些协作式的机制，取消任务只能通过这种方式来安全实现。</p>
-<h2 id="一、取消策略"><a href="#一、取消策略" class="headerlink" title="一、取消策略"></a>一、取消策略</h2><p>一个可取消的任务必须有取消策略（Cancellation Policy）：</p>
-<ul>
-<li>How：其他代码如何（How）请求取消任务</li>
-<li>When：任务在何时（When）检查是否已经请求了取消</li>
-<li>What：响应取消请求时，应该执行哪些（What）操作</li>
-</ul>
-<p>取消策略详细定义了任务取消的整个流程。</p>
-<p>代码示例：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CancellationTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> cancelled;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (!cancelled) &#123;</span><br><span class="line">            <span class="comment">// do something</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cancel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        cancelled = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>取消策略的各个部分分别是：</p>
-<ul>
-<li>How：调用 <code>cancel()</code> 方法取消任务</li>
-<li>When：在循环前验证取消标志 <code>while (!cancelled)</code></li>
-<li>What：没有其他操作，直接结束任务</li>
-</ul>
-<p>对于每一种取消策略，都必须有它的 <code>How</code>，<code>When</code>，<code>What</code>。</p>
-<h2 id="二、取消标志策略"><a href="#二、取消标志策略" class="headerlink" title="二、取消标志策略"></a>二、取消标志策略</h2><p>最简单的取消策略，就是使用一个取消标志，而任务定期检查这个标志。</p>
-<p>如果设置了取消标志，那么任务就将提前结束。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MarkCancellationTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 取消标志</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> cancelled;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> List&lt;BigInteger&gt; primes = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        BigInteger p = BigInteger.ONE;</span><br><span class="line">        <span class="keyword">while</span> (!cancelled) &#123;</span><br><span class="line">            p = p.nextProbablePrime();</span><br><span class="line">            <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">                primes.add(p);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cancel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        cancelled = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>通过在任务中检查取消标志，就可以实现取消任务的简单方式。</p>
-<p>但是这种方式存在一个问题，那就是如果任务中执行了阻塞操作，任务就可能取消不了：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MarkBlockCancellationTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 取消标志</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> cancelled;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> BlockingDeque&lt;BigInteger&gt; queue;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MarkBlockCancellationTask</span><span class="params">(BlockingDeque&lt;BigInteger&gt; queue)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.queue = queue;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            BigInteger p = BigInteger.ONE;</span><br><span class="line">            <span class="keyword">while</span> (!cancelled) &#123;</span><br><span class="line">                p = p.nextProbablePrime();</span><br><span class="line">                <span class="comment">// 阻塞操作，可能会一致阻塞</span></span><br><span class="line">                queue.put(p);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            <span class="comment">//</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cancel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        cancelled = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>比如这里执行了阻塞操作 <code>queue.put()</code>，假设操作一直阻塞，那么检查取消标志 <code>canceled</code> 的动作就一直不会触发。</p>
-<p>这种情况下，任务没办法取消，只能一直等到阻塞结束后，才能够取消。</p>
-<p>这其实和我们想要的效果不一样，我们想要的是那种取消后，任务就准备结束了。</p>
-<h2 id="三、线程中断策略"><a href="#三、线程中断策略" class="headerlink" title="三、线程中断策略"></a>三、线程中断策略</h2><p>为了解决阻塞导致任务无法取消的问题，需要用到线程的中断：</p>
-<ul>
-<li>每个线程都有一个中断状态标志</li>
-<li>大部分阻塞操作都支持抛出线程中断异常 <code>InterruptedException</code></li>
-<li>JVM 不能保证阻塞方法检测到中断的速度，但是总是可以检测到中断的</li>
-<li>线程中断并不会直接中断任务运行，而只是传递了请求中断的消息</li>
-</ul>
-<p>代码示例：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadInterruptCancellationTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> BlockingDeque&lt;BigInteger&gt; queue;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ThreadInterruptCancellationTask</span><span class="params">(BlockingDeque&lt;BigInteger&gt; queue)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.queue = queue;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            BigInteger p = BigInteger.ONE;</span><br><span class="line">            <span class="comment">// 1. 和取消标志一样，定期检查中断标志</span></span><br><span class="line">            <span class="keyword">while</span> (!Thread.currentThread().isInterrupted()) &#123;</span><br><span class="line">                p = p.nextProbablePrime();</span><br><span class="line">                <span class="comment">// 阻塞操作，可能会一致阻塞</span></span><br><span class="line">                queue.put(p);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            <span class="comment">// 2. 还提供了中断异常的取消方式</span></span><br><span class="line">            Thread.currentThread().interrupt();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>和取消标志差不多，只是线程中断提供的取消功能更全面：它可以取消阻塞的任务。</p>
-<ul>
-<li> 通常，中断是实现任务取消的最合理方式</li>
-</ul>
-<p>所以，如果任务代码能够响应中断，最好使用中断作为取消策略。</p>
-<h2 id="四、处理不可中断的操作"><a href="#四、处理不可中断的操作" class="headerlink" title="四、处理不可中断的操作"></a>四、处理不可中断的操作</h2><p>中断虽然能满足大部分的需求，但是：</p>
-<ul>
-<li>不是所有方法或阻塞操作都支持响应中断</li>
-</ul>
-<p>比如 Socket I/O 等方法，都不支持中断。</p>
-<p>但是，可以使用类似中断的手段来取消任务，比如 Socket 可以用 <code>close()</code> 方法结束阻塞：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SocketReaderThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">interrupt</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            socket.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">super</span>.interrupt();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>不过这种模拟中断的方式，需要事先了解线程阻塞的原因以及如何结束线程阻塞才行。</p>
-<p>类似这种不可中断的阻塞，在 Java 类库中大约有这几种：</p>
-<ul>
-<li>Java.io 包中的 Socket I/O</li>
-<li>Java.io 包中的同步 I/O</li>
-<li>Selector 包中的异步 I/O</li>
-<li>获取某个锁，指的是 Lock</li>
-</ul>
-<p>针对这些情况，可以利用类似上面的方式来封装中断处理。</p>
-]]></content>
-      <tags>
-        <tag>java</tag>
-        <tag>并发编程</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>06_任务的执行</title>
     <url>/lang/java/core/concurrency/06_%E4%BB%BB%E5%8A%A1%E7%9A%84%E6%89%A7%E8%A1%8C/</url>
     <content><![CDATA[<h1 id="任务的执行"><a href="#任务的执行" class="headerlink" title="任务的执行"></a>任务的执行</h1><h2 id="一、在线程中执行任务"><a href="#一、在线程中执行任务" class="headerlink" title="一、在线程中执行任务"></a>一、在线程中执行任务</h2><h3 id="1-1-串行执行"><a href="#1-1-串行执行" class="headerlink" title="1.1 串行执行"></a>1.1 串行执行</h3><p>串行执行，是指所有任务都在单个线程中串行地执行。</p>
@@ -3505,6 +4004,95 @@
 <li>等待任务完成</li>
 <li>为任务设置时限</li>
 </ul>
+]]></content>
+      <tags>
+        <tag>java</tag>
+        <tag>并发编程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>07_01_任务取消</title>
+    <url>/lang/java/core/concurrency/07_01_%E4%BB%BB%E5%8A%A1%E5%8F%96%E6%B6%88/</url>
+    <content><![CDATA[<h1 id="任务取消"><a href="#任务取消" class="headerlink" title="任务取消"></a>任务取消</h1><p>任务、线程、服务、应用程序之间的关系：</p>
+<ul>
+<li>任务是最小的执行单元</li>
+<li>任务在线程中执行</li>
+<li>线程在服务（比如线程池服务）中运行</li>
+<li>服务在应用程序（JVM）中运行</li>
+</ul>
+<span id="more"></span>
+
+<p>取消某个操作的请求有很多，比如：</p>
+<ul>
+<li>用户请求取消</li>
+<li>有时间限制的操作</li>
+<li>应用程序事件</li>
+<li>运行错误</li>
+<li>应用程序关闭</li>
+</ul>
+<p>不同层次的取消操作，可能会导致不同的结果。</p>
+<p>Java 中没有一种安全的抢占式方法来停止线程，所以也没有安全的方式可以直接取消任务。</p>
+<p>只有一些协作式的机制，取消任务只能通过这种方式来安全实现。</p>
+<h2 id="一、取消策略"><a href="#一、取消策略" class="headerlink" title="一、取消策略"></a>一、取消策略</h2><p>一个可取消的任务必须有取消策略（Cancellation Policy）：</p>
+<ul>
+<li>How：其他代码如何（How）请求取消任务</li>
+<li>When：任务在何时（When）检查是否已经请求了取消</li>
+<li>What：响应取消请求时，应该执行哪些（What）操作</li>
+</ul>
+<p>取消策略详细定义了任务取消的整个流程。</p>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CancellationTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> cancelled;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (!cancelled) &#123;</span><br><span class="line">            <span class="comment">// do something</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cancel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        cancelled = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>取消策略的各个部分分别是：</p>
+<ul>
+<li>How：调用 <code>cancel()</code> 方法取消任务</li>
+<li>When：在循环前验证取消标志 <code>while (!cancelled)</code></li>
+<li>What：没有其他操作，直接结束任务</li>
+</ul>
+<p>对于每一种取消策略，都必须有它的 <code>How</code>，<code>When</code>，<code>What</code>。</p>
+<h2 id="二、取消标志策略"><a href="#二、取消标志策略" class="headerlink" title="二、取消标志策略"></a>二、取消标志策略</h2><p>最简单的取消策略，就是使用一个取消标志，而任务定期检查这个标志。</p>
+<p>如果设置了取消标志，那么任务就将提前结束。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MarkCancellationTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 取消标志</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> cancelled;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> List&lt;BigInteger&gt; primes = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        BigInteger p = BigInteger.ONE;</span><br><span class="line">        <span class="keyword">while</span> (!cancelled) &#123;</span><br><span class="line">            p = p.nextProbablePrime();</span><br><span class="line">            <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">                primes.add(p);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cancel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        cancelled = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过在任务中检查取消标志，就可以实现取消任务的简单方式。</p>
+<p>但是这种方式存在一个问题，那就是如果任务中执行了阻塞操作，任务就可能取消不了：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MarkBlockCancellationTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 取消标志</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> cancelled;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> BlockingDeque&lt;BigInteger&gt; queue;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MarkBlockCancellationTask</span><span class="params">(BlockingDeque&lt;BigInteger&gt; queue)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.queue = queue;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            BigInteger p = BigInteger.ONE;</span><br><span class="line">            <span class="keyword">while</span> (!cancelled) &#123;</span><br><span class="line">                p = p.nextProbablePrime();</span><br><span class="line">                <span class="comment">// 阻塞操作，可能会一致阻塞</span></span><br><span class="line">                queue.put(p);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            <span class="comment">//</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cancel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        cancelled = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>比如这里执行了阻塞操作 <code>queue.put()</code>，假设操作一直阻塞，那么检查取消标志 <code>canceled</code> 的动作就一直不会触发。</p>
+<p>这种情况下，任务没办法取消，只能一直等到阻塞结束后，才能够取消。</p>
+<p>这其实和我们想要的效果不一样，我们想要的是那种取消后，任务就准备结束了。</p>
+<h2 id="三、线程中断策略"><a href="#三、线程中断策略" class="headerlink" title="三、线程中断策略"></a>三、线程中断策略</h2><p>为了解决阻塞导致任务无法取消的问题，需要用到线程的中断：</p>
+<ul>
+<li>每个线程都有一个中断状态标志</li>
+<li>大部分阻塞操作都支持抛出线程中断异常 <code>InterruptedException</code></li>
+<li>JVM 不能保证阻塞方法检测到中断的速度，但是总是可以检测到中断的</li>
+<li>线程中断并不会直接中断任务运行，而只是传递了请求中断的消息</li>
+</ul>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadInterruptCancellationTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> BlockingDeque&lt;BigInteger&gt; queue;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ThreadInterruptCancellationTask</span><span class="params">(BlockingDeque&lt;BigInteger&gt; queue)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.queue = queue;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            BigInteger p = BigInteger.ONE;</span><br><span class="line">            <span class="comment">// 1. 和取消标志一样，定期检查中断标志</span></span><br><span class="line">            <span class="keyword">while</span> (!Thread.currentThread().isInterrupted()) &#123;</span><br><span class="line">                p = p.nextProbablePrime();</span><br><span class="line">                <span class="comment">// 阻塞操作，可能会一致阻塞</span></span><br><span class="line">                queue.put(p);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            <span class="comment">// 2. 还提供了中断异常的取消方式</span></span><br><span class="line">            Thread.currentThread().interrupt();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>和取消标志差不多，只是线程中断提供的取消功能更全面：它可以取消阻塞的任务。</p>
+<ul>
+<li> 通常，中断是实现任务取消的最合理方式</li>
+</ul>
+<p>所以，如果任务代码能够响应中断，最好使用中断作为取消策略。</p>
+<h2 id="四、处理不可中断的操作"><a href="#四、处理不可中断的操作" class="headerlink" title="四、处理不可中断的操作"></a>四、处理不可中断的操作</h2><p>中断虽然能满足大部分的需求，但是：</p>
+<ul>
+<li>不是所有方法或阻塞操作都支持响应中断</li>
+</ul>
+<p>比如 Socket I/O 等方法，都不支持中断。</p>
+<p>但是，可以使用类似中断的手段来取消任务，比如 Socket 可以用 <code>close()</code> 方法结束阻塞：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SocketReaderThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">interrupt</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            socket.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">super</span>.interrupt();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不过这种模拟中断的方式，需要事先了解线程阻塞的原因以及如何结束线程阻塞才行。</p>
+<p>类似这种不可中断的阻塞，在 Java 类库中大约有这几种：</p>
+<ul>
+<li>Java.io 包中的 Socket I/O</li>
+<li>Java.io 包中的同步 I/O</li>
+<li>Selector 包中的异步 I/O</li>
+<li>获取某个锁，指的是 Lock</li>
+</ul>
+<p>针对这些情况，可以利用类似上面的方式来封装中断处理。</p>
 ]]></content>
       <tags>
         <tag>java</tag>
