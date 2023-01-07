@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Java 的格式化字符串一、格式化 Formatter 参考了 C 语言的 printf() 函数，但 Java 的格式化会更严格一些 同时定制化增加了 Java 语言的一些特性，使得格式化更适用于 Java 语言">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 的格式化字符串">
+<meta property="og:url" content="http://example.com/lang/java/other/formatter/index.html">
+<meta property="og:site_name" content="Strive">
+<meta property="og:description" content="Java 的格式化字符串一、格式化 Formatter 参考了 C 语言的 printf() 函数，但 Java 的格式化会更严格一些 同时定制化增加了 Java 语言的一些特性，使得格式化更适用于 Java 语言">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-01-08T13:20:30.000Z">
+<meta property="article:modified_time" content="2023-01-07T13:26:45.262Z">
+<meta property="article:author" content="jiaduo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="字符串，格式化">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/lang/java/other/formatter/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Java 的格式化字符串 | Strive</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Strive</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Rome was not built in one day</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/other/formatter/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java 的格式化字符串
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-01-08 21:20:30" itemprop="dateCreated datePublished" datetime="2023-01-08T21:20:30+08:00">2023-01-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-01-07 21:26:45" itemprop="dateModified" datetime="2023-01-07T21:26:45+08:00">2023-01-07</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Java-的格式化字符串"><a href="#Java-的格式化字符串" class="headerlink" title="Java 的格式化字符串"></a>Java 的格式化字符串</h1><h2 id="一、格式化-Formatter"><a href="#一、格式化-Formatter" class="headerlink" title="一、格式化 Formatter"></a>一、格式化 Formatter</h2><ul>
+<li>参考了 C 语言的 <code>printf()</code> 函数，但 Java 的格式化会更严格一些</li>
+<li>同时定制化增加了 Java 语言的一些特性，使得格式化更适用于 Java 语言</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="二、格式化方法"><a href="#二、格式化方法" class="headerlink" title="二、格式化方法"></a>二、格式化方法</h2><h3 id="2-1-使用-Formatter-实例"><a href="#2-1-使用-Formatter-实例" class="headerlink" title="2.1 使用 Formatter 实例"></a>2.1 使用 <code>Formatter</code> 实例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Formatter formatter = <span class="keyword">new</span> Formatter();</span><br><span class="line">formatter.format(<span class="string">&quot;%4$2s %3$2s %2$2s %1$2s&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="string">&quot;d&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-使用-System-中的方法"><a href="#2-2-使用-System-中的方法" class="headerlink" title="2.2 使用 System 中的方法"></a>2.2 使用 <code>System</code> 中的方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// out</span></span><br><span class="line">System.out.format(<span class="string">&quot;Local time: %tT&quot;</span>, Calendar.getInstance());</span><br><span class="line"></span><br><span class="line"><span class="comment">// err</span></span><br><span class="line">System.err.printf(<span class="string">&quot;Unable to open file &#x27;%1$s&#x27;: %2$s&quot;</span>, fileName, exception.getMessage());</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-使用-String-中的静态方法"><a href="#2-3-使用-String-中的静态方法" class="headerlink" title="2.3 使用 String 中的静态方法"></a>2.3 使用 <code>String</code> 中的静态方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String s = String.format(<span class="string">&quot;Duke&#x27;s Birthday: %1$tb %1$te, %1$tY&quot;</span>, c);</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-4-格式化方法要素"><a href="#2-4-格式化方法要素" class="headerlink" title="2.4 格式化方法要素"></a>2.4 格式化方法要素</h3><p>所有的格式化方法都有 2 个要素：</p>
+<ul>
+<li><code>format string</code>：格式化字符串</li>
+<li><code>argument list</code>：参数列表</li>
+</ul>
+<p>比如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String s = String.format(<span class="string">&quot;%4$2s %3$2s %2$2s %1$2s&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="string">&quot;d&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>其中，</p>
+<ul>
+<li><code>%4$2s %3$2s %2$2s %1$2s</code> 是格式化字符串</li>
+<li><code>&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;</code> 是参数列表</li>
+</ul>
+<p>格式化字符串的写法是有固定语法的，不能随意写。</p>
+<h2 id="三、格式化语法"><a href="#三、格式化语法" class="headerlink" title="三、格式化语法"></a>三、格式化语法</h2><p>参数类型可以分为几类：</p>
+<ul>
+<li>通用：比如字符串</li>
+<li>字符：比如字母</li>
+<li>数值：比如整数和浮点数</li>
+<li>日期时间：比如年月日，时分秒</li>
+<li>无参类型：比如换行</li>
+</ul>
+<p>对于不同的参数数据类型，格式化语法会稍微有点不一样。</p>
+<h3 id="3-1-通用、字符、数值"><a href="#3-1-通用、字符、数值" class="headerlink" title="3.1 通用、字符、数值"></a>3.1 通用、字符、数值</h3><p>语法格式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%[argument_index$][flags][width][.precision]conversion</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>argument_index</code>：参数索引，指定使用第几个参数，<code>1$</code> 表示第1个参数，<code>2$</code> 表示第2个参数</li>
+<li><code>flags</code>：标志，用于调整参数输出的格式，比如左对齐，前缀补零等</li>
+<li><code>width</code>：输出宽度，用于指定参数输出的最小字符数量</li>
+<li><code>precision</code>：对于数值型参数，用于指定精度；对于某些类型，用于表示输出的最大字符数量</li>
+<li><code>conversion</code>：转换符，单个字母，用于表示参数如何被格式化</li>
+</ul>
+<p>举个例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(&quot;%4$2s&quot;, &quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;) --&gt; &quot; d&quot;</span><br><span class="line"></span><br><span class="line">- 4$: argument_index，这里表示使用第 4 个参数</span><br><span class="line">- 2: width，这里表示输出字符数量最少为 2</span><br><span class="line">- s: conversion，这里表示以字符串形式输出参数，即 toString()</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-日期、时间"><a href="#3-2-日期、时间" class="headerlink" title="3.2 日期、时间"></a>3.2 日期、时间</h3><p>语法格式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%[argument_index$][flags][width]conversion</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>argument_index</code>、<code>flags</code>、<code>width</code> 和上面的通用型含义一样</li>
+<li><code>conversion</code>：转换符，2 个字母，第一个字母是 <code>t</code> 或 <code>T</code>，用于表示参数如何被格式化</li>
+</ul>
+<p>举个例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(&quot;%1$tY&quot;, new Date()) --&gt; 2023</span><br><span class="line"></span><br><span class="line">- 1$: argument_index，这里表示使用第 1 个参数</span><br><span class="line">- t: conversion，日期和时间转换符的固定前缀</span><br><span class="line">- Y: conversion，年份，最少 4 位整数表示，不足 4 位时前面补零</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-无参类型"><a href="#3-3-无参类型" class="headerlink" title="3.3 无参类型"></a>3.3 无参类型</h3><p>语法格式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%[flags][width]conversion</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>flags</code>、<code>width</code> 和上面的通用型含义一样</li>
+<li><code>conversion</code>：表示输出的内容，没有参数，不是占位符了</li>
+</ul>
+<p>举个例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(&quot;%d%%&quot;, 50) --&gt; &quot;50%&quot;</span><br><span class="line"></span><br><span class="line">- %: 表示输出 % 这个字符</span><br></pre></td></tr></table></figure>
+
+<h2 id="四、转换符（conversion）"><a href="#四、转换符（conversion）" class="headerlink" title="四、转换符（conversion）"></a>四、转换符（conversion）</h2><h3 id="4-1-转换符分类"><a href="#4-1-转换符分类" class="headerlink" title="4.1 转换符分类"></a>4.1 转换符分类</h3><table>
+<thead>
+<tr>
+<th align="left">类型</th>
+<th align="left">应用范围</th>
+<th align="left">适用参数类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">通用型</td>
+<td align="left">所有参数类型</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">字符型</td>
+<td align="left">可应用于 Unicode 字符展示的基本类型</td>
+<td align="left">包括 <code>char</code>、<code>Character</code>、<code>byte</code>、<code>Byte</code>、<code>short</code>、<code>Short</code><br />还有可能应用于 <code>int</code>、<code>Integer</code> 类型（满足 <code>Character.isValidCodePoint</code>）</td>
+</tr>
+<tr>
+<td align="left">数值型</td>
+<td align="left">可分为整型和浮点型</td>
+<td align="left">整型包括 <code>byte</code>、<code>Byte</code>、<code>short</code>、<code>Short</code>、<code>int</code>、<code>Integer</code>、<code>long</code>、<code>Long</code>、<code>BigInteger</code><br />浮点型包括 <code>float</code>、<code>Float</code>、<code>double</code>、<code>Double</code>、<code>BigDecimal</code></td>
+</tr>
+<tr>
+<td align="left">日期时间</td>
+<td align="left">可应用于日期和时间</td>
+<td align="left">包括 <code>long</code>、<code>Long</code>、<code>Calendar</code>、<code>Date</code>、<code>TemporalAccessor</code></td>
+</tr>
+<tr>
+<td align="left">百分比</td>
+<td align="left">特定字面量 <code>%</code></td>
+<td align="left">只有 <code>%</code></td>
+</tr>
+<tr>
+<td align="left">换行符</td>
+<td align="left">特定平台的换行符</td>
+<td align="left">比如 <code>\n</code>、<code>\r\n</code></td>
+</tr>
+</tbody></table>
+<h3 id="4-2-转换符汇总"><a href="#4-2-转换符汇总" class="headerlink" title="4.2 转换符汇总"></a>4.2 转换符汇总</h3><table>
+<thead>
+<tr>
+<th align="left">转换符</th>
+<th align="left">分类类型</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">b/B</td>
+<td align="left">通用型</td>
+<td align="left">布尔值。<br />null 的结果是 false<br />布尔参数时等于 String.valueOf(arg)<br />非布尔参数时等于 true</td>
+</tr>
+<tr>
+<td align="left">h/H</td>
+<td align="left">通用型</td>
+<td align="left">哈希值。<br />结果等于 Integer.toHexString(arg.hashCode())</td>
+</tr>
+<tr>
+<td align="left">s/S</td>
+<td align="left">通用型</td>
+<td align="left">字符串。<br />如果参数实现了 Formattable 接口，那么输出就是 arg.formatTo() 的结果<br />否则输出等于 arg.toString()</td>
+</tr>
+<tr>
+<td align="left">c/C</td>
+<td align="left">字符型</td>
+<td align="left">Unicode 字符</td>
+</tr>
+<tr>
+<td align="left">d</td>
+<td align="left">整型</td>
+<td align="left">整数</td>
+</tr>
+<tr>
+<td align="left">o</td>
+<td align="left">整型</td>
+<td align="left">八进制整数</td>
+</tr>
+<tr>
+<td align="left">x/X</td>
+<td align="left">整型</td>
+<td align="left">十六进制整数</td>
+</tr>
+<tr>
+<td align="left">e/E</td>
+<td align="left">浮点型</td>
+<td align="left">科学计数法</td>
+</tr>
+<tr>
+<td align="left">f</td>
+<td align="left">浮点型</td>
+<td align="left">小数</td>
+</tr>
+<tr>
+<td align="left">g/G</td>
+<td align="left">浮点型</td>
+<td align="left">小数或者科学计数法，根据数据的实际情况动态决定使用哪种</td>
+</tr>
+<tr>
+<td align="left">a/A</td>
+<td align="left">浮点型</td>
+<td align="left">十六进制浮点数，带有效数和指数</td>
+</tr>
+<tr>
+<td align="left">t/T</td>
+<td align="left">日期时间</td>
+<td align="left">日期时间转换符的固定前缀</td>
+</tr>
+<tr>
+<td align="left">%</td>
+<td align="left">百分比</td>
+<td align="left">字面量 %</td>
+</tr>
+<tr>
+<td align="left">n</td>
+<td align="left">换行符</td>
+<td align="left">特定平台的换行符</td>
+</tr>
+</tbody></table>
+<p>转换符大小写的格式化作用相同，仅仅是输出结果的大小写不一样。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 布尔值 b/B */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;null: %b, %B&quot;</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="comment">// null: false, FALSE </span></span><br><span class="line">System.out.printf(<span class="string">&quot;bool: %b, %B&quot;</span>, <span class="keyword">true</span>, <span class="keyword">false</span>);</span><br><span class="line"><span class="comment">// bool: true, FALSE </span></span><br><span class="line">System.out.printf(<span class="string">&quot;other: %b, %B&quot;</span>, <span class="number">1</span>, <span class="string">&quot;test&quot;</span>);</span><br><span class="line"><span class="comment">// other: true, TRUE </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 哈希值 h/H */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;null: %h, %H&quot;</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="comment">// null: null, NULL </span></span><br><span class="line">System.out.printf(<span class="string">&quot;hash: %h, %H&quot;</span>, <span class="number">12.0</span>, <span class="string">&quot;false&quot;</span>);</span><br><span class="line"><span class="comment">// hash: 40280000, 5CB1923 </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 字符串 s/S */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;null: %s, %S&quot;</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="comment">// null: null, NULL </span></span><br><span class="line">System.out.printf(<span class="string">&quot;string: %s, %S&quot;</span>, <span class="number">123</span>, <span class="string">&quot;string&quot;</span>);</span><br><span class="line"><span class="comment">// string: 123, STRING</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 字符 c/C */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;null: %c, %C&quot;</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="comment">// null: null, NULL </span></span><br><span class="line">System.out.printf(<span class="string">&quot;string: %c, %C&quot;</span>, <span class="number">36</span>, <span class="string">&#x27;a&#x27;</span>);</span><br><span class="line"><span class="comment">// char: $, A </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 整数值 d/o/x/X */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;null: %d&quot;</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="comment">// null: null </span></span><br><span class="line">System.out.printf(<span class="string">&quot;10-int: %d&quot;</span>, <span class="number">36</span>);</span><br><span class="line"><span class="comment">// 10-int: 36 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;8-int: %o&quot;</span>, <span class="number">40</span>);</span><br><span class="line"><span class="comment">// 8-int: 50 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;16-int: %x, %X&quot;</span>, <span class="number">46</span>, <span class="number">47</span>);</span><br><span class="line"><span class="comment">// 16-int: 2e, 2F </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 浮点值 e/E/f/g/G/a/A */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;null: %f&quot;</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="comment">// null: null </span></span><br><span class="line">System.out.printf(<span class="string">&quot;scientific: %e, %E&quot;</span>, <span class="number">360000000000000.0</span>, <span class="number">0.00002</span>);</span><br><span class="line"><span class="comment">// scientific: 3.600000e+14, 2.000000E-05</span></span><br><span class="line">System.out.printf(<span class="string">&quot;float: %f, %f&quot;</span>, <span class="number">40.0f</span>, <span class="number">100.2</span>);</span><br><span class="line"><span class="comment">// float: 40.000000, 100.200000 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;rounding: %g, %G&quot;</span>, <span class="number">0.0001</span>, <span class="number">0.00000000000001</span>);</span><br><span class="line"><span class="comment">// rounding: 0.000100000, 1.00000E-14</span></span><br><span class="line">System.out.printf(<span class="string">&quot;16-float: %a, %A %n&quot;</span>, <span class="number">0.0001</span>, <span class="number">0.00000000000001</span>);</span><br><span class="line"><span class="comment">// 16-float: 0x1.a36e2eb1c432dp-14, 0X1.6849B86A12B9BP-47 </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 日期时间 t/T */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;null: %th&quot;</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="comment">// null: null </span></span><br><span class="line">System.out.printf(<span class="string">&quot;year: %ty, %tY&quot;</span>, <span class="keyword">new</span> Date(), <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// year: 23, 2023 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;month: %tM&quot;</span>, <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// month: 09 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;hour: %th, %tH&quot;</span>, <span class="keyword">new</span> Date(), <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// hour: 01</span></span><br><span class="line">System.out.printf(<span class="string">&quot;16-float: %s, %S&quot;</span>, <span class="keyword">new</span> Date(), <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// second: 1673025096, 36 </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 百分比 % */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;percent: %%&quot;</span>);</span><br><span class="line"><span class="comment">// percent: % </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 换行符 n */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;line separator: %n line separator&quot;</span>);</span><br><span class="line"><span class="comment">//line separator: </span></span><br><span class="line"><span class="comment">// line separator</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-3-日期转换符"><a href="#4-3-日期转换符" class="headerlink" title="4.3 日期转换符"></a>4.3 日期转换符</h3><table>
+<thead>
+<tr>
+<th align="left">转换符</th>
+<th align="left">描述</th>
+<th align="left">示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Y</td>
+<td align="left">4位数的年份</td>
+<td align="left">0092</td>
+</tr>
+<tr>
+<td align="left">y</td>
+<td align="left">2位数的年份</td>
+<td align="left">范围是 00 - 99</td>
+</tr>
+<tr>
+<td align="left">B</td>
+<td align="left">本地化的月份全称</td>
+<td align="left">“January”、”February”</td>
+</tr>
+<tr>
+<td align="left">b</td>
+<td align="left">本地化的月份简称</td>
+<td align="left">“Jan”、”Feb”</td>
+</tr>
+<tr>
+<td align="left">h</td>
+<td align="left">和 b 一样</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">m</td>
+<td align="left">2位数的月份，从01开始</td>
+<td align="left">范围是 01 - 13</td>
+</tr>
+<tr>
+<td align="left">A</td>
+<td align="left">本地化的周全称</td>
+<td align="left">“Sunday”、”Monday”</td>
+</tr>
+<tr>
+<td align="left">a</td>
+<td align="left">本地化的周简称</td>
+<td align="left">“Sun”、”Mon”</td>
+</tr>
+<tr>
+<td align="left">d</td>
+<td align="left">2位数的每月天数</td>
+<td align="left">范围是 01 - 31</td>
+</tr>
+<tr>
+<td align="left">e</td>
+<td align="left">每月天数</td>
+<td align="left">范围是 1 - 31</td>
+</tr>
+</tbody></table>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">System.out.printf(<span class="string">&quot;year: %ty, %tY&quot;</span>, <span class="keyword">new</span> Date(), <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// year: 23, 2023 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;month name: %tb, %tB, %th&quot;</span>, <span class="keyword">new</span> Date(), <span class="keyword">new</span> Date(), <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// month name: 1月, 一月, 1月</span></span><br><span class="line">System.out.printf(<span class="string">&quot;month number: %tm&quot;</span>, <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// month number: 01 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;week: %ta, %tA&quot;</span>, <span class="keyword">new</span> Date(), <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// week: 周六, 星期六 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;day: %td, %te&quot;</span>, <span class="keyword">new</span> Date(), <span class="keyword">new</span> Date()); </span><br><span class="line"><span class="comment">// day: 07, 7 </span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-4-时间转换符"><a href="#4-4-时间转换符" class="headerlink" title="4.4 时间转换符"></a>4.4 时间转换符</h3><table>
+<thead>
+<tr>
+<th align="left">转换符</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">H</td>
+<td align="left">小时，24小时制，2位数，范围是 00 - 23</td>
+</tr>
+<tr>
+<td align="left">I（i的大写）</td>
+<td align="left">小时，12小时制，2位数，范围是 01 - 12</td>
+</tr>
+<tr>
+<td align="left">k</td>
+<td align="left">小时，24小时制，范围是 0 - 23</td>
+</tr>
+<tr>
+<td align="left">l（L的小写）</td>
+<td align="left">小时，12小时制，范围是 1 - 12</td>
+</tr>
+<tr>
+<td align="left">M</td>
+<td align="left">分钟，2位数，范围是 00 - 59</td>
+</tr>
+<tr>
+<td align="left">S</td>
+<td align="left">秒，2位数，范围是 00 - 60，60专门用于支持闰秒</td>
+</tr>
+<tr>
+<td align="left">L</td>
+<td align="left">毫秒，3位数，范围是 000 -999</td>
+</tr>
+<tr>
+<td align="left">N</td>
+<td align="left">纳秒，9位数，范围是 000000000 - 999999999</td>
+</tr>
+<tr>
+<td align="left">s</td>
+<td align="left">从 1970/01/01 00:00:00 开始的秒数，范围是 Long.MIN_VALUE/1000 - Long.MAX_VALUE/1000</td>
+</tr>
+<tr>
+<td align="left">Q</td>
+<td align="left">从 1970/01/01 00:00:00 开始的毫秒数，范围是 Long.MIN_VALUE - Long.MAX_VALUE</td>
+</tr>
+<tr>
+<td align="left">p</td>
+<td align="left">特定语言的上午或者下午，比如 am，pm</td>
+</tr>
+</tbody></table>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">System.out.printf(<span class="string">&quot;hour: %tH, %tI, %tk, %tl&quot;</span>, date, date, date, date);</span><br><span class="line"><span class="comment">// hour: 21, 09, 21, 9 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;minute: %tM&quot;</span>, date);</span><br><span class="line"><span class="comment">// minute: 33 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;second: %ts, %tS&quot;</span>, date, date);</span><br><span class="line"><span class="comment">// second: 1673012005, 25 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;millisecond: %tL, %tQ&quot;</span>, date, date);</span><br><span class="line"><span class="comment">// millisecond: 706, 1673012005706</span></span><br><span class="line">System.out.printf(<span class="string">&quot;nanosecond: %tN&quot;</span>, date);</span><br><span class="line"><span class="comment">// nanosecond: 706000000 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;noon: %tp&quot;</span>, date);</span><br><span class="line"><span class="comment">// noon: 下午</span></span><br></pre></td></tr></table></figure>
+
+<p>上面是比较细的转换符，直接用的话写起来比较麻烦。</p>
+<p>而且日期时间的输出还是很常用的，所以还提供了一些时间转换符的快捷方式：</p>
+<table>
+<thead>
+<tr>
+<th align="left">转换符</th>
+<th align="left">描述</th>
+<th align="left">示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">R</td>
+<td align="left">表示24小制时分：%tH:%tM</td>
+<td align="left">范围是 00:00 - 23:59</td>
+</tr>
+<tr>
+<td align="left">T</td>
+<td align="left">表示24小制时分秒：%tH:%tM:%tS</td>
+<td align="left">范围是 00:00:00 - 23:59:59</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">表示日期的月日年：%tm/%td/%ty</td>
+<td align="left">比如 01/06/23</td>
+</tr>
+<tr>
+<td align="left">F</td>
+<td align="left">表示日期的年月日：%tY-%tm-%td</td>
+<td align="left">比如 2023-01-06</td>
+</tr>
+<tr>
+<td align="left">c</td>
+<td align="left">完整的时间日期：%ta %tb %td %tT %tZ %tY</td>
+<td align="left">比如 Sun Jul 20 16:17:00 EDT 1969</td>
+</tr>
+</tbody></table>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">System.out.printf(<span class="string">&quot;HH:MM: %tR&quot;</span>, <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// HH:MM: 01:38 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;HH:MM:SS: %tT&quot;</span>, <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// HH:MM:SS: 01:38:51 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;mm/dd/yy: %tD&quot;</span>, <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// mm/dd/yy: 01/07/23 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;YYYY-mm-dd: %tF&quot;</span>, <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// YYYY-mm-dd: 2023-01-07 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;date time: %tc&quot;</span>, <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// date time: 周六 1月 07 01:38:51 CST 2023 </span></span><br></pre></td></tr></table></figure>
+
+<p>时间转换符的快捷方式就是用简单的1个字符替代多个转换符，简化代码，相当于缩写。</p>
+<h2 id="五、标志位（flags）"><a href="#五、标志位（flags）" class="headerlink" title="五、标志位（flags）"></a>五、标志位（flags）</h2><p>标志位用于对输出格式进行一些调整。</p>
+<table>
+<thead>
+<tr>
+<th align="left">标志</th>
+<th align="left">描述</th>
+<th align="left">示例</th>
+<th align="left">结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">-</td>
+<td align="left">左对齐</td>
+<td align="left">(“^%-5d^”, 15)</td>
+<td align="left">^15&nbsp;&nbsp;&nbsp;^</td>
+</tr>
+<tr>
+<td align="left">#</td>
+<td align="left">如果是浮点数则包含小数点，如果是16进制或8进制则添加0x或0</td>
+<td align="left">(“%#x”, 99)</td>
+<td align="left">0x63</td>
+</tr>
+<tr>
+<td align="left">+</td>
+<td align="left">给数值加上符号位，正数前加+，负数前加-</td>
+<td align="left">(“%+d”, 99)</td>
+<td align="left">+99</td>
+</tr>
+<tr>
+<td align="left">空格</td>
+<td align="left">在整数之前添加指定数量的空格</td>
+<td align="left">(“^% 4d^”, 99)</td>
+<td align="left">^&nbsp;&nbsp;99^</td>
+</tr>
+<tr>
+<td align="left">0</td>
+<td align="left">在数字前面补0</td>
+<td align="left">(“%04d”, 99)</td>
+<td align="left">0099</td>
+</tr>
+<tr>
+<td align="left">,</td>
+<td align="left">以“,”对数字分组</td>
+<td align="left">(“%,d”, 999999999)</td>
+<td align="left">999,999,999</td>
+</tr>
+<tr>
+<td align="left">(</td>
+<td align="left">使用括号包含负数</td>
+<td align="left">(“%(f”, -99.99)</td>
+<td align="left">(99.99)</td>
+</tr>
+</tbody></table>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">System.out.printf(<span class="string">&quot;left-justified: ^%5d^, ^%-5d^&quot;</span>, <span class="number">99</span>, <span class="number">99</span>);</span><br><span class="line"><span class="comment">// left-justified: ^   99^, ^99   ^ </span></span><br><span class="line">System.out.printf(<span class="string">&quot;conversion-dependent: %o, %#o&quot;</span>, <span class="number">40</span>, <span class="number">40</span>);</span><br><span class="line"><span class="comment">// conversion-dependent: 50, 050 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;conversion-dependent: %X, %#X&quot;</span>, <span class="number">47</span>, <span class="number">47</span>);</span><br><span class="line"><span class="comment">// conversion-dependent: 2F, 0X2F </span></span><br><span class="line">System.out.printf(<span class="string">&quot;sign: %d, %+d&quot;</span>, <span class="number">99</span>, <span class="number">99</span>);</span><br><span class="line"><span class="comment">// sign: 99, +99 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;space: ^%d^, ^% 5d^&quot;</span>, <span class="number">99</span>, <span class="number">99</span>);</span><br><span class="line"><span class="comment">// space: ^99^, ^   99^ </span></span><br><span class="line">System.out.printf(<span class="string">&quot;zero: ^%4d^, ^%04d^&quot;</span>, <span class="number">99</span>, <span class="number">99</span>);</span><br><span class="line"><span class="comment">// zero: ^  99^, ^0099^ </span></span><br><span class="line">System.out.printf(<span class="string">&quot;grouping separators: %d, %,d&quot;</span>, <span class="number">123456789</span>, <span class="number">123456789</span>);</span><br><span class="line"><span class="comment">// grouping separators: 123456789, 123,456,789 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;negative parentheses: %d, %(d&quot;</span>, -<span class="number">99</span>, -<span class="number">99</span>);</span><br><span class="line"><span class="comment">// negative parentheses: -99, (99)</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="六、宽度（width）"><a href="#六、宽度（width）" class="headerlink" title="六、宽度（width）"></a>六、宽度（width）</h2><p>宽度的含义：</p>
+<ul>
+<li>表示输出字符数量的最小值</li>
+<li>类型是整数，范围是 1 - Integer.MAX_VALUE</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">System.out.printf(<span class="string">&quot;width: ^%4d^&quot;</span>, <span class="number">99</span>);</span><br><span class="line"><span class="comment">// width: ^  99^</span></span><br><span class="line">System.out.printf(<span class="string">&quot;width: %4s&quot;</span>, <span class="string">&quot;123456789&quot;</span>);</span><br><span class="line"><span class="comment">// width: 123456789 </span></span><br></pre></td></tr></table></figure>
+
+<p>因为输出字符数量最小是 4，因此在 <code>99</code> 之前补了2个空格，所以 <code>(&quot;^%4d^&quot;, 99)</code> 的结果是 <code>^  99^</code>。</p>
+<h2 id="七、精度（precision）"><a href="#七、精度（precision）" class="headerlink" title="七、精度（precision）"></a>七、精度（precision）</h2><p>精度对于不同类型的含义：</p>
+<ul>
+<li>对于通用型，精度表示输出字符数量的最大值</li>
+<li>对于浮点型，精度表示小数点后面的数字个数</li>
+<li>对于字符型、整型、日期时间、百分比、换行符等，精度不支持</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">System.out.printf(<span class="string">&quot;general: %.6s&quot;</span>, <span class="string">&quot;123456789&quot;</span>);</span><br><span class="line"><span class="comment">// general: 123456 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;float: %.3f&quot;</span>, <span class="number">123.342235625345</span>);</span><br><span class="line"><span class="comment">// float: 123.342 </span></span><br></pre></td></tr></table></figure>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><blockquote>
+<p>java.util.Formatter</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/lonely_fireworks/article/details/7962171/">https://blog.csdn.net/lonely_fireworks/article/details/7962171/</a></p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2%EF%BC%8C%E6%A0%BC%E5%BC%8F%E5%8C%96/" rel="tag"># 字符串，格式化</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/other/object_concept/" rel="prev" title="各种 O 对象概念">
+      <i class="fa fa-chevron-left"></i> 各种 O 对象概念
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/lang/java/other/reflect_paramters/" rel="next" title="Java 反射调用有可变参数的方法">
+      Java 反射调用有可变参数的方法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Java-%E7%9A%84%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-text">Java 的格式化字符串</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%A0%BC%E5%BC%8F%E5%8C%96-Formatter"><span class="nav-text">一、格式化 Formatter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%96%B9%E6%B3%95"><span class="nav-text">二、格式化方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E4%BD%BF%E7%94%A8-Formatter-%E5%AE%9E%E4%BE%8B"><span class="nav-text">2.1 使用 Formatter 实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E4%BD%BF%E7%94%A8-System-%E4%B8%AD%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-text">2.2 使用 System 中的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E4%BD%BF%E7%94%A8-String-%E4%B8%AD%E7%9A%84%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95"><span class="nav-text">2.3 使用 String 中的静态方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%96%B9%E6%B3%95%E8%A6%81%E7%B4%A0"><span class="nav-text">2.4 格式化方法要素</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%A0%BC%E5%BC%8F%E5%8C%96%E8%AF%AD%E6%B3%95"><span class="nav-text">三、格式化语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E9%80%9A%E7%94%A8%E3%80%81%E5%AD%97%E7%AC%A6%E3%80%81%E6%95%B0%E5%80%BC"><span class="nav-text">3.1 通用、字符、数值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E6%97%A5%E6%9C%9F%E3%80%81%E6%97%B6%E9%97%B4"><span class="nav-text">3.2 日期、时间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E6%97%A0%E5%8F%82%E7%B1%BB%E5%9E%8B"><span class="nav-text">3.3 无参类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E8%BD%AC%E6%8D%A2%E7%AC%A6%EF%BC%88conversion%EF%BC%89"><span class="nav-text">四、转换符（conversion）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E8%BD%AC%E6%8D%A2%E7%AC%A6%E5%88%86%E7%B1%BB"><span class="nav-text">4.1 转换符分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E8%BD%AC%E6%8D%A2%E7%AC%A6%E6%B1%87%E6%80%BB"><span class="nav-text">4.2 转换符汇总</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E6%97%A5%E6%9C%9F%E8%BD%AC%E6%8D%A2%E7%AC%A6"><span class="nav-text">4.3 日期转换符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E6%97%B6%E9%97%B4%E8%BD%AC%E6%8D%A2%E7%AC%A6"><span class="nav-text">4.4 时间转换符</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E6%A0%87%E5%BF%97%E4%BD%8D%EF%BC%88flags%EF%BC%89"><span class="nav-text">五、标志位（flags）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E5%AE%BD%E5%BA%A6%EF%BC%88width%EF%BC%89"><span class="nav-text">六、宽度（width）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E7%B2%BE%E5%BA%A6%EF%BC%88precision%EF%BC%89"><span class="nav-text">七、精度（precision）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-text">参考</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jiaduo"
+      src="/images/lufei.jpeg">
+  <p class="site-author-name" itemprop="name">jiaduo</p>
+  <div class="site-description" itemprop="description">不积跬步，无以至千里</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+
+    
+    
+    
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2021/08 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jiaduo</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">475k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">7:12</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
