@@ -192,6 +192,90 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/datastructure/b_tree/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/lufei.jpeg">
+      <meta itemprop="name" content="jiaduo">
+      <meta itemprop="description" content="不积跬步，无以至千里">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strive">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/datastructure/b_tree/" class="post-title-link" itemprop="url">B-树</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-01-12 02:31:30 / 修改时间：02:38:04" itemprop="dateCreated datePublished" datetime="2023-01-12T02:31:30+08:00">2023-01-12</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>23k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>21 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="B-树"><a href="#B-树" class="headerlink" title="B-树"></a>B-树</h1><h2 id="一、B-树是什么？"><a href="#一、B-树是什么？" class="headerlink" title="一、B-树是什么？"></a>一、B-树是什么？</h2><p>B-树是一棵所有叶子节点高度都相同的平衡多叉树。</p>
+<p>其结构类似这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">                                    ____ ___ ___</span><br><span class="line">                                   | 24 |   |   |  </span><br><span class="line">                                          |</span><br><span class="line">                         ---------------------------------------------</span><br><span class="line">                         |                                           |</span><br><span class="line">                   ____ ____ ___                               ____ ___ ___</span><br><span class="line">                  | 15 | 20 |   |                             | 33 |   |   | </span><br><span class="line">                         |                                           |</span><br><span class="line">        -----------------------------------                 -------------------</span><br><span class="line">        |                |                |                 |                 |</span><br><span class="line"> ____ ____ ___     ____ ___ ___     ____ ____ ___     ____ ____ ___     ____ ___ ___</span><br><span class="line">| 10 | 12 |   |   | 18 |   |   |   | 21 | 23 |   |   | 30 | 31 |   |   | 38 |   |   |</span><br></pre></td></tr></table></figure>
+
+<p>B-树的一些性质：</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/datastructure/b_tree/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/design_pattern/principle/principles/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -967,91 +1051,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/design_pattern/principle/srp/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/design_pattern/principle/srp/" class="post-title-link" itemprop="url">单一职责原则</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2022-11-05 09:19:10 / 修改时间：09:20:00" itemprop="dateCreated datePublished" datetime="2022-11-05T09:19:10+08:00">2022-11-05</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>1.6k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="单一职责原则"><a href="#单一职责原则" class="headerlink" title="单一职责原则"></a>单一职责原则</h1><p>单一职责原则（<code>Single Responsibility Principle</code>，<code>SRP</code>）。</p>
-<p>英文描述：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A class or module should have a single responsibility</span><br></pre></td></tr></table></figure>
-
-<p>中文翻译：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">一个类或者模块只负责一个职责（或者功能）</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/design_pattern/principle/srp/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1123,14 +1122,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">133</span>
+          <span class="site-state-item-count">134</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-count">39</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1162,6 +1161,10 @@
           
           
             <li class="recent_posts_li">
+              <a href="/datastructure/b_tree/" title="B-树" target="_blank">B-树</a>
+            </li>
+          
+            <li class="recent_posts_li">
               <a href="/lang/java/other/INDEX.LIST/" title="INDEX.LIST" target="_blank">INDEX.LIST</a>
             </li>
           
@@ -1175,10 +1178,6 @@
           
             <li class="recent_posts_li">
               <a href="/lang/java/other/reflect_paramters/" title="Java 反射调用有可变参数的方法" target="_blank">Java 反射调用有可变参数的方法</a>
-            </li>
-          
-            <li class="recent_posts_li">
-              <a href="/lang/java/other/formatter/" title="Java 的格式化字符串" target="_blank">Java 的格式化字符串</a>
             </li>
           
 
@@ -1215,12 +1214,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">475k</span>
+    <span title="站点总字数">498k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">7:12</span>
+    <span title="站点阅读时长">7:33</span>
 </div>
 
         
