@@ -28,7 +28,7 @@
 <meta property="og:description" content="B-树一、B-树是什么？B-树是一棵所有叶子节点高度都相同的平衡多叉树。 其结构类似这样： 123456789101112                                    ____ ___ ___                                   | 24 |   |   |">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-01-11T18:31:30.000Z">
-<meta property="article:modified_time" content="2023-01-15T17:49:08.585Z">
+<meta property="article:modified_time" content="2023-01-15T20:39:01.635Z">
 <meta property="article:author" content="jiaduo">
 <meta property="article:tag" content="算法">
 <meta property="article:tag" content="数据结构">
@@ -228,7 +228,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-01-16 01:49:08" itemprop="dateModified" datetime="2023-01-16T01:49:08+08:00">2023-01-16</time>
+                <time title="修改时间：2023-01-16 04:39:01" itemprop="dateModified" datetime="2023-01-16T04:39:01+08:00">2023-01-16</time>
               </span>
 
           <br>
@@ -237,14 +237,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>23k</span>
+              <span>22k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>21 分钟</span>
+              <span>20 分钟</span>
             </span>
 
         </div>
@@ -317,10 +317,11 @@
 
 <p>节点元素上溢后，1 个节点会分裂成 3 个节点。</p>
 <h4 id="3-2-3-内部节点-直接插入"><a href="#3-2-3-内部节点-直接插入" class="headerlink" title="3.2.3 内部节点-直接插入"></a>3.2.3 内部节点-直接插入</h4><p>为了保持B-树的高度平衡，叶子节点会将分裂后的父节点，往上插入之前的父节点：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">                     ____ ___ ___ </span><br><span class="line">                    | 20 |   |   | </span><br><span class="line">                           |</span><br><span class="line">                ----------------------</span><br><span class="line">                |                    |</span><br><span class="line">           ___ ____ ____       ____ ____ ____ </span><br><span class="line">          | 9 | 12 | 18 |     | 25 |    |    | </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                           |  插入 10</span><br><span class="line">                           v </span><br><span class="line"></span><br><span class="line">                      ____ ___ ___ </span><br><span class="line">                    | 12 | 20 |   | </span><br><span class="line">                           |</span><br><span class="line">      --------------------------------------------</span><br><span class="line">      |                    |                     |</span><br><span class="line"> ___ ____ ____       ____ ____ ____        ____ ____ ____ </span><br><span class="line">| 9 | 10 |    |     | 18 |    |    |      | 25 |    |    | </span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">                     ____ ___ ___ </span><br><span class="line">                    | 20 |   |   |</span><br><span class="line">                           |</span><br><span class="line">                ----------------------</span><br><span class="line">                |                    |</span><br><span class="line">           ___ ____ ____       ____ ____ ____ </span><br><span class="line">          | 9 | 12 | 18 |     | 25 |    |    |</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                           |  插入 10</span><br><span class="line">                           v </span><br><span class="line"></span><br><span class="line">                     ____ ____ ___ </span><br><span class="line">                    | 12 | 20 |   |</span><br><span class="line">                           |</span><br><span class="line">      --------------------------------------------</span><br><span class="line">      |                    |                     |</span><br><span class="line"> ___ ____ ____       ____ ____ ____        ____ ____ ____ </span><br><span class="line">| 9 | 10 |    |     | 18 |    |    |      | 25 |    |    |</span><br></pre></td></tr></table></figure>
 
-<p>左子节点 <code>[9, 12, 18]</code> 插入新节点 <code>10</code> 会产生上溢，上溢节点 <code>12</code> 会插入父节点中。</p>
-<h4 id="3-2-4-内部节点-分裂上溢"><a href="#3-2-4-内部节点-分裂上溢" class="headerlink" title="3.2.4 内部节点-分裂上溢"></a>3.2.4 内部节点-分裂上溢</h4><p>节点上溢后，如果父节点空间也满了，那么插入上溢节点后，父节点也会出现分裂上溢：</p>
+<p>左子节点 <code>[9, 12, 18]</code> 插入新节点 <code>10</code> 会产生上溢，节点 <code>12</code> 会上溢父节点中。</p>
+<p>因为内部节点 <code>[20]</code> 空间足够，所以 <code>12</code> 直接插入即可。</p>
+<h4 id="3-2-4-内部节点-分裂上溢"><a href="#3-2-4-内部节点-分裂上溢" class="headerlink" title="3.2.4 内部节点-分裂上溢"></a>3.2.4 内部节点-分裂上溢</h4><p>子节点上溢后，如果父节点空间也满了，那么父节点也会出现分裂上溢：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">                                           ____ ____ ____ </span><br><span class="line">                                          | 20 | 30 | 45 | </span><br><span class="line">                                                 |</span><br><span class="line">            -------------------------------------------------------------------</span><br><span class="line">            |                    |                     |                      |</span><br><span class="line">           ___ ____ ____       ____ ____ ____        ____ ____ ____         ____ ____ ____ </span><br><span class="line">          | 9 | 12 | 18 |     | 25 |    |    |      | 37 | 39 |    |       | 62 | 85 |    | </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                                                 |  插入 10</span><br><span class="line">                                                 v </span><br><span class="line"></span><br><span class="line">                                           ____ ____ ____ </span><br><span class="line">                                          | 30 |    |    | </span><br><span class="line">                                                 |</span><br><span class="line">                           ----------------------------------------------------------</span><br><span class="line">                           |                                                        |</span><br><span class="line">                     ____ ____ ___                                            ____ ___ ___ </span><br><span class="line">                    | 12 | 20 |   |                                          | 45 |   |   | </span><br><span class="line">                           |                                                        |</span><br><span class="line">      --------------------------------------------                      ------------------------</span><br><span class="line">      |                    |                     |                      |                      |</span><br><span class="line"> ___ ____ ____       ____ ____ ____        ____ ____ ____         ____ ____ ____         ____ ____ ____</span><br><span class="line">| 9 | 10 |    |     | 18 |    |    |      | 25 |    |    |       | 37 | 39 |    |       | 62 | 85 |    | </span><br></pre></td></tr></table></figure>
 
 <p>插入元素 <code>10</code> 之后，会传递性地导致节点 <code>[9, 12, 18]</code> 和节点 <code>[20, 30, 45]</code> 都产生分裂上溢。</p>
@@ -342,7 +343,7 @@
 <li>兄弟节点不能借，那就将父子节点合并成 1 个节点，产生下溢</li>
 </ol>
 <p>这几种情况如下。</p>
-<h4 id="3-3-1-直接删除"><a href="#3-3-1-直接删除" class="headerlink" title="3.3.1 直接删除"></a>3.3.1 直接删除</h4><p>如果是叶子节点，且删除元素后，元素数量仍然处于半满状态，则直接返回即可：</p>
+<h4 id="3-3-1-直接删除"><a href="#3-3-1-直接删除" class="headerlink" title="3.3.1 直接删除"></a>3.3.1 直接删除</h4><p>如果节点删除元素后，元素数量仍然处于半满状态，则直接返回即可：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">           ____ ___ ___ </span><br><span class="line">          | 20 |   |   | </span><br><span class="line">                 |</span><br><span class="line">      ----------------------</span><br><span class="line">      |                    |</span><br><span class="line"> ___ ____ ____       ____ ____ ____ </span><br><span class="line">| 9 | 12 | 18 |     | 25 |    |    | </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                 |  删除 12</span><br><span class="line">                 v </span><br><span class="line"></span><br><span class="line">           ____ ___ ___ </span><br><span class="line">          | 20 |   |   | </span><br><span class="line">                 |</span><br><span class="line">      ----------------------</span><br><span class="line">      |                    |</span><br><span class="line"> ___ ____ ____       ____ ____ ____ </span><br><span class="line">| 9 | 18 |    |     | 25 |    |    | </span><br></pre></td></tr></table></figure>
 
 <p>叶子节点 <code>[9, 12, 18]</code> 删除 <code>12</code> 以后，元素数量依旧满足半满状态，则可以直接删除并返回。</p>
@@ -359,7 +360,7 @@
 <p>下溢和上溢一样，也可能会持续下溢，一直持续到根节点，最终导致树的层级下降。</p>
 <p>上述情况的伪代码如下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**- 删除元素 -*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> BTNode&lt;K, V&gt; <span class="title">remove</span><span class="params">(BTNode&lt;K, V&gt; root, K key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> index = root.findIndex(key);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 找到对应节点后移除元素</span></span><br><span class="line">    <span class="keyword">if</span> (key.equals(root.getKey(index))) &#123;</span><br><span class="line">        <span class="comment">// 直接删除元素后，可能导致父节点下溢</span></span><br><span class="line">        <span class="keyword">return</span> root.delete(index);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 在子树内递归移除元素</span></span><br><span class="line">    remove(root.getChild(index), key);</span><br><span class="line">    <span class="comment">// 子树删除元素后，可能导致父节点下溢</span></span><br><span class="line">    <span class="keyword">return</span> root.underflow(index);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** 从兄弟借和父子合并（叶子节点和内部节点的下溢逻辑是一样的） */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> BTNode&lt;K, V&gt; <span class="title">underflow</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 1. 从兄弟节点借一个元素</span></span><br><span class="line">    BTNode&lt;K, V&gt; left = getChild(index - <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">if</span> (left != <span class="keyword">null</span> &amp;&amp; left.canBorrow()) &#123;</span><br><span class="line">        <span class="keyword">return</span> borrowLeft(index);</span><br><span class="line">    &#125;</span><br><span class="line">    BTNode&lt;K, V&gt; right = right = getChild(index + <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">if</span> (right != <span class="keyword">null</span> &amp;&amp; right.canBorrow()) &#123;</span><br><span class="line">        <span class="keyword">return</span> borrowRight(index);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 合并父元素 + 左右子节点</span></span><br><span class="line">    <span class="keyword">return</span> mergeNodes(left != <span class="keyword">null</span> ? index : index + <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** 从兄弟借和父子合并（叶子节点和内部节点的下溢逻辑是一样的） */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> BTNode&lt;K, V&gt; <span class="title">underflow</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 1. 从兄弟节点借一个元素</span></span><br><span class="line">    <span class="keyword">if</span> (borrowLeft(index) || borrowRight(index)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 合并父元素 + 左右子节点</span></span><br><span class="line">    <span class="keyword">return</span> mergeNodes(index);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
 <li>性质<ul>
@@ -422,7 +423,10 @@
     <a href="/lang/java/other/INDEX.LIST/" rel="prev" title="INDEX.LIST">
       <i class="fa fa-chevron-left"></i> INDEX.LIST
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/datastructure/bplus_tree/" rel="next" title="B+树">
+      B+树 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -497,14 +501,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">134</span>
+          <span class="site-state-item-count">135</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-count">42</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -545,12 +549,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">498k</span>
+    <span title="站点总字数">525k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">7:33</span>
+    <span title="站点阅读时长">7:57</span>
 </div>
 
         
