@@ -28,7 +28,7 @@
 <meta property="og:description" content="红黑树一、什么是红黑树？红黑树是一棵只有红色节点和黑色节点的平衡二叉搜索树。 其结构类似这样： 1234567      b4   &#x2F;      \    r2      r6 &#x2F;  \    &#x2F;  \b1  b3  b5  b7              \              r9  其中，b 表示黑色，r 表示红色。 1.1 红黑树的特性在《算法导论》里，红黑树是这样定义的：">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-02-09T15:39:30.000Z">
-<meta property="article:modified_time" content="2023-02-09T15:43:28.444Z">
+<meta property="article:modified_time" content="2023-02-11T04:24:09.272Z">
 <meta property="article:author" content="jiaduo">
 <meta property="article:tag" content="数据结构">
 <meta property="article:tag" content="算法，红黑树">
@@ -219,10 +219,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2023-02-09 23:39:30 / 修改时间：23:43:28" itemprop="dateCreated datePublished" datetime="2023-02-09T23:39:30+08:00">2023-02-09</time>
+              <time title="创建时间：2023-02-09 23:39:30" itemprop="dateCreated datePublished" datetime="2023-02-09T23:39:30+08:00">2023-02-09</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-02-11 12:24:09" itemprop="dateModified" datetime="2023-02-11T12:24:09+08:00">2023-02-11</time>
+              </span>
 
           <br>
             <span class="post-meta-item" title="本文字数">
@@ -268,7 +274,7 @@
 <ul>
 <li>从任一节点到其每个叶子的所有路径都包含相同数目的黑色节点</li>
 </ul>
-<p>其中，黑节点的数目称为黑高（<code>black-height</code>）</p>
+<p>其中，黑节点的数目称为黑高（<code>black-height</code>）。</p>
 <p>比如上面的红黑树，从 <code>b4</code> 节点开始的路径有 4 条：</p>
 <ul>
 <li><code>b4 -&gt; r2 -&gt; b1</code>：2 个黑色节点 <code>[b4, b1]</code></li>
@@ -276,8 +282,10 @@
 <li><code>b4 -&gt; r6 -&gt; b5</code>：2 个黑色节点 <code>[b4, b5]</code></li>
 <li><code>b4 -&gt; r6 -&gt; b7</code>：2 个黑色节点 <code>[b4, b7]</code></li>
 </ul>
-<p>每条路径包含的黑色节点数量是一样的。</p>
-<p>所以，红黑树并不是“高度”平衡的二叉树，而是“黑高”平衡的二叉树。</p>
+<p>每条路径包含的黑色节点数量是一样的。所以，</p>
+<ul>
+<li>红黑树并不是“高度”平衡的二叉树，而是“黑高”平衡的二叉树</li>
+</ul>
 <p>至于为什么是“黑高”平衡，这和红黑树的起源有关。</p>
 <h2 id="二、红黑树的起源"><a href="#二、红黑树的起源" class="headerlink" title="二、红黑树的起源"></a>二、红黑树的起源</h2><h3 id="2-1-与-4-阶-B-树的关系"><a href="#2-1-与-4-阶-B-树的关系" class="headerlink" title="2.1 与 4-阶 B-树的关系"></a>2.1 与 4-阶 B-树的关系</h3><p>红黑树本质上是由 4 阶 B-树演化而来的，节点之间的对应关系是：</p>
 <p>1）节点有 1 个元素</p>
@@ -289,7 +297,7 @@
 <p>3）节点有 3 个元素</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">4 阶 B-树节点                红黑树节点</span><br><span class="line"></span><br><span class="line"> ___ ___ ___                    b2</span><br><span class="line">| 1 | 2 | 3 |      =&gt;          /  \</span><br><span class="line">                              r1  r3</span><br></pre></td></tr></table></figure>
 
-<p>需要特别说明的是：</p>
+<p>需要说明的是：</p>
 <ul>
 <li>1 个 4 阶 B-树节点对应的红黑树结构，只会有 1 个黑色节点</li>
 <li>4 阶 B-树节点有 3 个元素时，对应的红黑树节点只有 1 种情况</li>
@@ -305,7 +313,11 @@
 <li>红色节点的父节点只能是黑色</li>
 <li>2 个红色节点不能够相邻</li>
 </ul>
-<p>这些全都是红黑树的特性。</p>
+<p>这些全都是红黑树的特性，总之就是：</p>
+<ul>
+<li>将红色节点和它的黑色父节点，看成是 1 个节点就行了</li>
+<li>1 个节点最多带有 3 个元素，最多时只能是“1黑色 + 2红色”</li>
+</ul>
 <p>上面说红黑树是“黑高”平衡的，是因为 1 个 4 阶 B-树节点对应到红黑树上只会有 1 个黑色节点。</p>
 <p>而 B-树是高度平衡的，所以对应到红黑树时，就变成了“黑高”平衡。</p>
 <h3 id="2-2-为什么不直接用-4-阶-B-树？"><a href="#2-2-为什么不直接用-4-阶-B-树？" class="headerlink" title="2.2 为什么不直接用 4 阶 B-树？"></a>2.2 为什么不直接用 4 阶 B-树？</h3><p>实际上，相对于 4 阶 B-树，红黑树会有一些优势：</p>
@@ -325,7 +337,7 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">4 阶 B-树节点                红黑树节点</span><br><span class="line"></span><br><span class="line"> ___ ___ ___</span><br><span class="line">| 1 |   |   |      =&gt;           b1</span><br></pre></td></tr></table></figure>
 
 <p>对于 B-树而言，空间利用率只有 33%，而红黑树的空间利用率就是 100%。</p>
-<p>除了这些明面上的优点，还有一点：</p>
+<p>除了这些优点，还有一点：</p>
 <ul>
 <li>B-树是多叉树，代码实现比红黑树要复杂得多</li>
 <li>红黑树本身是二叉树，代码再复杂也不会比多叉树复杂</li>
@@ -337,7 +349,11 @@
 <li>红色和黑色是激光打印机最好找到的颜色</li>
 <li>红色和黑色是最容易获得的笔色</li>
 </ul>
-<p>不管是哪种说法都差不多，大概就是因为平时常用红色和黑色来作图，所以才称之为红黑树。</p>
+<p>不管是哪种说法都差不多，大概就是：</p>
+<ul>
+<li>因为平时常用红色和黑色来作图，所以才称之为红黑树</li>
+</ul>
+<p>红黑色的来源确实贴近生活，符合实际。</p>
 <h2 id="三、为什么用红黑树？"><a href="#三、为什么用红黑树？" class="headerlink" title="三、为什么用红黑树？"></a>三、为什么用红黑树？</h2><p>红黑树的优略势：</p>
 <ul>
 <li>相比于 BST 树，红黑树结构更加平衡，稳定性更好</li>
@@ -349,7 +365,13 @@
 <li>频繁的插入、删除，采用红黑树</li>
 <li>频繁的搜索，采用 AVL 树</li>
 </ul>
-<h2 id="四、如何实现红黑树？"><a href="#四、如何实现红黑树？" class="headerlink" title="四、如何实现红黑树？"></a>四、如何实现红黑树？</h2><h3 id="4-1-检索"><a href="#4-1-检索" class="headerlink" title="4.1 检索"></a>4.1 检索</h3><p>红黑树本身就是 BST 树，所以检索也是采用的二分查找。</p>
+<h2 id="四、如何实现红黑树？"><a href="#四、如何实现红黑树？" class="headerlink" title="四、如何实现红黑树？"></a>四、如何实现红黑树？</h2><p>声明，下面默认是将红黑树节点看成是 4 阶 B-树节点：</p>
+<ul>
+<li>将红色节点和它的黑色父节点，看成是 1 个节点</li>
+<li>1 个节点最多带有 3 个元素，最多时只能是“1黑色 + 2红色”</li>
+</ul>
+<p>这样是为了简化理解，从 B-树的角度去理解红黑树为什么要这么调整。</p>
+<h3 id="4-1-检索"><a href="#4-1-检索" class="headerlink" title="4.1 检索"></a>4.1 检索</h3><p>红黑树本身就是 BST 树，所以检索也是采用的二分查找。</p>
 <p>伪代码如下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> RBTNode <span class="title">get</span><span class="params">(RBTNode h, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 没有找到</span></span><br><span class="line">    <span class="keyword">if</span> (h == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 找到对应的节点</span></span><br><span class="line">    <span class="keyword">if</span> (h.val == val) &#123;</span><br><span class="line">        <span class="keyword">return</span> h;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (h.val &gt; val) &#123;</span><br><span class="line">        <span class="keyword">return</span> get(h.left, val);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> get(h.right, val);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -384,8 +406,9 @@
 <p>其中，在插入红色节点后：</p>
 <ul>
 <li>父节点是黑色的 2 种情况，不影响红黑树的“黑高”平衡，所以不需要调整</li>
+<li>只有父节点是红色的 4 种情况需要调整红黑树结构，以维持平衡</li>
 </ul>
-<p>所以实际上只有父节点是红色的 4 种情况需要调整红黑树结构，以维持平衡。</p>
+<p>下面是父节点是红色的 4 种情况。</p>
 <h4 id="4-2-1-Left-Left-Red"><a href="#4-2-1-Left-Left-Red" class="headerlink" title="4.2.1 Left-Left-Red"></a>4.2.1 <code>Left-Left-Red</code></h4><p><code>Left-Left-Red</code> 表示的情况是：</p>
 <ul>
 <li>父节点是红色<ul>
@@ -404,7 +427,10 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">                  红色节点右旋           父子节点反色</span><br><span class="line">                               </span><br><span class="line">    b3</span><br><span class="line">    /                 b2                    r2</span><br><span class="line">  r2        =&gt;       /  \         =&gt;       /  \</span><br><span class="line">  /                 r1  r3                b1  b3</span><br><span class="line">r1</span><br></pre></td></tr></table></figure>
 
 <p>做完处理后，父节点变成了红色，此时还可能会出现连续 2 个红色节点的情况。</p>
-<p>所以可以将父节点 r2 当作新插入的节点，继续往上递归处理。</p>
+<ul>
+<li>父节点变红后，可以将父节点 r2 当作新插入的节点，继续往上递归调整</li>
+</ul>
+<p>往上递归调整一直到结构平衡，或者根节点为止。</p>
 <h4 id="4-2-2-Left-Right-Red"><a href="#4-2-2-Left-Right-Red" class="headerlink" title="4.2.2 Left-Right-Red"></a>4.2.2 <code>Left-Right-Red</code></h4><p><code>Left-Right-Red</code> 表示的情况是：</p>
 <ul>
 <li>父节点是红色<ul>
@@ -439,8 +465,7 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">              红色节点左旋           父子节点反色</span><br><span class="line">            </span><br><span class="line">b1                                      </span><br><span class="line"> \                 b2                    r2</span><br><span class="line">  r2     =&gt;       /  \         =&gt;       /  \</span><br><span class="line">   \             r1  r3                b1  b3</span><br><span class="line">    r3</span><br></pre></td></tr></table></figure>
 
 <p>做完处理后，父节点变成了红色，此时还可能会出现连续 2 个红色节点的情况。</p>
-<p>所以可以将父节点 r2 当作新插入的节点，继续往上递归处理。</p>
-<p>这种情况实际上和 <code>Left-Left-Red</code> 差不多，因为红黑树的对称的二叉树。</p>
+<p>这个和 <code>Left-Left-Red</code> 差不多，因为红黑树的对称的二叉树，按照和它一样的方式处理即可。</p>
 <h4 id="4-2-4-Right-Left-Red"><a href="#4-2-4-Right-Left-Red" class="headerlink" title="4.2.4 Right-Left-Red"></a>4.2.4 <code>Right-Left-Red</code></h4><p><code>Left-Right-Red</code> 表示的情况是：</p>
 <ul>
 <li>父节点是红色<ul>
@@ -464,15 +489,17 @@
 <p>插入后调整红黑树平衡：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">balanceInsertion</span><span class="params">(RBTNode h)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 父节点是黑色时，不用调整</span></span><br><span class="line">    RBTNode p = parent(p);</span><br><span class="line">    <span class="keyword">if</span> (!isRed(p)) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    RBTNode gp = p.parent;</span><br><span class="line">    <span class="keyword">if</span> (p == gp.left) &#123;</span><br><span class="line">        <span class="comment">// Left-Right-Red</span></span><br><span class="line">        <span class="keyword">if</span> (h == p.right) &#123;</span><br><span class="line">            rotateLeft(p);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// Left-Left-Red</span></span><br><span class="line">        p = rotateRight(gp);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// Right-Left-Red</span></span><br><span class="line">        <span class="keyword">if</span> (h == p.left) &#123;</span><br><span class="line">            rotateRight(p);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// Right-Right-Red</span></span><br><span class="line">        p = rotateLeft(gp);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 父子节点反色</span></span><br><span class="line">    setColor(p, RED);</span><br><span class="line">    setColor(p.left, BLACK);</span><br><span class="line">    setColor(p.right, BLACK);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 父节点递归往上处理</span></span><br><span class="line">    balanceInsertion(p);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>根节点始终的黑色的，但是插入调整往上递归时，有可能把根节点变成红色了。</p>
+<p>根节点始终黑色的，但是插入调整往上递归时，有可能把根节点变成红色了。</p>
 <p>所以在插入调整完成后，还需要将根节点的颜色设置成黑色。</p>
-<h2 id="五、删除"><a href="#五、删除" class="headerlink" title="五、删除"></a>五、删除</h2><p>红黑树的删除大致可以分为几个步骤：</p>
+<h3 id="4-3-删除"><a href="#4-3-删除" class="headerlink" title="4.3 删除"></a>4.3 删除</h3><p>红黑树的删除大致可以分为几个步骤：</p>
 <ol>
 <li>替代删除节点：寻找替代当前节点的后继节点，如果没有，就直接删除当前节点</li>
 <li>删除平衡调整：删除前先调整树结构，保证删除节点后，红黑树的结构依旧是稳定的</li>
 <li>真正删除节点</li>
 </ol>
-<h3 id="5-1-替代删除节点"><a href="#5-1-替代删除节点" class="headerlink" title="5.1 替代删除节点"></a>5.1 替代删除节点</h3><p>和 BST、B-树这些有序树差不多，红黑树一开始也是要寻找替代的后继节点：</p>
+<p>下面详细说明这几个步骤。</p>
+<h4 id="4-3-1-替代删除节点"><a href="#4-3-1-替代删除节点" class="headerlink" title="4.3.1 替代删除节点"></a>4.3.1 替代删除节点</h4><p>替换删除节点，是 BST 树删除都要做的事情，因为要保证 BST 树的有序性。</p>
+<p>红黑树也是 BST 树，所以一开始也是要寻找替代的后继节点：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">删除 r1 叶子节点             没有替代</span><br><span class="line"></span><br><span class="line">      b2                       b2</span><br><span class="line">     /  \         =&gt;          /  \</span><br><span class="line">    r1  r3                   r1  r3</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">删除 b2 内部单子节点         b2 和前继 r1 交换</span><br><span class="line"></span><br><span class="line">      b2                       b1</span><br><span class="line">     /            =&gt;          /</span><br><span class="line">    r1                       r2</span><br></pre></td></tr></table></figure>
@@ -482,7 +509,7 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">删除 b2 内部双子节点       b2 和后继 r3 交换</span><br><span class="line"></span><br><span class="line">      b2                       b3</span><br><span class="line">     /  \                     /  \</span><br><span class="line">    b1  b4        =&gt;         b1  b4</span><br><span class="line">        /                        /</span><br><span class="line">       r3                       r2</span><br></pre></td></tr></table></figure>
 
 <p>除删除叶子节点外，其余情况都使用前继/后继节点替换。</p>
-<h3 id="5-2-删除平衡调整"><a href="#5-2-删除平衡调整" class="headerlink" title="5.2 删除平衡调整"></a>5.2 删除平衡调整</h3><p>红黑树是由 B-树演化而来的，所以可以参考 B-树的删除平衡调整。</p>
+<h4 id="4-3-2-删除平衡调整"><a href="#4-3-2-删除平衡调整" class="headerlink" title="4.3.2 删除平衡调整"></a>4.3.2 删除平衡调整</h4><p>红黑树是由 B-树演化而来的，所以可以参考 B-树的删除平衡调整。</p>
 <p>B-树的删除平衡调整可以分为几种情况：</p>
 <p>1）当前节点元素充足，可以直接删除，且不需要调整树结构</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">                                                                无需调整树结构</span><br><span class="line"></span><br><span class="line">           ____ ___ ___                                          ____ ___ ___ </span><br><span class="line">          | 20 |   |   |                                        | 20 |   |   | </span><br><span class="line">                 |                                                     |</span><br><span class="line">      ----------------------           remove 12            ----------------------</span><br><span class="line">      |                    |              =&gt;                |                    |</span><br><span class="line"> ___ ____ ____       ____ ____ ____                    ___ ____ ____       ____ ____ ____ </span><br><span class="line">| 9 | 12 | 18 |     | 25 |    |    |                  | 9 | 18 |    |     | 25 |    |    | </span><br></pre></td></tr></table></figure>
@@ -494,12 +521,12 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">                                                             父节点下溢，合并父子节点</span><br><span class="line"></span><br><span class="line">           ____ ___ ___</span><br><span class="line">          | 20 |   |   |</span><br><span class="line">                 |                                                     </span><br><span class="line">      ----------------------           remove 9                  ____ ____ ___ </span><br><span class="line">      |                    |              =&gt;                    | 20 | 25 |   |</span><br><span class="line"> ___ ____ ____       ____ ____ ____ </span><br><span class="line">| 9 |    |    |     | 25 |    |    |</span><br></pre></td></tr></table></figure>
 
 <p>红黑树和 B-树是对应的，红黑树对应的平衡调整情况如下：</p>
-<h4 id="5-2-1-红色节点直接删除"><a href="#5-2-1-红色节点直接删除" class="headerlink" title="5.2.1 红色节点直接删除"></a>5.2.1 红色节点直接删除</h4><p>当被删除的 B-树节点元素充足时，可以直接删除，不用调整。</p>
+<h5 id="4-3-2-1-红色节点直接删除"><a href="#4-3-2-1-红色节点直接删除" class="headerlink" title="4.3.2.1 红色节点直接删除"></a>4.3.2.1 红色节点直接删除</h5><p>当被删除的 B-树节点元素充足时，可以直接删除，不用调整。</p>
 <p>这种情况对应到红黑树就是：</p>
 <ul>
-<li>删除结构是 1 个黑色节点 + 1/2 个红色节点</li>
+<li>删除节点是 1 个黑色节点 + 1/2 个红色节点</li>
 <li>删除红黑树的红色节点时，可以直接删除，不用调整树结构</li>
-<li>但不能是删除黑色节点，因为删除黑色节点其实是相当于删除了所有相关节点，情况不同</li>
+<li>但不能是删除黑色节点，因为删除黑色节点相当于删除了所有相关节点，情况不同</li>
 </ul>
 <p>删除红色节点的过程就类似这样：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">删除红色节点                  删除后</span><br><span class="line"></span><br><span class="line">    b2       remove r1        b2</span><br><span class="line">   /  \         =&gt;             \</span><br><span class="line">  r1  r3                       r3</span><br></pre></td></tr></table></figure>
@@ -507,7 +534,7 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">删除红色节点                  删除后</span><br><span class="line"></span><br><span class="line">    b2       remove r1        </span><br><span class="line">   /            =&gt;            b2</span><br><span class="line">  r1</span><br></pre></td></tr></table></figure>
 
 <p>删除红色节点的情况就是直接删除即可，也不需要调整结构，比较简单。</p>
-<h4 id="5-2-2-从兄弟借红色节点"><a href="#5-2-2-从兄弟借红色节点" class="headerlink" title="5.2.2 从兄弟借红色节点"></a>5.2.2 从兄弟借红色节点</h4><p>当被删除的 B-树节点元素不足时，会先从兄弟节点借一个元素。</p>
+<h5 id="4-3-2-2-从兄弟借红色节点"><a href="#4-3-2-2-从兄弟借红色节点" class="headerlink" title="4.3.2.2 从兄弟借红色节点"></a>4.3.2.2 从兄弟借红色节点</h5><p>当被删除的 B-树节点元素不足时，会先从兄弟节点借一个元素。</p>
 <p>这种情况对应到红黑树就是：</p>
 <ul>
 <li>删除节点是黑色节点，而兄弟则是 1 个黑色节点 + 1/2 个红色节点（子节点）</li>
@@ -526,7 +553,7 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">   删除1                             6 左旋</span><br><span class="line"></span><br><span class="line">    b2                                b6</span><br><span class="line"> /      \        rotate left       /      \</span><br><span class="line">b1      r6          =&gt;           r2       b7      =&gt;   按照上面的处理</span><br><span class="line">       /  \                     /  \</span><br><span class="line">      b4  b7                   b1  b4</span><br><span class="line">     /  \                         /  \</span><br><span class="line">    r3  r5                       r3  r5 </span><br></pre></td></tr></table></figure>
 
 <p>旋转以后，删除节点的兄弟由红色 r6 变成黑色 b4，此时就能从兄弟借元素了。</p>
-<h4 id="5-2-3-父节点下溢合并"><a href="#5-2-3-父节点下溢合并" class="headerlink" title="5.2.3 父节点下溢合并"></a>5.2.3 父节点下溢合并</h4><p>当被删除的 B-树节点元素不足，并且兄弟也没办法借时，父节点就会产生下溢，并和左右子节点合并。</p>
+<h5 id="4-3-2-3-父节点下溢合并"><a href="#4-3-2-3-父节点下溢合并" class="headerlink" title="4.3.2.3 父节点下溢合并"></a>4.3.2.3 父节点下溢合并</h5><p>当被删除的 B-树节点元素不足，并且兄弟也没办法借时，父节点就会产生下溢，并和左右子节点合并。</p>
 <p>这种情况对应到红黑树就是：</p>
 <ul>
 <li>删除节点是黑色节点，并且兄弟也只是 1 个黑色节点</li>
@@ -550,7 +577,7 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">  要删除2                         6左旋</span><br><span class="line"></span><br><span class="line">    b4                            b6</span><br><span class="line"> /      \      rotate left     /      \</span><br><span class="line">b2      r6         =&gt;         r4      b7         =&gt;     按照上面的处理</span><br><span class="line">       /  \                  /  \</span><br><span class="line">      b5  b7                b2  b5</span><br></pre></td></tr></table></figure>
 
 <p>旋转过后，删除节点的父节点由黑色 b4 变成了红色 r4，这样就不会产生级联下溢了。</p>
-<h3 id="5-3-真正删除节点"><a href="#5-3-真正删除节点" class="headerlink" title="5.3 真正删除节点"></a>5.3 真正删除节点</h3><p>删除平衡调整完成后，就开始真正地删除节点了。</p>
+<h4 id="4-3-3-真正删除节点"><a href="#4-3-3-真正删除节点" class="headerlink" title="4.3.3 真正删除节点"></a>4.3.3 真正删除节点</h4><p>删除平衡调整完成后，就开始真正地删除节点了。</p>
 <p>由于第 1 步使用后继节点替代了删除节点，所以最后被删除节点的结构是很简单的：</p>
 <ul>
 <li>被删除节点至多只有 1 个子节点</li>
@@ -564,17 +591,17 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">删除 b2 节点           返回非空子节点</span><br><span class="line"></span><br><span class="line">             remove b2</span><br><span class="line">   b2          =&gt;          nil</span><br></pre></td></tr></table></figure>
 
 <p>最后的删除节点最简单，难的是前面的删除平衡调整。</p>
-<h3 id="小结-1"><a href="#小结-1" class="headerlink" title="小结"></a>小结</h3><p>上面“从兄弟借红节点”和“父节点下溢合并”中，有一个公共的行为，那就是：</p>
+<h4 id="小结-1"><a href="#小结-1" class="headerlink" title="小结"></a>小结</h4><p>提取“从兄弟借红节点”和“父节点下溢合并”的公共行为：</p>
 <ul>
-<li>如果删除节点的兄弟是红色节点，就优先将红色节点转到删除节点这一边</li>
+<li>如果删除节点的兄弟是红色，就优先将红色节点转到删除节点这一边</li>
 </ul>
-<p>所以根据上面的几种情况，删除的伪代码类似这样：</p>
+<p>然后再根据上面说明的几种情况，删除的伪代码类似这样：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    RBTNode h = get(root, val);</span><br><span class="line">    <span class="keyword">if</span> (h == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 替换节点（前继/后继）</span></span><br><span class="line">    h = swapReplacer(h);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 先调整树结构</span></span><br><span class="line">    balanceDeletion(h);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 真正删除节点</span></span><br><span class="line">    removeNode(h);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 根节点始终是黑色</span></span><br><span class="line">    setColor(root, BLACK);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>删除前调整树平衡：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">balanceDeletion</span><span class="params">(RBTNode h)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 1. 删除红色节点，不需要调整</span></span><br><span class="line">    RBTNode p = parent(h);</span><br><span class="line">    <span class="keyword">if</span> (p == <span class="keyword">null</span> || isRed(h)) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 兄弟是红色，先转成黑色</span></span><br><span class="line">    RBTNode s = sibling(h);</span><br><span class="line">    <span class="keyword">if</span> (isRed(s)) &#123;</span><br><span class="line">        rotateOpposite(h);</span><br><span class="line">        s = sibling(h);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 看兄弟是否有红色节点可以借一个</span></span><br><span class="line">    <span class="keyword">if</span> (hasRedChild(s)) &#123;</span><br><span class="line">        borrowSiblingRed(h);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 兄弟没有红色，父节点下溢合并</span></span><br><span class="line">    <span class="keyword">boolean</span> balanced = underflow(h);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 往上递归调整</span></span><br><span class="line">    <span class="keyword">if</span> (!balanced) &#123;</span><br><span class="line">        balanceDeletion(p);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>和插入一样，删除平衡调整后，也可能导致根节点变红了，所以最后也要将根节点重新设为黑色。</p>
+<p>和插入一样，删除平衡调整后，最后也要将根节点重新设为黑色。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>红黑树的定义：</p>
 <ul>
 <li>红黑树是一棵只有红色节点和黑色节点的平衡二叉搜索树<ol>
@@ -745,7 +772,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91"><span class="nav-text">红黑树</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AF%E7%BA%A2%E9%BB%91%E6%A0%91%EF%BC%9F"><span class="nav-text">一、什么是红黑树？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E7%BA%A2%E9%BB%91%E6%A0%91%E7%9A%84%E7%89%B9%E6%80%A7"><span class="nav-text">1.1 红黑树的特性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E7%BA%A2%E9%BB%91%E6%A0%91%E7%9A%84%E8%B5%B7%E6%BA%90"><span class="nav-text">二、红黑树的起源</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E4%B8%8E-4-%E9%98%B6-B-%E6%A0%91%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-text">2.1 与 4-阶 B-树的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%9B%B4%E6%8E%A5%E7%94%A8-4-%E9%98%B6-B-%E6%A0%91%EF%BC%9F"><span class="nav-text">2.2 为什么不直接用 4 阶 B-树？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E7%BA%A2%E8%89%B2%E5%92%8C%E9%BB%91%E8%89%B2%EF%BC%9F"><span class="nav-text">2.3 为什么是红色和黑色？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8%E7%BA%A2%E9%BB%91%E6%A0%91%EF%BC%9F"><span class="nav-text">三、为什么用红黑树？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%BA%A2%E9%BB%91%E6%A0%91%EF%BC%9F"><span class="nav-text">四、如何实现红黑树？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E6%A3%80%E7%B4%A2"><span class="nav-text">4.1 检索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E6%8F%92%E5%85%A5"><span class="nav-text">4.2 插入</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-1-Left-Left-Red"><span class="nav-text">4.2.1 Left-Left-Red</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-2-Left-Right-Red"><span class="nav-text">4.2.2 Left-Right-Red</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-3-Right-Right-Red"><span class="nav-text">4.2.3 Right-Right-Red</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-4-Right-Left-Red"><span class="nav-text">4.2.4 Right-Left-Red</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-text">小结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E5%88%A0%E9%99%A4"><span class="nav-text">五、删除</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E6%9B%BF%E4%BB%A3%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B9"><span class="nav-text">5.1 替代删除节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-%E5%88%A0%E9%99%A4%E5%B9%B3%E8%A1%A1%E8%B0%83%E6%95%B4"><span class="nav-text">5.2 删除平衡调整</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-1-%E7%BA%A2%E8%89%B2%E8%8A%82%E7%82%B9%E7%9B%B4%E6%8E%A5%E5%88%A0%E9%99%A4"><span class="nav-text">5.2.1 红色节点直接删除</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-2-%E4%BB%8E%E5%85%84%E5%BC%9F%E5%80%9F%E7%BA%A2%E8%89%B2%E8%8A%82%E7%82%B9"><span class="nav-text">5.2.2 从兄弟借红色节点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-3-%E7%88%B6%E8%8A%82%E7%82%B9%E4%B8%8B%E6%BA%A2%E5%90%88%E5%B9%B6"><span class="nav-text">5.2.3 父节点下溢合并</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-%E7%9C%9F%E6%AD%A3%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B9"><span class="nav-text">5.3 真正删除节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93-1"><span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-text">参考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E5%BD%95"><span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91%E6%8E%A5%E5%8F%A3"><span class="nav-text">红黑树接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91%E5%AE%9E%E7%8E%B0"><span class="nav-text">红黑树实现</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91"><span class="nav-text">红黑树</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AF%E7%BA%A2%E9%BB%91%E6%A0%91%EF%BC%9F"><span class="nav-text">一、什么是红黑树？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E7%BA%A2%E9%BB%91%E6%A0%91%E7%9A%84%E7%89%B9%E6%80%A7"><span class="nav-text">1.1 红黑树的特性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E7%BA%A2%E9%BB%91%E6%A0%91%E7%9A%84%E8%B5%B7%E6%BA%90"><span class="nav-text">二、红黑树的起源</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E4%B8%8E-4-%E9%98%B6-B-%E6%A0%91%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-text">2.1 与 4-阶 B-树的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%9B%B4%E6%8E%A5%E7%94%A8-4-%E9%98%B6-B-%E6%A0%91%EF%BC%9F"><span class="nav-text">2.2 为什么不直接用 4 阶 B-树？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E7%BA%A2%E8%89%B2%E5%92%8C%E9%BB%91%E8%89%B2%EF%BC%9F"><span class="nav-text">2.3 为什么是红色和黑色？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8%E7%BA%A2%E9%BB%91%E6%A0%91%EF%BC%9F"><span class="nav-text">三、为什么用红黑树？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%BA%A2%E9%BB%91%E6%A0%91%EF%BC%9F"><span class="nav-text">四、如何实现红黑树？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E6%A3%80%E7%B4%A2"><span class="nav-text">4.1 检索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E6%8F%92%E5%85%A5"><span class="nav-text">4.2 插入</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-1-Left-Left-Red"><span class="nav-text">4.2.1 Left-Left-Red</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-2-Left-Right-Red"><span class="nav-text">4.2.2 Left-Right-Red</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-3-Right-Right-Red"><span class="nav-text">4.2.3 Right-Right-Red</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-4-Right-Left-Red"><span class="nav-text">4.2.4 Right-Left-Red</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E5%88%A0%E9%99%A4"><span class="nav-text">4.3 删除</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-1-%E6%9B%BF%E4%BB%A3%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B9"><span class="nav-text">4.3.1 替代删除节点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-2-%E5%88%A0%E9%99%A4%E5%B9%B3%E8%A1%A1%E8%B0%83%E6%95%B4"><span class="nav-text">4.3.2 删除平衡调整</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#4-3-2-1-%E7%BA%A2%E8%89%B2%E8%8A%82%E7%82%B9%E7%9B%B4%E6%8E%A5%E5%88%A0%E9%99%A4"><span class="nav-text">4.3.2.1 红色节点直接删除</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-3-2-2-%E4%BB%8E%E5%85%84%E5%BC%9F%E5%80%9F%E7%BA%A2%E8%89%B2%E8%8A%82%E7%82%B9"><span class="nav-text">4.3.2.2 从兄弟借红色节点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-3-2-3-%E7%88%B6%E8%8A%82%E7%82%B9%E4%B8%8B%E6%BA%A2%E5%90%88%E5%B9%B6"><span class="nav-text">4.3.2.3 父节点下溢合并</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-3-%E7%9C%9F%E6%AD%A3%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B9"><span class="nav-text">4.3.3 真正删除节点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93-1"><span class="nav-text">小结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-text">参考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E5%BD%95"><span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91%E6%8E%A5%E5%8F%A3"><span class="nav-text">红黑树接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91%E5%AE%9E%E7%8E%B0"><span class="nav-text">红黑树实现</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
