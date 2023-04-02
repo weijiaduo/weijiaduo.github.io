@@ -1,272 +1,45 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Java 的格式化字符串 - 追来者之人</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="追来者之人"><meta name="msapplication-TileImage" content="/img/logo.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="追来者之人"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="Java 的格式化字符串一、格式化 Formatter 参考了 C 语言的 printf() 函数，但 Java 的格式化会更严格一些 同时定制化增加了 Java 语言的一些特性，使得格式化更适用于 Java 语言"><meta property="og:type" content="blog"><meta property="og:title" content="Java 的格式化字符串"><meta property="og:url" content="http://example.com/lang/java/other/formatter/"><meta property="og:site_name" content="追来者之人"><meta property="og:description" content="Java 的格式化字符串一、格式化 Formatter 参考了 C 语言的 printf() 函数，但 Java 的格式化会更严格一些 同时定制化增加了 Java 语言的一些特性，使得格式化更适用于 Java 语言"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://example.com/img/og_image.png"><meta property="article:published_time" content="2023-01-08T13:20:30.000Z"><meta property="article:modified_time" content="2023-04-02T09:04:28.038Z"><meta property="article:author" content="jiaduo"><meta property="article:tag" content="java"><meta property="article:tag" content="字符串"><meta property="article:tag" content="格式化"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="http://example.com/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/lang/java/other/formatter/"},"headline":"Java 的格式化字符串","image":["http://example.com/img/og_image.png"],"datePublished":"2023-01-08T13:20:30.000Z","dateModified":"2023-04-02T09:04:28.038Z","author":{"@type":"Person","name":"jiaduo"},"publisher":{"@type":"Organization","name":"追来者之人","logo":{"@type":"ImageObject","url":"http://example.com/img/logo.png"}},"description":"Java 的格式化字符串一、格式化 Formatter 参考了 C 语言的 printf() 函数，但 Java 的格式化会更严格一些 同时定制化增加了 Java 语言的一些特性，使得格式化更适用于 Java 语言"}</script><link rel="canonical" href="http://example.com/lang/java/other/formatter/"><link rel="icon" href="/img/logo.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
 
-<link rel="stylesheet" href="/css/main.css">
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
 
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
-  </script>
-
-  <meta name="description" content="Java 的格式化字符串一、格式化 Formatter 参考了 C 语言的 printf() 函数，但 Java 的格式化会更严格一些 同时定制化增加了 Java 语言的一些特性，使得格式化更适用于 Java 语言">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Java 的格式化字符串">
-<meta property="og:url" content="http://example.com/lang/java/other/formatter/index.html">
-<meta property="og:site_name" content="Strive">
-<meta property="og:description" content="Java 的格式化字符串一、格式化 Formatter 参考了 C 语言的 printf() 函数，但 Java 的格式化会更严格一些 同时定制化增加了 Java 语言的一些特性，使得格式化更适用于 Java 语言">
-<meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-01-08T13:20:30.000Z">
-<meta property="article:modified_time" content="2023-01-11T18:45:48.086Z">
-<meta property="article:author" content="jiaduo">
-<meta property="article:tag" content="java">
-<meta property="article:tag" content="字符串">
-<meta property="article:tag" content="格式化">
-<meta name="twitter:card" content="summary">
-
-<link rel="canonical" href="http://example.com/lang/java/other/formatter/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
-
-  <title>Java 的格式化字符串 | Strive</title>
-  
-
-
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
-
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Strive</h1>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-      <p class="site-subtitle" itemprop="description">Rome was not built in one day</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
-    </div>
-  </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
-</nav>
-
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div id="search-result">
-  <div id="no-result">
-    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-  <div class="reading-progress-bar"></div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
-            
-
-    
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/java/other/formatter/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          Java 的格式化字符串
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-01-08 21:20:30" itemprop="dateCreated datePublished" datetime="2023-01-08T21:20:30+08:00">2023-01-08</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-01-12 02:45:48" itemprop="dateModified" datetime="2023-01-12T02:45:48+08:00">2023-01-12</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>8.3k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>8 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <h1 id="Java-的格式化字符串"><a href="#Java-的格式化字符串" class="headerlink" title="Java 的格式化字符串"></a>Java 的格式化字符串</h1><h2 id="一、格式化-Formatter"><a href="#一、格式化-Formatter" class="headerlink" title="一、格式化 Formatter"></a>一、格式化 Formatter</h2><ul>
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="追来者之人" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><h1 class="title is-3 is-size-4-mobile"><i class="fas fa-blog"> </i>Java 的格式化字符串</h1><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><i class="fas fa-calendar-plus"> </i><time dateTime="2023-01-08T13:20:30.000Z" title="2023-01-08T13:20:30.000Z">2023-01-08</time></span><span class="level-item is-hidden-mobile"><i class="fas fa-calendar-check"> </i><time dateTime="2023-04-02T09:04:28.038Z" title="2023-04-02T09:04:28.038Z">2023-04-02</time></span><span class="level-item"><i class="fas fa-folder"> </i><a class="link-muted" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/">编程语言</a><span> / </span><a class="link-muted" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/">Java</a></span><span class="level-item"><i class="fas fa-clock"> </i>17 分钟读完 (大约2523个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><div class="content"><h1 id="Java-的格式化字符串"><a href="#Java-的格式化字符串" class="headerlink" title="Java 的格式化字符串"></a>Java 的格式化字符串</h1><h2 id="一、格式化-Formatter"><a href="#一、格式化-Formatter" class="headerlink" title="一、格式化 Formatter"></a>一、格式化 Formatter</h2><ul>
 <li>参考了 C 语言的 <code>printf()</code> 函数，但 Java 的格式化会更严格一些</li>
 <li>同时定制化增加了 Java 语言的一些特性，使得格式化更适用于 Java 语言</li>
 </ul>
 <span id="more"></span>
 
-<h2 id="二、格式化方法"><a href="#二、格式化方法" class="headerlink" title="二、格式化方法"></a>二、格式化方法</h2><h3 id="2-1-使用-Formatter-实例"><a href="#2-1-使用-Formatter-实例" class="headerlink" title="2.1 使用 Formatter 实例"></a>2.1 使用 <code>Formatter</code> 实例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Formatter formatter = <span class="keyword">new</span> Formatter();</span><br><span class="line">formatter.format(<span class="string">&quot;%4$2s %3$2s %2$2s %1$2s&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="string">&quot;d&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="二、格式化方法"><a href="#二、格式化方法" class="headerlink" title="二、格式化方法"></a>二、格式化方法</h2><h3 id="2-1-使用-Formatter-实例"><a href="#2-1-使用-Formatter-实例" class="headerlink" title="2.1 使用 Formatter 实例"></a>2.1 使用 <code>Formatter</code> 实例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Formatter</span> <span class="variable">formatter</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Formatter</span>();</span><br><span class="line">formatter.format(<span class="string">&quot;%4$2s %3$2s %2$2s %1$2s&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="string">&quot;d&quot;</span>)</span><br></pre></td></tr></table></figure>
 
 <h3 id="2-2-使用-System-中的方法"><a href="#2-2-使用-System-中的方法" class="headerlink" title="2.2 使用 System 中的方法"></a>2.2 使用 <code>System</code> 中的方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// out</span></span><br><span class="line">System.out.format(<span class="string">&quot;Local time: %tT&quot;</span>, Calendar.getInstance());</span><br><span class="line"></span><br><span class="line"><span class="comment">// err</span></span><br><span class="line">System.err.printf(<span class="string">&quot;Unable to open file &#x27;%1$s&#x27;: %2$s&quot;</span>, fileName, exception.getMessage());</span><br></pre></td></tr></table></figure>
 
-<h3 id="2-3-使用-String-中的静态方法"><a href="#2-3-使用-String-中的静态方法" class="headerlink" title="2.3 使用 String 中的静态方法"></a>2.3 使用 <code>String</code> 中的静态方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String s = String.format(<span class="string">&quot;Duke&#x27;s Birthday: %1$tb %1$te, %1$tY&quot;</span>, c);</span><br></pre></td></tr></table></figure>
+<h3 id="2-3-使用-String-中的静态方法"><a href="#2-3-使用-String-中的静态方法" class="headerlink" title="2.3 使用 String 中的静态方法"></a>2.3 使用 <code>String</code> 中的静态方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">s</span> <span class="operator">=</span> String.format(<span class="string">&quot;Duke&#x27;s Birthday: %1$tb %1$te, %1$tY&quot;</span>, c);</span><br></pre></td></tr></table></figure>
 
 <h3 id="2-4-格式化方法要素"><a href="#2-4-格式化方法要素" class="headerlink" title="2.4 格式化方法要素"></a>2.4 格式化方法要素</h3><p>所有的格式化方法都有 2 个要素：</p>
 <ul>
@@ -274,7 +47,7 @@
 <li><code>argument list</code>：参数列表</li>
 </ul>
 <p>比如：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String s = String.format(<span class="string">&quot;%4$2s %3$2s %2$2s %1$2s&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="string">&quot;d&quot;</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">s</span> <span class="operator">=</span> String.format(<span class="string">&quot;%4$2s %3$2s %2$2s %1$2s&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="string">&quot;d&quot;</span>);</span><br></pre></td></tr></table></figure>
 
 <p>其中，</p>
 <ul>
@@ -443,7 +216,7 @@
 </tr>
 </tbody></table>
 <p>转换符大小写的格式化作用相同，仅仅是输出结果的大小写不一样。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 布尔值 b/B */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;null: %b, %B&quot;</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="comment">// null: false, FALSE </span></span><br><span class="line">System.out.printf(<span class="string">&quot;bool: %b, %B&quot;</span>, <span class="keyword">true</span>, <span class="keyword">false</span>);</span><br><span class="line"><span class="comment">// bool: true, FALSE </span></span><br><span class="line">System.out.printf(<span class="string">&quot;other: %b, %B&quot;</span>, <span class="number">1</span>, <span class="string">&quot;test&quot;</span>);</span><br><span class="line"><span class="comment">// other: true, TRUE </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 哈希值 h/H */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;null: %h, %H&quot;</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="comment">// null: null, NULL </span></span><br><span class="line">System.out.printf(<span class="string">&quot;hash: %h, %H&quot;</span>, <span class="number">12.0</span>, <span class="string">&quot;false&quot;</span>);</span><br><span class="line"><span class="comment">// hash: 40280000, 5CB1923 </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 字符串 s/S */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;null: %s, %S&quot;</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="comment">// null: null, NULL </span></span><br><span class="line">System.out.printf(<span class="string">&quot;string: %s, %S&quot;</span>, <span class="number">123</span>, <span class="string">&quot;string&quot;</span>);</span><br><span class="line"><span class="comment">// string: 123, STRING</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 字符 c/C */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;null: %c, %C&quot;</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="comment">// null: null, NULL </span></span><br><span class="line">System.out.printf(<span class="string">&quot;string: %c, %C&quot;</span>, <span class="number">36</span>, <span class="string">&#x27;a&#x27;</span>);</span><br><span class="line"><span class="comment">// char: $, A </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 整数值 d/o/x/X */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;null: %d&quot;</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="comment">// null: null </span></span><br><span class="line">System.out.printf(<span class="string">&quot;10-int: %d&quot;</span>, <span class="number">36</span>);</span><br><span class="line"><span class="comment">// 10-int: 36 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;8-int: %o&quot;</span>, <span class="number">40</span>);</span><br><span class="line"><span class="comment">// 8-int: 50 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;16-int: %x, %X&quot;</span>, <span class="number">46</span>, <span class="number">47</span>);</span><br><span class="line"><span class="comment">// 16-int: 2e, 2F </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 浮点值 e/E/f/g/G/a/A */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;null: %f&quot;</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="comment">// null: null </span></span><br><span class="line">System.out.printf(<span class="string">&quot;scientific: %e, %E&quot;</span>, <span class="number">360000000000000.0</span>, <span class="number">0.00002</span>);</span><br><span class="line"><span class="comment">// scientific: 3.600000e+14, 2.000000E-05</span></span><br><span class="line">System.out.printf(<span class="string">&quot;float: %f, %f&quot;</span>, <span class="number">40.0f</span>, <span class="number">100.2</span>);</span><br><span class="line"><span class="comment">// float: 40.000000, 100.200000 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;rounding: %g, %G&quot;</span>, <span class="number">0.0001</span>, <span class="number">0.00000000000001</span>);</span><br><span class="line"><span class="comment">// rounding: 0.000100000, 1.00000E-14</span></span><br><span class="line">System.out.printf(<span class="string">&quot;16-float: %a, %A %n&quot;</span>, <span class="number">0.0001</span>, <span class="number">0.00000000000001</span>);</span><br><span class="line"><span class="comment">// 16-float: 0x1.a36e2eb1c432dp-14, 0X1.6849B86A12B9BP-47 </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 日期时间 t/T */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;null: %th&quot;</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="comment">// null: null </span></span><br><span class="line">System.out.printf(<span class="string">&quot;year: %ty, %tY&quot;</span>, <span class="keyword">new</span> Date(), <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// year: 23, 2023 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;month: %tM&quot;</span>, <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// month: 09 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;hour: %th, %tH&quot;</span>, <span class="keyword">new</span> Date(), <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// hour: 01</span></span><br><span class="line">System.out.printf(<span class="string">&quot;16-float: %s, %S&quot;</span>, <span class="keyword">new</span> Date(), <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// second: 1673025096, 36 </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 百分比 % */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;percent: %%&quot;</span>);</span><br><span class="line"><span class="comment">// percent: % </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 换行符 n */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;line separator: %n line separator&quot;</span>);</span><br><span class="line"><span class="comment">//line separator: </span></span><br><span class="line"><span class="comment">// line separator</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 布尔值 b/B */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;null: %b, %B&quot;</span>, <span class="literal">null</span>, <span class="literal">null</span>);</span><br><span class="line"><span class="comment">// null: false, FALSE </span></span><br><span class="line">System.out.printf(<span class="string">&quot;bool: %b, %B&quot;</span>, <span class="literal">true</span>, <span class="literal">false</span>);</span><br><span class="line"><span class="comment">// bool: true, FALSE </span></span><br><span class="line">System.out.printf(<span class="string">&quot;other: %b, %B&quot;</span>, <span class="number">1</span>, <span class="string">&quot;test&quot;</span>);</span><br><span class="line"><span class="comment">// other: true, TRUE </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 哈希值 h/H */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;null: %h, %H&quot;</span>, <span class="literal">null</span>, <span class="literal">null</span>);</span><br><span class="line"><span class="comment">// null: null, NULL </span></span><br><span class="line">System.out.printf(<span class="string">&quot;hash: %h, %H&quot;</span>, <span class="number">12.0</span>, <span class="string">&quot;false&quot;</span>);</span><br><span class="line"><span class="comment">// hash: 40280000, 5CB1923 </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 字符串 s/S */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;null: %s, %S&quot;</span>, <span class="literal">null</span>, <span class="literal">null</span>);</span><br><span class="line"><span class="comment">// null: null, NULL </span></span><br><span class="line">System.out.printf(<span class="string">&quot;string: %s, %S&quot;</span>, <span class="number">123</span>, <span class="string">&quot;string&quot;</span>);</span><br><span class="line"><span class="comment">// string: 123, STRING</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 字符 c/C */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;null: %c, %C&quot;</span>, <span class="literal">null</span>, <span class="literal">null</span>);</span><br><span class="line"><span class="comment">// null: null, NULL </span></span><br><span class="line">System.out.printf(<span class="string">&quot;string: %c, %C&quot;</span>, <span class="number">36</span>, <span class="string">&#x27;a&#x27;</span>);</span><br><span class="line"><span class="comment">// char: $, A </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 整数值 d/o/x/X */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;null: %d&quot;</span>, <span class="literal">null</span>);</span><br><span class="line"><span class="comment">// null: null </span></span><br><span class="line">System.out.printf(<span class="string">&quot;10-int: %d&quot;</span>, <span class="number">36</span>);</span><br><span class="line"><span class="comment">// 10-int: 36 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;8-int: %o&quot;</span>, <span class="number">40</span>);</span><br><span class="line"><span class="comment">// 8-int: 50 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;16-int: %x, %X&quot;</span>, <span class="number">46</span>, <span class="number">47</span>);</span><br><span class="line"><span class="comment">// 16-int: 2e, 2F </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 浮点值 e/E/f/g/G/a/A */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;null: %f&quot;</span>, <span class="literal">null</span>);</span><br><span class="line"><span class="comment">// null: null </span></span><br><span class="line">System.out.printf(<span class="string">&quot;scientific: %e, %E&quot;</span>, <span class="number">360000000000000.0</span>, <span class="number">0.00002</span>);</span><br><span class="line"><span class="comment">// scientific: 3.600000e+14, 2.000000E-05</span></span><br><span class="line">System.out.printf(<span class="string">&quot;float: %f, %f&quot;</span>, <span class="number">40.0f</span>, <span class="number">100.2</span>);</span><br><span class="line"><span class="comment">// float: 40.000000, 100.200000 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;rounding: %g, %G&quot;</span>, <span class="number">0.0001</span>, <span class="number">0.00000000000001</span>);</span><br><span class="line"><span class="comment">// rounding: 0.000100000, 1.00000E-14</span></span><br><span class="line">System.out.printf(<span class="string">&quot;16-float: %a, %A %n&quot;</span>, <span class="number">0.0001</span>, <span class="number">0.00000000000001</span>);</span><br><span class="line"><span class="comment">// 16-float: 0x1.a36e2eb1c432dp-14, 0X1.6849B86A12B9BP-47 </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 日期时间 t/T */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;null: %th&quot;</span>, <span class="literal">null</span>);</span><br><span class="line"><span class="comment">// null: null </span></span><br><span class="line">System.out.printf(<span class="string">&quot;year: %ty, %tY&quot;</span>, <span class="keyword">new</span> <span class="title class_">Date</span>(), <span class="keyword">new</span> <span class="title class_">Date</span>());</span><br><span class="line"><span class="comment">// year: 23, 2023 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;month: %tM&quot;</span>, <span class="keyword">new</span> <span class="title class_">Date</span>());</span><br><span class="line"><span class="comment">// month: 09 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;hour: %th, %tH&quot;</span>, <span class="keyword">new</span> <span class="title class_">Date</span>(), <span class="keyword">new</span> <span class="title class_">Date</span>());</span><br><span class="line"><span class="comment">// hour: 01</span></span><br><span class="line">System.out.printf(<span class="string">&quot;16-float: %s, %S&quot;</span>, <span class="keyword">new</span> <span class="title class_">Date</span>(), <span class="keyword">new</span> <span class="title class_">Date</span>());</span><br><span class="line"><span class="comment">// second: 1673025096, 36 </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 百分比 % */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;percent: %%&quot;</span>);</span><br><span class="line"><span class="comment">// percent: % </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 换行符 n */</span></span><br><span class="line">System.out.printf(<span class="string">&quot;line separator: %n line separator&quot;</span>);</span><br><span class="line"><span class="comment">//line separator: </span></span><br><span class="line"><span class="comment">// line separator</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="4-3-日期转换符"><a href="#4-3-日期转换符" class="headerlink" title="4.3 日期转换符"></a>4.3 日期转换符</h3><table>
 <thead>
@@ -504,7 +277,7 @@
 <td align="left">范围是 1 - 31</td>
 </tr>
 </tbody></table>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">System.out.printf(<span class="string">&quot;year: %ty, %tY&quot;</span>, <span class="keyword">new</span> Date(), <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// year: 23, 2023 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;month name: %tb, %tB, %th&quot;</span>, <span class="keyword">new</span> Date(), <span class="keyword">new</span> Date(), <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// month name: 1月, 一月, 1月</span></span><br><span class="line">System.out.printf(<span class="string">&quot;month number: %tm&quot;</span>, <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// month number: 01 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;week: %ta, %tA&quot;</span>, <span class="keyword">new</span> Date(), <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// week: 周六, 星期六 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;day: %td, %te&quot;</span>, <span class="keyword">new</span> Date(), <span class="keyword">new</span> Date()); </span><br><span class="line"><span class="comment">// day: 07, 7 </span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">System.out.printf(<span class="string">&quot;year: %ty, %tY&quot;</span>, <span class="keyword">new</span> <span class="title class_">Date</span>(), <span class="keyword">new</span> <span class="title class_">Date</span>());</span><br><span class="line"><span class="comment">// year: 23, 2023 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;month name: %tb, %tB, %th&quot;</span>, <span class="keyword">new</span> <span class="title class_">Date</span>(), <span class="keyword">new</span> <span class="title class_">Date</span>(), <span class="keyword">new</span> <span class="title class_">Date</span>());</span><br><span class="line"><span class="comment">// month name: 1月, 一月, 1月</span></span><br><span class="line">System.out.printf(<span class="string">&quot;month number: %tm&quot;</span>, <span class="keyword">new</span> <span class="title class_">Date</span>());</span><br><span class="line"><span class="comment">// month number: 01 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;week: %ta, %tA&quot;</span>, <span class="keyword">new</span> <span class="title class_">Date</span>(), <span class="keyword">new</span> <span class="title class_">Date</span>());</span><br><span class="line"><span class="comment">// week: 周六, 星期六 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;day: %td, %te&quot;</span>, <span class="keyword">new</span> <span class="title class_">Date</span>(), <span class="keyword">new</span> <span class="title class_">Date</span>()); </span><br><span class="line"><span class="comment">// day: 07, 7 </span></span><br></pre></td></tr></table></figure>
 
 <h3 id="4-4-时间转换符"><a href="#4-4-时间转换符" class="headerlink" title="4.4 时间转换符"></a>4.4 时间转换符</h3><table>
 <thead>
@@ -596,7 +369,7 @@
 <td align="left">比如 Sun Jul 20 16:17:00 EDT 1969</td>
 </tr>
 </tbody></table>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">System.out.printf(<span class="string">&quot;HH:MM: %tR&quot;</span>, <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// HH:MM: 01:38 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;HH:MM:SS: %tT&quot;</span>, <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// HH:MM:SS: 01:38:51 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;mm/dd/yy: %tD&quot;</span>, <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// mm/dd/yy: 01/07/23 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;YYYY-mm-dd: %tF&quot;</span>, <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// YYYY-mm-dd: 2023-01-07 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;date time: %tc&quot;</span>, <span class="keyword">new</span> Date());</span><br><span class="line"><span class="comment">// date time: 周六 1月 07 01:38:51 CST 2023 </span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">System.out.printf(<span class="string">&quot;HH:MM: %tR&quot;</span>, <span class="keyword">new</span> <span class="title class_">Date</span>());</span><br><span class="line"><span class="comment">// HH:MM: 01:38 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;HH:MM:SS: %tT&quot;</span>, <span class="keyword">new</span> <span class="title class_">Date</span>());</span><br><span class="line"><span class="comment">// HH:MM:SS: 01:38:51 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;mm/dd/yy: %tD&quot;</span>, <span class="keyword">new</span> <span class="title class_">Date</span>());</span><br><span class="line"><span class="comment">// mm/dd/yy: 01/07/23 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;YYYY-mm-dd: %tF&quot;</span>, <span class="keyword">new</span> <span class="title class_">Date</span>());</span><br><span class="line"><span class="comment">// YYYY-mm-dd: 2023-01-07 </span></span><br><span class="line">System.out.printf(<span class="string">&quot;date time: %tc&quot;</span>, <span class="keyword">new</span> <span class="title class_">Date</span>());</span><br><span class="line"><span class="comment">// date time: 周六 1月 07 01:38:51 CST 2023 </span></span><br></pre></td></tr></table></figure>
 
 <p>时间转换符的快捷方式就是用简单的1个字符替代多个转换符，简化代码，相当于缩写。</p>
 <h2 id="五、标志位（flags）"><a href="#五、标志位（flags）" class="headerlink" title="五、标志位（flags）"></a>五、标志位（flags）</h2><p>标志位用于对输出格式进行一些调整。</p>
@@ -674,218 +447,48 @@
 <p>java.util.Formatter</p>
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/lonely_fireworks/article/details/7962171/">https://blog.csdn.net/lonely_fireworks/article/details/7962171/</a></p>
 </blockquote>
-
-    </div>
-
-    
-    
-    
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/java/" rel="tag"># java</a>
-              <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="tag"># 字符串</a>
-              <a href="/tags/%E6%A0%BC%E5%BC%8F%E5%8C%96/" rel="tag"># 格式化</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/other/object_concept/" rel="prev" title="各种 O 对象概念">
-      <i class="fa fa-chevron-left"></i> 各种 O 对象概念
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/lang/java/other/reflect_paramters/" rel="next" title="Java 反射调用有可变参数的方法">
-      Java 反射调用有可变参数的方法 <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Java-%E7%9A%84%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-text">Java 的格式化字符串</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%A0%BC%E5%BC%8F%E5%8C%96-Formatter"><span class="nav-text">一、格式化 Formatter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%96%B9%E6%B3%95"><span class="nav-text">二、格式化方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E4%BD%BF%E7%94%A8-Formatter-%E5%AE%9E%E4%BE%8B"><span class="nav-text">2.1 使用 Formatter 实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E4%BD%BF%E7%94%A8-System-%E4%B8%AD%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-text">2.2 使用 System 中的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E4%BD%BF%E7%94%A8-String-%E4%B8%AD%E7%9A%84%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95"><span class="nav-text">2.3 使用 String 中的静态方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%96%B9%E6%B3%95%E8%A6%81%E7%B4%A0"><span class="nav-text">2.4 格式化方法要素</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%A0%BC%E5%BC%8F%E5%8C%96%E8%AF%AD%E6%B3%95"><span class="nav-text">三、格式化语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E9%80%9A%E7%94%A8%E3%80%81%E5%AD%97%E7%AC%A6%E3%80%81%E6%95%B0%E5%80%BC"><span class="nav-text">3.1 通用、字符、数值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E6%97%A5%E6%9C%9F%E3%80%81%E6%97%B6%E9%97%B4"><span class="nav-text">3.2 日期、时间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E6%97%A0%E5%8F%82%E7%B1%BB%E5%9E%8B"><span class="nav-text">3.3 无参类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E8%BD%AC%E6%8D%A2%E7%AC%A6%EF%BC%88conversion%EF%BC%89"><span class="nav-text">四、转换符（conversion）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E8%BD%AC%E6%8D%A2%E7%AC%A6%E5%88%86%E7%B1%BB"><span class="nav-text">4.1 转换符分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E8%BD%AC%E6%8D%A2%E7%AC%A6%E6%B1%87%E6%80%BB"><span class="nav-text">4.2 转换符汇总</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E6%97%A5%E6%9C%9F%E8%BD%AC%E6%8D%A2%E7%AC%A6"><span class="nav-text">4.3 日期转换符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E6%97%B6%E9%97%B4%E8%BD%AC%E6%8D%A2%E7%AC%A6"><span class="nav-text">4.4 时间转换符</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E6%A0%87%E5%BF%97%E4%BD%8D%EF%BC%88flags%EF%BC%89"><span class="nav-text">五、标志位（flags）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E5%AE%BD%E5%BA%A6%EF%BC%88width%EF%BC%89"><span class="nav-text">六、宽度（width）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E7%B2%BE%E5%BA%A6%EF%BC%88precision%EF%BC%89"><span class="nav-text">七、精度（precision）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-text">参考</span></a></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="jiaduo"
-      src="/images/lufei.jpeg">
-  <p class="site-author-name" itemprop="name">jiaduo</p>
-  <div class="site-description" itemprop="description">不积跬步，无以至千里</div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">137</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">45</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-
-
-
-      </div>
-
-    </div>
-
-    
-    
-    
-
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 2021/08 – 
-  <span itemprop="copyrightYear">2023</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">jiaduo</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-    <span title="站点总字数">558k</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-    <span title="站点阅读时长">8:27</span>
-</div>
-
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
-
-  
-  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
-
-
-  
-
-
-
-
-  
-<script src="/js/local-search.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-</body>
-</html>
+</div><div class="level is-mobile is-flex"><div class="article-licensing box"><div class="licensing-title"><p>Java 的格式化字符串</p><p><a href="http://example.com/lang/java/other/formatter/">http://example.com/lang/java/other/formatter/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>jiaduo</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2023-01-08</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2023-04-02</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 is-uppercase"><i class="fas fa-tags has-text-grey"></i> <a class="link-muted" rel="tag" href="/tags/java/">java, </a><a class="link-muted" rel="tag" href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串, </a><a class="link-muted" rel="tag" href="/tags/%E6%A0%BC%E5%BC%8F%E5%8C%96/">格式化 </a></div><!--!--></div></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/lang/java/other/reflect_paramters/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Java 反射调用有可变参数的方法</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/other/object_concept/"><span class="level-item">各种 O 对象概念</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><!--!--><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen  order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#Java-的格式化字符串"><span class="level-left"><span class="level-item">Java 的格式化字符串</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#一、格式化-Formatter"><span class="level-left"><span class="level-item">一、格式化 Formatter</span></span></a></li><li><a class="level is-mobile" href="#二、格式化方法"><span class="level-left"><span class="level-item">二、格式化方法</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#2-1-使用-Formatter-实例"><span class="level-left"><span class="level-item">2.1 使用 Formatter 实例</span></span></a></li><li><a class="level is-mobile" href="#2-2-使用-System-中的方法"><span class="level-left"><span class="level-item">2.2 使用 System 中的方法</span></span></a></li><li><a class="level is-mobile" href="#2-3-使用-String-中的静态方法"><span class="level-left"><span class="level-item">2.3 使用 String 中的静态方法</span></span></a></li><li><a class="level is-mobile" href="#2-4-格式化方法要素"><span class="level-left"><span class="level-item">2.4 格式化方法要素</span></span></a></li></ul></li><li><a class="level is-mobile" href="#三、格式化语法"><span class="level-left"><span class="level-item">三、格式化语法</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#3-1-通用、字符、数值"><span class="level-left"><span class="level-item">3.1 通用、字符、数值</span></span></a></li><li><a class="level is-mobile" href="#3-2-日期、时间"><span class="level-left"><span class="level-item">3.2 日期、时间</span></span></a></li><li><a class="level is-mobile" href="#3-3-无参类型"><span class="level-left"><span class="level-item">3.3 无参类型</span></span></a></li></ul></li><li><a class="level is-mobile" href="#四、转换符（conversion）"><span class="level-left"><span class="level-item">四、转换符（conversion）</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#4-1-转换符分类"><span class="level-left"><span class="level-item">4.1 转换符分类</span></span></a></li><li><a class="level is-mobile" href="#4-2-转换符汇总"><span class="level-left"><span class="level-item">4.2 转换符汇总</span></span></a></li><li><a class="level is-mobile" href="#4-3-日期转换符"><span class="level-left"><span class="level-item">4.3 日期转换符</span></span></a></li><li><a class="level is-mobile" href="#4-4-时间转换符"><span class="level-left"><span class="level-item">4.4 时间转换符</span></span></a></li></ul></li><li><a class="level is-mobile" href="#五、标志位（flags）"><span class="level-left"><span class="level-item">五、标志位（flags）</span></span></a></li><li><a class="level is-mobile" href="#六、宽度（width）"><span class="level-left"><span class="level-item">六、宽度（width）</span></span></a></li><li><a class="level is-mobile" href="#七、精度（precision）"><span class="level-left"><span class="level-item">七、精度（precision）</span></span></a></li><li><a class="level is-mobile" href="#参考"><span class="level-left"><span class="level-item">参考</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.png" alt="追来者之人" height="28"></a><p class="is-size-7"><span>&copy; 2023 jiaduo</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

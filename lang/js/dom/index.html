@@ -1,260 +1,35 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>HTML中的DOM对象 - 追来者之人</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="追来者之人"><meta name="msapplication-TileImage" content="/img/logo.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="追来者之人"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="DOMDOM（文档对象模型）是针对 HTML 和 XML 文档的一个API。  主流浏览器都完成了 DOM1 级的实现 IE 的 DOM 对象都是以 COM 对象的形式存在，和原始的 DOM 对象行为并不一致  一、节点层次DOM 可以将 HTML 或 XML 文档描绘成一个由多层节点构成的结构，简单点说，就是一个树结构。"><meta property="og:type" content="blog"><meta property="og:title" content="HTML中的DOM对象"><meta property="og:url" content="http://example.com/lang/js/dom/"><meta property="og:site_name" content="追来者之人"><meta property="og:description" content="DOMDOM（文档对象模型）是针对 HTML 和 XML 文档的一个API。  主流浏览器都完成了 DOM1 级的实现 IE 的 DOM 对象都是以 COM 对象的形式存在，和原始的 DOM 对象行为并不一致  一、节点层次DOM 可以将 HTML 或 XML 文档描绘成一个由多层节点构成的结构，简单点说，就是一个树结构。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://example.com/img/og_image.png"><meta property="article:published_time" content="2021-08-28T08:23:19.000Z"><meta property="article:modified_time" content="2023-04-02T08:18:43.663Z"><meta property="article:author" content="jiaduo"><meta property="article:tag" content="JavaScript"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="http://example.com/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/lang/js/dom/"},"headline":"HTML中的DOM对象","image":["http://example.com/img/og_image.png"],"datePublished":"2021-08-28T08:23:19.000Z","dateModified":"2023-04-02T08:18:43.663Z","author":{"@type":"Person","name":"jiaduo"},"publisher":{"@type":"Organization","name":"追来者之人","logo":{"@type":"ImageObject","url":"http://example.com/img/logo.png"}},"description":"DOMDOM（文档对象模型）是针对 HTML 和 XML 文档的一个API。  主流浏览器都完成了 DOM1 级的实现 IE 的 DOM 对象都是以 COM 对象的形式存在，和原始的 DOM 对象行为并不一致  一、节点层次DOM 可以将 HTML 或 XML 文档描绘成一个由多层节点构成的结构，简单点说，就是一个树结构。"}</script><link rel="canonical" href="http://example.com/lang/js/dom/"><link rel="icon" href="/img/logo.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
 
-<link rel="stylesheet" href="/css/main.css">
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
 
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
-  </script>
-
-  <meta name="description" content="DOMDOM（文档对象模型）是针对 HTML 和 XML 文档的一个API。  主流浏览器都完成了 DOM1 级的实现 IE 的 DOM 对象都是以 COM 对象的形式存在，和原始的 DOM 对象行为并不一致  一、节点层次DOM 可以将 HTML 或 XML 文档描绘成一个由多层节点构成的结构，简单点说，就是一个树结构。">
-<meta property="og:type" content="article">
-<meta property="og:title" content="HTML中的DOM对象">
-<meta property="og:url" content="http://example.com/lang/js/dom/index.html">
-<meta property="og:site_name" content="Strive">
-<meta property="og:description" content="DOMDOM（文档对象模型）是针对 HTML 和 XML 文档的一个API。  主流浏览器都完成了 DOM1 级的实现 IE 的 DOM 对象都是以 COM 对象的形式存在，和原始的 DOM 对象行为并不一致  一、节点层次DOM 可以将 HTML 或 XML 文档描绘成一个由多层节点构成的结构，简单点说，就是一个树结构。">
-<meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-08-28T08:23:19.000Z">
-<meta property="article:modified_time" content="2022-01-20T18:59:39.900Z">
-<meta property="article:author" content="jiaduo">
-<meta property="article:tag" content="javascript">
-<meta name="twitter:card" content="summary">
-
-<link rel="canonical" href="http://example.com/lang/js/dom/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
-
-  <title>HTML中的DOM对象 | Strive</title>
-  
-
-
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
-
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Strive</h1>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-      <p class="site-subtitle" itemprop="description">Rome was not built in one day</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
-    </div>
-  </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
-</nav>
-
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div id="search-result">
-  <div id="no-result">
-    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-  <div class="reading-progress-bar"></div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
-            
-
-    
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/js/dom/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          HTML中的DOM对象
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-08-28 16:23:19" itemprop="dateCreated datePublished" datetime="2021-08-28T16:23:19+08:00">2021-08-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-01-21 02:59:39" itemprop="dateModified" datetime="2022-01-21T02:59:39+08:00">2022-01-21</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>13k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>12 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <h1 id="DOM"><a href="#DOM" class="headerlink" title="DOM"></a>DOM</h1><p>DOM（文档对象模型）是针对 HTML 和 XML 文档的一个API。</p>
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="追来者之人" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><h1 class="title is-3 is-size-4-mobile"><i class="fas fa-blog"> </i>HTML中的DOM对象</h1><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><i class="fas fa-calendar-plus"> </i><time dateTime="2021-08-28T08:23:19.000Z" title="2021-08-28T08:23:19.000Z">2021-08-28</time></span><span class="level-item is-hidden-mobile"><i class="fas fa-calendar-check"> </i><time dateTime="2023-04-02T08:18:43.663Z" title="2023-04-02T08:18:43.663Z">2023-04-02</time></span><span class="level-item"><i class="fas fa-folder"> </i><a class="link-muted" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/">编程语言</a><span> / </span><a class="link-muted" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/JavaScript/">JavaScript</a></span><span class="level-item"><i class="fas fa-clock"> </i>34 分钟读完 (大约5173个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><div class="content"><h1 id="DOM"><a href="#DOM" class="headerlink" title="DOM"></a>DOM</h1><p>DOM（文档对象模型）是针对 HTML 和 XML 文档的一个API。</p>
 <ul>
 <li>主流浏览器都完成了 DOM1 级的实现</li>
 <li>IE 的 DOM 对象都是以 COM 对象的形式存在，和原始的 DOM 对象行为并不一致</li>
@@ -284,7 +59,7 @@
 
 <p>需要说明的是，并不是所有 Web 浏览器都支持全部的节点类型。</p>
 <p>由于 IE 无法访问 Node 类型，因此在判断节点类型时，为了确保浏览器兼容性，最好将 nodeType 与数值作比较：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// IE 下无效</span></span><br><span class="line"><span class="keyword">if</span> (node.nodeType === Node.ELEMENT_NODE) &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 适用于所有浏览器</span></span><br><span class="line"><span class="keyword">if</span> (node.nodeType === <span class="number">1</span>) &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// IE 下无效</span></span><br><span class="line"><span class="keyword">if</span> (node.<span class="property">nodeType</span> === <span class="title class_">Node</span>.<span class="property">ELEMENT_NODE</span>) &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 适用于所有浏览器</span></span><br><span class="line"><span class="keyword">if</span> (node.<span class="property">nodeType</span> === <span class="number">1</span>) &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p><strong>(2) nodeName 和 nodeValue</strong></p>
 <p>这两个值取决于节点的类型，有可能取值为 null。</p>
@@ -293,7 +68,7 @@
 <p>每个节点都有一个 childNodes 属性，用于保存它的子节点。</p>
 <p>childNodes 是一个 NodeList 对象，是一种类数组对象（不是数组），其中保存着一组有序的节点。</p>
 <p>NodeList 对象是一个动态查询的结果，也就是说，当 DOM 结构发生变化时，它能够实时更新数据。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取 NodeList 对象的长度</span></span><br><span class="line"><span class="keyword">var</span> length = node.childNodes.length</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用类似数组的[]下标访问</span></span><br><span class="line"><span class="keyword">var</span> firstChild = node.childNodes[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用 item() 方法访问</span></span><br><span class="line"><span class="keyword">var</span> lastChild = node.childNodes.item(length - <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取 NodeList 对象的长度</span></span><br><span class="line"><span class="keyword">var</span> length = node.<span class="property">childNodes</span>.<span class="property">length</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用类似数组的[]下标访问</span></span><br><span class="line"><span class="keyword">var</span> firstChild = node.<span class="property">childNodes</span>[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用 item() 方法访问</span></span><br><span class="line"><span class="keyword">var</span> lastChild = node.<span class="property">childNodes</span>.<span class="title function_">item</span>(length - <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
 
 <p>需要说明的是，虽然所有节点都继承自 Node 类型，但并不是每种节点都有子节点。</p>
 <p><strong>(4) 其他属性</strong></p>
@@ -308,19 +83,19 @@
 <h4 id="2-1-2-公共方法"><a href="#2-1-2-公共方法" class="headerlink" title="2.1.2 公共方法"></a>2.1.2 公共方法</h4><p><strong>(1) appendChild</strong></p>
 <p><code>appendChild()</code> 方法用于向 childNodes 列表末尾追加一个节点。</p>
 <p>如果追加的节点已经在 childNodes 中，则会将该节点移动到 childNodes 列表的末尾。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 追加到末尾</span></span><br><span class="line"><span class="keyword">var</span> newNode = parentNode.appendChild(newChildNode)</span><br><span class="line">alert(newNode === parentNode.lastChild)  <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 移动到末尾</span></span><br><span class="line"><span class="keyword">var</span> firstChild = parentNode.firstChild</span><br><span class="line"><span class="keyword">var</span> moveNode = parentNode.appendChild(firstChild)</span><br><span class="line">alert(moveNode === parentNode.lastChild)  <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 追加到末尾</span></span><br><span class="line"><span class="keyword">var</span> newNode = parentNode.<span class="title function_">appendChild</span>(newChildNode)</span><br><span class="line"><span class="title function_">alert</span>(newNode === parentNode.<span class="property">lastChild</span>)  <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 移动到末尾</span></span><br><span class="line"><span class="keyword">var</span> firstChild = parentNode.<span class="property">firstChild</span></span><br><span class="line"><span class="keyword">var</span> moveNode = parentNode.<span class="title function_">appendChild</span>(firstChild)</span><br><span class="line"><span class="title function_">alert</span>(moveNode === parentNode.<span class="property">lastChild</span>)  <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
 
 <p><strong>(2) insertBefore</strong></p>
 <p><code>insertBefore()</code> 方法用于在 childNodes 列表的某个位置中插入一个节点。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 插入到末尾</span></span><br><span class="line"><span class="keyword">var</span> newNode = parentNode.insertBefore(newChildNode, <span class="literal">null</span>)</span><br><span class="line">alert(newNode === parentNode.lastChild)  <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 插入后成为第一个节点</span></span><br><span class="line"><span class="keyword">var</span> insertNode = parentNode.insertBefore(newChildNode, parentNode.firstChild)</span><br><span class="line">alert(insertNode === parentNode.firstChild)  <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 插入到末尾</span></span><br><span class="line"><span class="keyword">var</span> newNode = parentNode.<span class="title function_">insertBefore</span>(newChildNode, <span class="literal">null</span>)</span><br><span class="line"><span class="title function_">alert</span>(newNode === parentNode.<span class="property">lastChild</span>)  <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 插入后成为第一个节点</span></span><br><span class="line"><span class="keyword">var</span> insertNode = parentNode.<span class="title function_">insertBefore</span>(newChildNode, parentNode.<span class="property">firstChild</span>)</span><br><span class="line"><span class="title function_">alert</span>(insertNode === parentNode.<span class="property">firstChild</span>)  <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
 
 <p><strong>(3) replaceChild</strong></p>
 <p><code>replaceChild()</code> 方法用于将旧节点替换成新节点，实际上是做了一个删除节点操作和插入节点操作。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 替换指定的子节点</span></span><br><span class="line"><span class="keyword">var</span> replaceNode = parentNode.replaceChild(newChildNode, parentNode.firstChild)</span><br><span class="line">alert(replaceNode === parentNode.firstChild)</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 替换指定的子节点</span></span><br><span class="line"><span class="keyword">var</span> replaceNode = parentNode.<span class="title function_">replaceChild</span>(newChildNode, parentNode.<span class="property">firstChild</span>)</span><br><span class="line"><span class="title function_">alert</span>(replaceNode === parentNode.<span class="property">firstChild</span>)</span><br></pre></td></tr></table></figure>
 
 <p><strong>(4) removeChild</strong></p>
 <p><code>removeChild()</code> 方法用于移除子节点。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 移除第一个子节点</span></span><br><span class="line"><span class="keyword">var</span> removeNode = parentNode.removeChild(parentNode.firstChild)</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 移除第一个子节点</span></span><br><span class="line"><span class="keyword">var</span> removeNode = parentNode.<span class="title function_">removeChild</span>(parentNode.<span class="property">firstChild</span>)</span><br></pre></td></tr></table></figure>
 
 <p><strong>(5) 其他方法</strong></p>
 <ul>
@@ -364,23 +139,23 @@
 <li>domain：<code>document.domain</code> 表示页面的域名，与 URL 相关联</li>
 <li>referer：<code>document.refreer</code> 表示来源页面的 URL（即跳转到当前页面的上一个页面 URL）</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 修改页面标题</span></span><br><span class="line"><span class="built_in">document</span>.title = <span class="string">&#x27;新标题&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// http://www.baidu.com/</span></span><br><span class="line"><span class="keyword">var</span> url = <span class="built_in">document</span>.URL</span><br><span class="line"></span><br><span class="line"><span class="comment">// www.baidu.com</span></span><br><span class="line"><span class="keyword">var</span> domain = <span class="built_in">document</span>.domain</span><br><span class="line"></span><br><span class="line"><span class="comment">// http://www.google.com/</span></span><br><span class="line"><span class="keyword">var</span> referer = <span class="built_in">document</span>.refreer</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 修改页面标题</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="property">title</span> = <span class="string">&#x27;新标题&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// http://www.baidu.com/</span></span><br><span class="line"><span class="keyword">var</span> url = <span class="variable language_">document</span>.<span class="property">URL</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// www.baidu.com</span></span><br><span class="line"><span class="keyword">var</span> domain = <span class="variable language_">document</span>.<span class="property">domain</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// http://www.google.com/</span></span><br><span class="line"><span class="keyword">var</span> referer = <span class="variable language_">document</span>.<span class="property">refreer</span></span><br></pre></td></tr></table></figure>
 
 <p>在 URL、domain、referer 中，只有 domain 可以修改，其他两个都是只读属性。</p>
 <ul>
 <li>domain 只能设置成 URL 的子域名，不能修改为 URL 中不包含的域</li>
 <li>修改为子域名之后，不能再修改回原域名（即修改只能收缩，不能扩张）</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// http://www.baidu.com/</span></span><br><span class="line"><span class="keyword">var</span> url = <span class="built_in">document</span>.URL</span><br><span class="line"></span><br><span class="line"><span class="comment">// www.baidu.com</span></span><br><span class="line"><span class="keyword">var</span> domain  = <span class="built_in">document</span>.domain</span><br><span class="line"></span><br><span class="line"><span class="comment">// 可以从父域名修改为子域名</span></span><br><span class="line"><span class="built_in">document</span>.domain = <span class="string">&#x27;baidu.com&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 不可以修改为 URL 不包含的域名</span></span><br><span class="line"><span class="built_in">document</span>.domain = <span class="string">&#x27;google.com&#x27;</span> <span class="comment">// 出错</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 修改为子域名以后，不可以再修改回原域名</span></span><br><span class="line"><span class="built_in">document</span>.domain = <span class="string">&#x27;www.baidu.com&#x27;</span> <span class="comment">// 出错</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// http://www.baidu.com/</span></span><br><span class="line"><span class="keyword">var</span> url = <span class="variable language_">document</span>.<span class="property">URL</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// www.baidu.com</span></span><br><span class="line"><span class="keyword">var</span> domain  = <span class="variable language_">document</span>.<span class="property">domain</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 可以从父域名修改为子域名</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="property">domain</span> = <span class="string">&#x27;baidu.com&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 不可以修改为 URL 不包含的域名</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="property">domain</span> = <span class="string">&#x27;google.com&#x27;</span> <span class="comment">// 出错</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 修改为子域名以后，不可以再修改回原域名</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="property">domain</span> = <span class="string">&#x27;www.baidu.com&#x27;</span> <span class="comment">// 出错</span></span><br></pre></td></tr></table></figure>
 
 <p>domain 的限制来源于跨域安全：<strong>来自不同子域的页面不能通过 Javascript 通信</strong>。也就是说，如果一个页面包含了一个内嵌框架，而且内嵌框架的域名和页面的域名不同，那它们之间就不能互相访问对方的 Javascript 对象。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 假设当前页面来自 http://wwww.baidu.com/outer.html --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">frameset</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">frame</span> <span class="attr">src</span>=<span class="string">&quot;http://www.google.com/inner.html&quot;</span>, <span class="attr">name</span>=<span class="string">&quot;innerFrame&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">frameset</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></span><br><span class="line"><span class="javascript">    <span class="comment">// 由于页面和内置框架不同域名，因此会受到跨域安全的限制</span></span></span><br><span class="line"><span class="javascript">    <span class="comment">// 导致在这里无法正常访问内嵌框架的 Javascript 对象</span></span></span><br><span class="line"><span class="javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 假设当前页面来自 http://wwww.baidu.com/outer.html --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">frameset</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">frame</span> <span class="attr">src</span>=<span class="string">&quot;http://www.google.com/inner.html&quot;</span>, <span class="attr">name</span>=<span class="string">&quot;innerFrame&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">frameset</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="comment">// 由于页面和内置框架不同域名，因此会受到跨域安全的限制</span></span></span><br><span class="line"><span class="language-javascript">    <span class="comment">// 导致在这里无法正常访问内嵌框架的 Javascript 对象</span></span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>想要通过 Javascript 实现跨域访问，可以使用 <code>window.postMessage() </code> 方法。</p>
 <p><strong>(3) 特征检测</strong></p>
 <p>由于 DOM 分为多个级别，也包含多个部分，因此在使用某些特征功能之前，需要检测一下浏览器是否实现来该功能。</p>
 <p><code>document.implemetation</code> 属性提供了浏览器实现的相应信息和功能，其中 DOM1 级规定了一个方法 <code>hasFeature()</code> 用于检测 DOM 功能以及版本：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> hasXmlDom = <span class="built_in">document</span>.implementation.hasFeature(<span class="string">&#x27;XML&#x27;</span>, <span class="string">&#x27;1.0&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> hasXmlDom = <span class="variable language_">document</span>.<span class="property">implementation</span>.<span class="title function_">hasFeature</span>(<span class="string">&#x27;XML&#x27;</span>, <span class="string">&#x27;1.0&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
 <p>需要注意的是，<code>hasFeature()</code> 方法判断可能存在错误，因为功能是由浏览器负责实现的，但它未必完全按照 DOM 规范来实现，因此即使是在 <code>hasFeature()</code> 返回 true情况下，也未必能正确使用该功能，所以除了使用 <code>hasFeature()</code> 以外，应该还要加上能力检测。</p>
 <p><strong>(4) 查找元素</strong></p>
@@ -389,14 +164,14 @@
 <li>getElementById：通过元素的 ID 获取，区分大小写。如果文档中有多个相同 ID 的元素，则返回第一次出现的元素</li>
 <li>getElementsByTagName：通过元素的标签名获取，返回的是包含0个或多个元素的 NodeList</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 按照 ID 获取</span></span><br><span class="line"><span class="keyword">var</span> myDiv = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;divId&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 按照标签获取</span></span><br><span class="line"><span class="keyword">var</span> images = <span class="built_in">document</span>.getElementsByTagName(<span class="string">&#x27;img&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取所有元素</span></span><br><span class="line"><span class="keyword">var</span> allElements = <span class="built_in">document</span>.getElementsByTagName(<span class="string">&#x27;*&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 按照 ID 获取</span></span><br><span class="line"><span class="keyword">var</span> myDiv = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;divId&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 按照标签获取</span></span><br><span class="line"><span class="keyword">var</span> images = <span class="variable language_">document</span>.<span class="title function_">getElementsByTagName</span>(<span class="string">&#x27;img&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取所有元素</span></span><br><span class="line"><span class="keyword">var</span> allElements = <span class="variable language_">document</span>.<span class="title function_">getElementsByTagName</span>(<span class="string">&#x27;*&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
 <p>另外，<strong>对于 HTMLDocument 类型而言</strong>，还有另外的方法：</p>
 <ul>
 <li>getElementsByName：通过元素的name特性获取，返回的是包含0个或多个元素的 NodeList</li>
 </ul>
 <p><code>getElementsByName()</code> 方法常用在获取同一组单选按钮的值：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 按照name属性获取</span></span><br><span class="line"><span class="keyword">var</span> radios = <span class="built_in">document</span>.getElementsByName(<span class="string">&#x27;radioName&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 按照name属性获取</span></span><br><span class="line"><span class="keyword">var</span> radios = <span class="variable language_">document</span>.<span class="title function_">getElementsByName</span>(<span class="string">&#x27;radioName&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
 <p>另外，文档为常用的元素提供了快捷方式，可以免去我们自己查找：</p>
 <ul>
@@ -415,9 +190,9 @@
 <li>close：关闭输出流</li>
 </ul>
 <p>需要注意的是，在<strong>文档加载期间</strong>使用 <code>write()</code> 和 <code>writeln()</code> 是不需要使用 <code>open()</code> 和 <code>close()</code> 方法的。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></span><br><span class="line"><span class="javascript">      <span class="comment">// 处于文档加载期间，不需要使用 open() 和 close() 方法</span></span></span><br><span class="line"><span class="javascript">      <span class="built_in">document</span>.write(<span class="string">&#x27;Hello world!&#x27;</span>);</span></span><br><span class="line"><span class="javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// 处于文档加载期间，不需要使用 open() 和 close() 方法</span></span></span><br><span class="line"><span class="language-javascript">      <span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="string">&#x27;Hello world!&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">&quot;btnClick()&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></span><br><span class="line"><span class="javascript">      <span class="function"><span class="keyword">function</span> <span class="title">btnClick</span> (<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="comment">// 文档加载完毕，需要使用 open() 和 close() 方法</span></span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.open();</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.write(<span class="string">&#x27;Hello world!&#x27;</span>);</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.close();</span></span><br><span class="line"><span class="javascript">      &#125;</span></span><br><span class="line"><span class="javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">&quot;btnClick()&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">function</span> <span class="title function_">btnClick</span> () &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 文档加载完毕，需要使用 open() 和 close() 方法</span></span></span><br><span class="line"><span class="language-javascript">        <span class="variable language_">document</span>.<span class="title function_">open</span>();</span></span><br><span class="line"><span class="language-javascript">        <span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="string">&#x27;Hello world!&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript">        <span class="variable language_">document</span>.<span class="title function_">close</span>();</span></span><br><span class="line"><span class="language-javascript">      &#125;</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="2-3-Element-类型"><a href="#2-3-Element-类型" class="headerlink" title="2.3 Element 类型"></a>2.3 Element 类型</h3><p>元素 Element 类型用于表示 XML 或 HTML 元素，具有的特征包括：</p>
 <ul>
@@ -432,7 +207,7 @@
 <li>在 XML 中，标签名则始终和源代码中保持一致</li>
 </ul>
 <p>因此在判断标签名时，最好转换一下大小写：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (element.tagName.toUpperCase() === <span class="string">&#x27;DIV&#x27;</span>) &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (element.<span class="property">tagName</span>.<span class="title function_">toUpperCase</span>() === <span class="string">&#x27;DIV&#x27;</span>) &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p><strong>(1) HTML 元素</strong></p>
 <p>所有 HTML 元素都由 HTMLElement 类型表示，而 HTMLElement 继承自 Element，并添加了一些属性：</p>
@@ -453,7 +228,7 @@
 <li>setAttribute：设置特性</li>
 <li>removeAttribute：删除特性</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myDiv = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;myDiv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置特性</span></span><br><span class="line">myDiv.setAttribute(<span class="string">&#x27;id&#x27;</span>, <span class="string">&#x27;new_id&#x27;</span>)</span><br><span class="line">myDiv.setAttribute(<span class="string">&#x27;class&#x27;</span>, <span class="string">&#x27;new-my-cls&#x27;</span>)</span><br><span class="line">myDiv.setAttribute(<span class="string">&#x27;title&#x27;</span>, <span class="string">&#x27;New title&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取特性</span></span><br><span class="line">alert(myDiv.getAttribute(<span class="string">&#x27;id&#x27;</span>))    <span class="comment">// &quot;new_id&quot;</span></span><br><span class="line">alert(myDiv.getAttribute(<span class="string">&#x27;class&#x27;</span>)) <span class="comment">// &quot;new-my-cls&quot;</span></span><br><span class="line">alert(myDiv.getAttribute(<span class="string">&#x27;title&#x27;</span>)) <span class="comment">// &quot;New title&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 移除特性</span></span><br><span class="line">myDiv.removeAttribute(<span class="string">&#x27;class&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myDiv = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;myDiv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置特性</span></span><br><span class="line">myDiv.<span class="title function_">setAttribute</span>(<span class="string">&#x27;id&#x27;</span>, <span class="string">&#x27;new_id&#x27;</span>)</span><br><span class="line">myDiv.<span class="title function_">setAttribute</span>(<span class="string">&#x27;class&#x27;</span>, <span class="string">&#x27;new-my-cls&#x27;</span>)</span><br><span class="line">myDiv.<span class="title function_">setAttribute</span>(<span class="string">&#x27;title&#x27;</span>, <span class="string">&#x27;New title&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取特性</span></span><br><span class="line"><span class="title function_">alert</span>(myDiv.<span class="title function_">getAttribute</span>(<span class="string">&#x27;id&#x27;</span>))    <span class="comment">// &quot;new_id&quot;</span></span><br><span class="line"><span class="title function_">alert</span>(myDiv.<span class="title function_">getAttribute</span>(<span class="string">&#x27;class&#x27;</span>)) <span class="comment">// &quot;new-my-cls&quot;</span></span><br><span class="line"><span class="title function_">alert</span>(myDiv.<span class="title function_">getAttribute</span>(<span class="string">&#x27;title&#x27;</span>)) <span class="comment">// &quot;New title&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 移除特性</span></span><br><span class="line">myDiv.<span class="title function_">removeAttribute</span>(<span class="string">&#x27;class&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
 <p><strong>(3) 元素属性</strong></p>
 <p>通过元素属性还可以访问元素特性，元素特性与元素属性的关系如下：</p>
@@ -462,12 +237,12 @@
 <li>只有公认的（非自定义的）特性才会以属性的形式添加到 DOM 对象中（如 id、title 等）</li>
 <li>通过属性获取得到的特性是经过解析的，是一个对象</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// element.id、element.className、element.title 等称为元素属性</span></span><br><span class="line"><span class="keyword">var</span> myDiv = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;myDiv&#x27;</span>)</span><br><span class="line">alert(myDiv.id)                  <span class="comment">// &quot;myDiv&quot;</span></span><br><span class="line">alert(myDiv.className)           <span class="comment">// &quot;my-cls&quot;（class 是保留字的原因）</span></span><br><span class="line">alert(myDiv.title)               <span class="comment">// &quot;my-title&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 自定义特性不会以属性的形式直接显示</span></span><br><span class="line">alert(myDiv[<span class="string">&#x27;data-custom-attr&#x27;</span>])              <span class="comment">// undefined（IE除外）</span></span><br><span class="line">alert(myDiv.getAttribute(<span class="string">&#x27;data-custom-attr&#x27;</span>)) <span class="comment">// &quot;custom attribution&quot;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// element.id、element.className、element.title 等称为元素属性</span></span><br><span class="line"><span class="keyword">var</span> myDiv = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;myDiv&#x27;</span>)</span><br><span class="line"><span class="title function_">alert</span>(myDiv.<span class="property">id</span>)                  <span class="comment">// &quot;myDiv&quot;</span></span><br><span class="line"><span class="title function_">alert</span>(myDiv.<span class="property">className</span>)           <span class="comment">// &quot;my-cls&quot;（class 是保留字的原因）</span></span><br><span class="line"><span class="title function_">alert</span>(myDiv.<span class="property">title</span>)               <span class="comment">// &quot;my-title&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 自定义特性不会以属性的形式直接显示</span></span><br><span class="line"><span class="title function_">alert</span>(myDiv[<span class="string">&#x27;data-custom-attr&#x27;</span>])              <span class="comment">// undefined（IE除外）</span></span><br><span class="line"><span class="title function_">alert</span>(myDiv.<span class="title function_">getAttribute</span>(<span class="string">&#x27;data-custom-attr&#x27;</span>)) <span class="comment">// &quot;custom attribution&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>有两类特性，它们虽然有对应属性名，但是属性值和通过 <code>getAttribute()</code> 拿到的特性值不同，<strong>属性值是经过解析的对象，而特性值是未经解析的字符串</strong>。这两类特性分别是样式 style，事件处理程序（onclick 等）。</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;myDiv&quot;</span> <span class="attr">style</span>=<span class="string">&quot;height:100px;&quot;</span> <span class="attr">onclick</span>=<span class="string">&quot;btnClick&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myDiv = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;myDiv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 会直接得到原始的字符串</span></span><br><span class="line">alert(myDiv.getAttribute(<span class="string">&#x27;style&#x27;</span>))   <span class="comment">// &quot;height:100px;&quot;</span></span><br><span class="line">alert(myDiv.getAttribute(<span class="string">&#x27;onclick&#x27;</span>)) <span class="comment">// &quot;btnClick&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 会得到解析过的对象/方法</span></span><br><span class="line">alert(myDiv.style)   <span class="comment">// object</span></span><br><span class="line">alert(myDiv.onclick) <span class="comment">// function</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myDiv = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;myDiv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 会直接得到原始的字符串</span></span><br><span class="line"><span class="title function_">alert</span>(myDiv.<span class="title function_">getAttribute</span>(<span class="string">&#x27;style&#x27;</span>))   <span class="comment">// &quot;height:100px;&quot;</span></span><br><span class="line"><span class="title function_">alert</span>(myDiv.<span class="title function_">getAttribute</span>(<span class="string">&#x27;onclick&#x27;</span>)) <span class="comment">// &quot;btnClick&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 会得到解析过的对象/方法</span></span><br><span class="line"><span class="title function_">alert</span>(myDiv.<span class="property">style</span>)   <span class="comment">// object</span></span><br><span class="line"><span class="title function_">alert</span>(myDiv.<span class="property">onclick</span>) <span class="comment">// function</span></span><br></pre></td></tr></table></figure>
 
 <p>另外，Element 类型还有一个属性 <code>attributes</code> 用于保存元素所有的元素特性。<code>element.attributes</code> 属性包含一个 NamedNodeMap，是一个“动态”的集合，能够动态实时获取元素的所有特征。</p>
 <p><strong>(4) 创建元素</strong></p>
@@ -476,7 +251,7 @@
 
 <p><strong>(5) 查找元素</strong></p>
 <p>元素支持 <code>getElementsByTagName()</code> 方法，搜索起点为当前元素，范围是当前元素的子元素。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 查找指定元素下面的图片</span></span><br><span class="line"><span class="keyword">var</span> myDiv = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;myDiv&#x27;</span>)</span><br><span class="line"><span class="keyword">var</span> images = myDiv.getElementsByTagName(<span class="string">&#x27;img&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 查找指定元素下面的图片</span></span><br><span class="line"><span class="keyword">var</span> myDiv = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;myDiv&#x27;</span>)</span><br><span class="line"><span class="keyword">var</span> images = myDiv.<span class="title function_">getElementsByTagName</span>(<span class="string">&#x27;img&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
 <h3 id="2-4-Text-类型"><a href="#2-4-Text-类型" class="headerlink" title="2.4 Text 类型"></a>2.4 Text 类型</h3><p>文本节点由 Text 类型表示，包含的是纯文本内容，不能包含 HTML 代码，具有的特征：</p>
 <ul>
@@ -492,23 +267,23 @@
 <li>修改文本时，字符串会经过 HTML （或 XML）编码（例如大于号、小于号等被转义成其他字符串）</li>
 <li>如果两个文本节点是相邻的同胞节点，那它们的文本就会连起来显示，并且不会存在任何空格</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 显示结果是 &quot;&amp;lt;p&amp;gt;New text content&amp;lt;/p&amp;gt;&quot;</span></span><br><span class="line">textNode.nodeValue = <span class="string">&quot;&lt;p&gt;New text content&lt;/p&gt;&quot;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 显示结果是 &quot;&amp;lt;p&amp;gt;New text content&amp;lt;/p&amp;gt;&quot;</span></span><br><span class="line">textNode.<span class="property">nodeValue</span> = <span class="string">&quot;&lt;p&gt;New text content&lt;/p&gt;&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p><strong>(1) 创建文本节点</strong></p>
 <p>创建文本节点使用 <code>document.createTextNode()</code> 方法，方法接收文本作为参数，创建节点的同时，也会设置节点的 <code>ownerDocument</code> 属性。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> newTextNode = <span class="built_in">document</span>.createTextNode(<span class="string">&#x27;Hello world!&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> newTextNode = <span class="variable language_">document</span>.<span class="title function_">createTextNode</span>(<span class="string">&#x27;Hello world!&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
 <p>需要注意的是，和设值一样，创建时的参数文本也会经过 HTML （或 XML）编码。</p>
 <p>默认情况下，元素只有一个文本节点，但是通过 Javascript 可以为元素创建多个文本子节点：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myDiv = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;myDiv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> newTextNode1 = <span class="built_in">document</span>.createTextNode(<span class="string">&#x27;Hello&#x27;</span>)</span><br><span class="line"><span class="keyword">var</span> newTextNode2 = <span class="built_in">document</span>.createTextNode(<span class="string">&#x27; world!&#x27;</span>)</span><br><span class="line"></span><br><span class="line">myDiv.appendChild(newTextNode1)</span><br><span class="line">myDiv.appendChild(newTextNode2)</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myDiv = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;myDiv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> newTextNode1 = <span class="variable language_">document</span>.<span class="title function_">createTextNode</span>(<span class="string">&#x27;Hello&#x27;</span>)</span><br><span class="line"><span class="keyword">var</span> newTextNode2 = <span class="variable language_">document</span>.<span class="title function_">createTextNode</span>(<span class="string">&#x27; world!&#x27;</span>)</span><br><span class="line"></span><br><span class="line">myDiv.<span class="title function_">appendChild</span>(newTextNode1)</span><br><span class="line">myDiv.<span class="title function_">appendChild</span>(newTextNode2)</span><br></pre></td></tr></table></figure>
 
 <p><strong>(2) 规范化文本</strong></p>
 <p>前面说过，如果两个节点是相邻的同胞节点，它们的文本会连起来显示，但是这样会导致分不清哪个字符串是哪个文本节点的，因此为了合并相邻的同胞文本节点，DOM 提供了一个方法 <code>normalize()</code>，用于合并相邻的文本节点。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myDiv = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;myDiv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> newTextNode1 = <span class="built_in">document</span>.createTextNode(<span class="string">&#x27;Hello&#x27;</span>)</span><br><span class="line"><span class="keyword">var</span> newTextNode2 = <span class="built_in">document</span>.createTextNode(<span class="string">&#x27; world!&#x27;</span>)</span><br><span class="line"></span><br><span class="line">myDiv.appendChild(newTextNode1)</span><br><span class="line">myDiv.appendChild(newTextNode2)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 合并同胞文本节点</span></span><br><span class="line">myDiv.normalize()</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myDiv = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;myDiv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> newTextNode1 = <span class="variable language_">document</span>.<span class="title function_">createTextNode</span>(<span class="string">&#x27;Hello&#x27;</span>)</span><br><span class="line"><span class="keyword">var</span> newTextNode2 = <span class="variable language_">document</span>.<span class="title function_">createTextNode</span>(<span class="string">&#x27; world!&#x27;</span>)</span><br><span class="line"></span><br><span class="line">myDiv.<span class="title function_">appendChild</span>(newTextNode1)</span><br><span class="line">myDiv.<span class="title function_">appendChild</span>(newTextNode2)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 合并同胞文本节点</span></span><br><span class="line">myDiv.<span class="title function_">normalize</span>()</span><br></pre></td></tr></table></figure>
 
 <p><strong>(3) 分割文本</strong></p>
 <p>Text类型除了可以合并以外，还可以进行分割：<code>splitText()</code>。这个方法会将1个文本节点分割成2个：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myDiv = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;myDiv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> newTextNode = <span class="built_in">document</span>.createTextNode(<span class="string">&#x27;Hello world!&#x27;</span>)</span><br><span class="line">myDiv.appendChild(newTextNode)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> splitNode = myDiv.firstChild.splitText(<span class="number">5</span>)</span><br><span class="line">alert(myDiv.firstChild.nodeValue) <span class="comment">// &quot;Hello&quot;</span></span><br><span class="line">alert(splitNode.nodeValue)        <span class="comment">// &quot; world!&quot;</span></span><br><span class="line">alert(myDiv.childNodes.length)    <span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myDiv = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;myDiv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> newTextNode = <span class="variable language_">document</span>.<span class="title function_">createTextNode</span>(<span class="string">&#x27;Hello world!&#x27;</span>)</span><br><span class="line">myDiv.<span class="title function_">appendChild</span>(newTextNode)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> splitNode = myDiv.<span class="property">firstChild</span>.<span class="title function_">splitText</span>(<span class="number">5</span>)</span><br><span class="line"><span class="title function_">alert</span>(myDiv.<span class="property">firstChild</span>.<span class="property">nodeValue</span>) <span class="comment">// &quot;Hello&quot;</span></span><br><span class="line"><span class="title function_">alert</span>(splitNode.<span class="property">nodeValue</span>)        <span class="comment">// &quot; world!&quot;</span></span><br><span class="line"><span class="title function_">alert</span>(myDiv.<span class="property">childNodes</span>.<span class="property">length</span>)    <span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="2-5-Comment-类型"><a href="#2-5-Comment-类型" class="headerlink" title="2.5 Comment 类型"></a>2.5 Comment 类型</h3><p>Comment 类型用于表示注释，与 Text 类型类似，具有特征如下：</p>
 <ul>
@@ -519,7 +294,7 @@
 </ul>
 <p>Comment 类型和 Text 类型继承自相同的基类，因此拥有除了 <code>splitText()</code> 方法以外的所有字符串操作方法。</p>
 <p>创建注释节点可以通过使用 <code>document.createComment()</code>，参数是注释内容：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> comment = <span class="built_in">document</span>.createComment(<span class="string">&#x27;new comment&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> comment = <span class="variable language_">document</span>.<span class="title function_">createComment</span>(<span class="string">&#x27;new comment&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
 <h3 id="2-6-CDATASection-类型"><a href="#2-6-CDATASection-类型" class="headerlink" title="2.6 CDATASection 类型"></a>2.6 CDATASection 类型</h3><p>CDATASection 类型只针对基于 XML 的文档，表示的是 CDATA 区域。具有的特征如下：</p>
 <ul>
@@ -549,14 +324,14 @@
 </ul>
 <p>文档片段不能直接添加到文档中，但是可以把文档片段中的节点添加到文档中。因此文档片段相当于一个节点临时仓库，可以将临时生成的节点保存在文档片段中，最后再将生成的节点都添加到文档中。</p>
 <p>创建文档片段可以使用 <code>document.createDocumentFragment()</code> 方法：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> fragment = <span class="built_in">document</span>.createDocumentFragment()</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> fragment = <span class="variable language_">document</span>.<span class="title function_">createDocumentFragment</span>()</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>如果将文档中的节点添加到文档片段中，该节点就会从文档树中移除（也就是浏览器看不到了）</li>
 <li>将文档片段的子节点添加到文档中，节点会从文档片段中移除，但是文档片段不会添加到文档树上</li>
 <li>文档片段有类似于缓存的作用，可以用于避免浏览器反复渲染新信息</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ul <span class="built_in">document</span>.createElement(<span class="string">&#x27;ul&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 可以暂时保存到文档片段中，避免浏览器多次渲染新节点</span></span><br><span class="line"><span class="keyword">var</span> li = <span class="literal">null</span></span><br><span class="line"><span class="keyword">var</span> fragment = <span class="built_in">document</span>.createDocumentFragment()</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">  li = <span class="built_in">document</span>.createElement(<span class="string">&#x27;li&#x27;</span>)</span><br><span class="line">  fragment.appendChild(li)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ul.appendChild(fragment)</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ul <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;ul&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 可以暂时保存到文档片段中，避免浏览器多次渲染新节点</span></span><br><span class="line"><span class="keyword">var</span> li = <span class="literal">null</span></span><br><span class="line"><span class="keyword">var</span> fragment = <span class="variable language_">document</span>.<span class="title function_">createDocumentFragment</span>()</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">  li = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;li&#x27;</span>)</span><br><span class="line">  fragment.<span class="title function_">appendChild</span>(li)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ul.<span class="title function_">appendChild</span>(fragment)</span><br></pre></td></tr></table></figure>
 
 <h3 id="2-9-Attr-类型"><a href="#2-9-Attr-类型" class="headerlink" title="2.9 Attr 类型"></a>2.9 Attr 类型</h3><p>元素的特性在 DOM 中以 Attr 类型来表示。在所有浏览器中，都可以访问 Attr 类型的构造器和原型。从技术角度讲，特性就是存在于元素的 <code>attributes</code> 属性中的节点。具有的特征包括：</p>
 <ul>
@@ -568,219 +343,51 @@
 <li>在 XML 中可以有 Text 或者 EntityReference 子节点</li>
 </ul>
 <p>创建 Attr 节点可以使用 <code>document.createAttribute()</code> 方法，Attr 节点创建完成后，还需要使用 <code>setAttribute()</code> 方法来将属性值设到元素中：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myDiv = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;myDiv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> attr = <span class="built_in">document</span>.createAttribute(<span class="string">&#x27;align&#x27;</span>)</span><br><span class="line">attr.value = <span class="string">&#x27;left&#x27;</span></span><br><span class="line"></span><br><span class="line">myDiv.setAttribute(attr)</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myDiv = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;myDiv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> attr = <span class="variable language_">document</span>.<span class="title function_">createAttribute</span>(<span class="string">&#x27;align&#x27;</span>)</span><br><span class="line">attr.<span class="property">value</span> = <span class="string">&#x27;left&#x27;</span></span><br><span class="line"></span><br><span class="line">myDiv.<span class="title function_">setAttribute</span>(attr)</span><br></pre></td></tr></table></figure>
 
 <p>但是在开发中，直接使用 <code>setAttribute()</code> 方法会更加直接一些：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myDiv = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;myDiv&#x27;</span>)</span><br><span class="line">myDiv.setAttribute(<span class="string">&#x27;align&#x27;</span>, <span class="string">&#x27;left&#x27;</span>)</span><br></pre></td></tr></table></figure>
-    </div>
-
-    
-    
-    
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/javascript/" rel="tag"># javascript</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/framework/vuejs/dection03/" rel="prev" title="对象变化侦测原理（三）">
-      <i class="fa fa-chevron-left"></i> 对象变化侦测原理（三）
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/lang/js/bom/" rel="next" title="浏览器中的BOM对象">
-      浏览器中的BOM对象 <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#DOM"><span class="nav-text">DOM</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E8%8A%82%E7%82%B9%E5%B1%82%E6%AC%A1"><span class="nav-text">一、节点层次</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E6%96%87%E6%A1%A3%E8%8A%82%E7%82%B9"><span class="nav-text">1.1 文档节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E6%96%87%E6%A1%A3%E5%85%83%E7%B4%A0"><span class="nav-text">1.2 文档元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E8%8A%82%E7%82%B9%E7%BB%93%E6%9E%84"><span class="nav-text">1.3 节点结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E8%8A%82%E7%82%B9%E7%B1%BB%E5%9E%8B"><span class="nav-text">二、节点类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-Node-%E7%B1%BB%E5%9E%8B"><span class="nav-text">2.1 Node 类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-1-%E5%85%AC%E5%85%B1%E5%B1%9E%E6%80%A7"><span class="nav-text">2.1.1 公共属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-2-%E5%85%AC%E5%85%B1%E6%96%B9%E6%B3%95"><span class="nav-text">2.1.2 公共方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Document-%E7%B1%BB%E5%9E%8B"><span class="nav-text">2.2 Document 类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-Element-%E7%B1%BB%E5%9E%8B"><span class="nav-text">2.3 Element 类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-Text-%E7%B1%BB%E5%9E%8B"><span class="nav-text">2.4 Text 类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-Comment-%E7%B1%BB%E5%9E%8B"><span class="nav-text">2.5 Comment 类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-CDATASection-%E7%B1%BB%E5%9E%8B"><span class="nav-text">2.6 CDATASection 类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-7-DocumentType-%E7%B1%BB%E5%9E%8B"><span class="nav-text">2.7 DocumentType 类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-8-DocumentFragment-%E7%B1%BB%E5%9E%8B"><span class="nav-text">2.8 DocumentFragment 类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-9-Attr-%E7%B1%BB%E5%9E%8B"><span class="nav-text">2.9 Attr 类型</span></a></li></ol></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="jiaduo"
-      src="/images/lufei.jpeg">
-  <p class="site-author-name" itemprop="name">jiaduo</p>
-  <div class="site-description" itemprop="description">不积跬步，无以至千里</div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">137</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">45</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-
-
-
-      </div>
-
-    </div>
-
-    
-    
-    
-
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 2021/08 – 
-  <span itemprop="copyrightYear">2023</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">jiaduo</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-    <span title="站点总字数">558k</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-    <span title="站点阅读时长">8:27</span>
-</div>
-
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
-
-  
-  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
-
-
-  
-
-
-
-
-  
-<script src="/js/local-search.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-</body>
-</html>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myDiv = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;myDiv&#x27;</span>)</span><br><span class="line">myDiv.<span class="title function_">setAttribute</span>(<span class="string">&#x27;align&#x27;</span>, <span class="string">&#x27;left&#x27;</span>)</span><br></pre></td></tr></table></figure></div><div class="level is-mobile is-flex"><div class="article-licensing box"><div class="licensing-title"><p>HTML中的DOM对象</p><p><a href="http://example.com/lang/js/dom/">http://example.com/lang/js/dom/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>jiaduo</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2021-08-28</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2023-04-02</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 is-uppercase"><i class="fas fa-tags has-text-grey"></i> <a class="link-muted" rel="tag" href="/tags/JavaScript/">JavaScript </a></div><!--!--></div></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/lang/js/bom/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">浏览器中的BOM对象</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/framework/vuejs/dection03/"><span class="level-item">对象变化侦测原理（三）</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><!--!--><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen  order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#DOM"><span class="level-left"><span class="level-item">DOM</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#一、节点层次"><span class="level-left"><span class="level-item">一、节点层次</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-1-文档节点"><span class="level-left"><span class="level-item">1.1 文档节点</span></span></a></li><li><a class="level is-mobile" href="#1-2-文档元素"><span class="level-left"><span class="level-item">1.2 文档元素</span></span></a></li><li><a class="level is-mobile" href="#1-3-节点结构"><span class="level-left"><span class="level-item">1.3 节点结构</span></span></a></li></ul></li><li><a class="level is-mobile" href="#二、节点类型"><span class="level-left"><span class="level-item">二、节点类型</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#2-1-Node-类型"><span class="level-left"><span class="level-item">2.1 Node 类型</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#2-1-1-公共属性"><span class="level-left"><span class="level-item">2.1.1 公共属性</span></span></a></li><li><a class="level is-mobile" href="#2-1-2-公共方法"><span class="level-left"><span class="level-item">2.1.2 公共方法</span></span></a></li></ul></li><li><a class="level is-mobile" href="#2-2-Document-类型"><span class="level-left"><span class="level-item">2.2 Document 类型</span></span></a></li><li><a class="level is-mobile" href="#2-3-Element-类型"><span class="level-left"><span class="level-item">2.3 Element 类型</span></span></a></li><li><a class="level is-mobile" href="#2-4-Text-类型"><span class="level-left"><span class="level-item">2.4 Text 类型</span></span></a></li><li><a class="level is-mobile" href="#2-5-Comment-类型"><span class="level-left"><span class="level-item">2.5 Comment 类型</span></span></a></li><li><a class="level is-mobile" href="#2-6-CDATASection-类型"><span class="level-left"><span class="level-item">2.6 CDATASection 类型</span></span></a></li><li><a class="level is-mobile" href="#2-7-DocumentType-类型"><span class="level-left"><span class="level-item">2.7 DocumentType 类型</span></span></a></li><li><a class="level is-mobile" href="#2-8-DocumentFragment-类型"><span class="level-left"><span class="level-item">2.8 DocumentFragment 类型</span></span></a></li><li><a class="level is-mobile" href="#2-9-Attr-类型"><span class="level-left"><span class="level-item">2.9 Attr 类型</span></span></a></li></ul></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.png" alt="追来者之人" height="28"></a><p class="is-size-7"><span>&copy; 2023 jiaduo</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

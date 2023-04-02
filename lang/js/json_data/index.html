@@ -1,254 +1,35 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>JSON数据格式 - 追来者之人</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="追来者之人"><meta name="msapplication-TileImage" content="/img/logo.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="追来者之人"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="JSONJSON 是一种数据格式，不是一种编程语言。一般用于Web服务的前后端的数据交流格式。 一、类型JSON 的语法可以有3种类型的值：  简单值：包括字符串、数值、布尔值和 null（但是不支持 Javascript 中的 undefined） 对象：表示一组无序的键值对 数组：表示一组有序的值的列表  二、与 Jsvacript 的区别"><meta property="og:type" content="blog"><meta property="og:title" content="JSON数据格式"><meta property="og:url" content="http://example.com/lang/js/json_data/"><meta property="og:site_name" content="追来者之人"><meta property="og:description" content="JSONJSON 是一种数据格式，不是一种编程语言。一般用于Web服务的前后端的数据交流格式。 一、类型JSON 的语法可以有3种类型的值：  简单值：包括字符串、数值、布尔值和 null（但是不支持 Javascript 中的 undefined） 对象：表示一组无序的键值对 数组：表示一组有序的值的列表  二、与 Jsvacript 的区别"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://example.com/img/og_image.png"><meta property="article:published_time" content="2021-08-28T08:37:46.000Z"><meta property="article:modified_time" content="2023-04-02T08:18:50.837Z"><meta property="article:author" content="jiaduo"><meta property="article:tag" content="JavaScript"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="http://example.com/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/lang/js/json_data/"},"headline":"JSON数据格式","image":["http://example.com/img/og_image.png"],"datePublished":"2021-08-28T08:37:46.000Z","dateModified":"2023-04-02T08:18:50.837Z","author":{"@type":"Person","name":"jiaduo"},"publisher":{"@type":"Organization","name":"追来者之人","logo":{"@type":"ImageObject","url":"http://example.com/img/logo.png"}},"description":"JSONJSON 是一种数据格式，不是一种编程语言。一般用于Web服务的前后端的数据交流格式。 一、类型JSON 的语法可以有3种类型的值：  简单值：包括字符串、数值、布尔值和 null（但是不支持 Javascript 中的 undefined） 对象：表示一组无序的键值对 数组：表示一组有序的值的列表  二、与 Jsvacript 的区别"}</script><link rel="canonical" href="http://example.com/lang/js/json_data/"><link rel="icon" href="/img/logo.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
 
-<link rel="stylesheet" href="/css/main.css">
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
 
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
-  </script>
-
-  <meta name="description" content="JSONJSON 是一种数据格式，不是一种编程语言。一般用于Web服务的前后端的数据交流格式。 一、类型JSON 的语法可以有3种类型的值：  简单值：包括字符串、数值、布尔值和 null（但是不支持 Javascript 中的 undefined） 对象：表示一组无序的键值对 数组：表示一组有序的值的列表  二、与 Jsvacript 的区别">
-<meta property="og:type" content="article">
-<meta property="og:title" content="JSON数据格式">
-<meta property="og:url" content="http://example.com/lang/js/json_data/index.html">
-<meta property="og:site_name" content="Strive">
-<meta property="og:description" content="JSONJSON 是一种数据格式，不是一种编程语言。一般用于Web服务的前后端的数据交流格式。 一、类型JSON 的语法可以有3种类型的值：  简单值：包括字符串、数值、布尔值和 null（但是不支持 Javascript 中的 undefined） 对象：表示一组无序的键值对 数组：表示一组有序的值的列表  二、与 Jsvacript 的区别">
-<meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-08-28T08:37:46.000Z">
-<meta property="article:modified_time" content="2021-08-28T13:00:48.704Z">
-<meta property="article:author" content="jiaduo">
-<meta property="article:tag" content="javascript">
-<meta name="twitter:card" content="summary">
-
-<link rel="canonical" href="http://example.com/lang/js/json_data/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
-
-  <title>JSON数据格式 | Strive</title>
-  
-
-
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
-
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Strive</h1>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-      <p class="site-subtitle" itemprop="description">Rome was not built in one day</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
-    </div>
-  </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
-</nav>
-
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div id="search-result">
-  <div id="no-result">
-    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-  <div class="reading-progress-bar"></div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
-            
-
-    
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/lang/js/json_data/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/lufei.jpeg">
-      <meta itemprop="name" content="jiaduo">
-      <meta itemprop="description" content="不积跬步，无以至千里">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Strive">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          JSON数据格式
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2021-08-28 16:37:46 / 修改时间：21:00:48" itemprop="dateCreated datePublished" datetime="2021-08-28T16:37:46+08:00">2021-08-28</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>3.7k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <h1 id="JSON"><a href="#JSON" class="headerlink" title="JSON"></a>JSON</h1><p>JSON 是一种数据格式，不是一种编程语言。一般用于Web服务的前后端的数据交流格式。</p>
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="追来者之人" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><h1 class="title is-3 is-size-4-mobile"><i class="fas fa-blog"> </i>JSON数据格式</h1><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><i class="fas fa-calendar-plus"> </i><time dateTime="2021-08-28T08:37:46.000Z" title="2021-08-28T08:37:46.000Z">2021-08-28</time></span><span class="level-item is-hidden-mobile"><i class="fas fa-calendar-check"> </i><time dateTime="2023-04-02T08:18:50.837Z" title="2023-04-02T08:18:50.837Z">2023-04-02</time></span><span class="level-item"><i class="fas fa-folder"> </i><a class="link-muted" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/">编程语言</a><span> / </span><a class="link-muted" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/JavaScript/">JavaScript</a></span><span class="level-item"><i class="fas fa-clock"> </i>9 分钟读完 (大约1410个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><div class="content"><h1 id="JSON"><a href="#JSON" class="headerlink" title="JSON"></a>JSON</h1><p>JSON 是一种数据格式，不是一种编程语言。一般用于Web服务的前后端的数据交流格式。</p>
 <h2 id="一、类型"><a href="#一、类型" class="headerlink" title="一、类型"></a>一、类型</h2><p>JSON 的语法可以有3种类型的值：</p>
 <ul>
 <li>简单值：包括字符串、数值、布尔值和 null（但是不支持 Javascript 中的 undefined）</li>
@@ -266,7 +47,7 @@
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> object = &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;Zhangsan&#x27;</span>，</span><br><span class="line">    <span class="attr">age</span>: <span class="number">20</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>JSON 的语法：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;Zhangsan&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;age&quot;</span>: <span class="number">20</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Zhangsan&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;age&quot;</span><span class="punctuation">:</span> <span class="number">20</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="三、解析与序列化"><a href="#三、解析与序列化" class="headerlink" title="三、解析与序列化"></a>三、解析与序列化</h2><p>JSON 数据是 Web 服务中数据交换的格式，因此它可以与 Javascript 对象相互转换。</p>
 <p>早期的浏览器，一般使用 <code>eval()</code> 函数来解析、解释 JSON 字符串并返回 Javascript 对象或数组。</p>
@@ -280,54 +61,54 @@
 <li>JSON 字符串的缩进值，可以是数值，也可以是字符串</li>
 </ul>
 <p>例如：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> jsonObj = &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;Zhangsan&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">20</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Javascript 对象序列化</span></span><br><span class="line"><span class="keyword">var</span> jsonText = <span class="built_in">JSON</span>.stringify(jsonObj);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> jsonObj = &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;Zhangsan&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">20</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Javascript 对象序列化</span></span><br><span class="line"><span class="keyword">var</span> jsonText = <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(jsonObj);</span><br></pre></td></tr></table></figure>
 
 <p>则 <code>jsonText</code> 的值为：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">&quot;name&quot;</span>:<span class="string">&quot;Zhangsan&quot;</span>,<span class="attr">&quot;age&quot;</span>:<span class="number">20</span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;name&quot;</span><span class="punctuation">:</span><span class="string">&quot;Zhangsan&quot;</span><span class="punctuation">,</span><span class="attr">&quot;age&quot;</span><span class="punctuation">:</span><span class="number">20</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="3-1-1-过滤器"><a href="#3-1-1-过滤器" class="headerlink" title="3.1.1 过滤器"></a>3.1.1 过滤器</h4><p>使用 <code>stringify</code> 的第2个参数，可以自定义过滤序列化的结果。</p>
 <p>过滤器参数可以有2种格式：数组和函数。</p>
 <p>1）如果过滤器参数是数组，那么 <code>stringify</code> 序列化的结果只会返回包含在数组中的属性：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> jsonObj = &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;Zhangsan&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">20</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 过滤器是数组</span></span><br><span class="line"><span class="keyword">var</span> jsonText = <span class="built_in">JSON</span>.stringify(jsonObj, [<span class="string">&#x27;name&#x27;</span>]);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> jsonObj = &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;Zhangsan&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">20</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 过滤器是数组</span></span><br><span class="line"><span class="keyword">var</span> jsonText = <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(jsonObj, [<span class="string">&#x27;name&#x27;</span>]);</span><br></pre></td></tr></table></figure>
 
 <p>则 <code>jsonText</code> 的值为：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">&quot;name&quot;</span>:<span class="string">&quot;Zhangsan&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;name&quot;</span><span class="punctuation">:</span><span class="string">&quot;Zhangsan&quot;</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>2）如果过滤器参数是函数，该函数会接收2个参数：属性（键）名和属性值。</p>
 <p>函数返回值就是对应属性（键）名的值，如果函数返回值是 <code>undefined</code>，那么相应的属性会被忽略：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> jsonObj = &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;Zhangsan&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">20</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 过滤器是函数</span></span><br><span class="line"><span class="keyword">var</span> jsonText = <span class="built_in">JSON</span>.stringify(jsonObj, <span class="function"><span class="keyword">function</span> (<span class="params">key, value</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (key === <span class="string">&#x27;name&#x27;</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">undefined</span>;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> jsonObj = &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;Zhangsan&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">20</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 过滤器是函数</span></span><br><span class="line"><span class="keyword">var</span> jsonText = <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(jsonObj, <span class="keyword">function</span> (<span class="params">key, value</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (key === <span class="string">&#x27;name&#x27;</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">undefined</span>;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <p>则 <code>jsonText</code> 的值为：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">&quot;name&quot;</span>:<span class="string">&quot;Zhangsan&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;name&quot;</span><span class="punctuation">:</span><span class="string">&quot;Zhangsan&quot;</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="3-1-2-缩进"><a href="#3-1-2-缩进" class="headerlink" title="3.1.2 缩进"></a>3.1.2 缩进</h4><p>默认情况下，<code>JSON.stringify()</code> 输出的 JSON 字符串是不包含任何空格字符或缩进的：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> jsonObj = &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;Zhangsan&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">20</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Javascript 对象序列化</span></span><br><span class="line"><span class="keyword">var</span> jsonText = <span class="built_in">JSON</span>.stringify(jsonObj);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> jsonObj = &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;Zhangsan&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">20</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Javascript 对象序列化</span></span><br><span class="line"><span class="keyword">var</span> jsonText = <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(jsonObj);</span><br></pre></td></tr></table></figure>
 
 <p>则 <code>jsonText</code> 的值为：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">&quot;name&quot;</span>:<span class="string">&quot;Zhangsan&quot;</span>,<span class="attr">&quot;age&quot;</span>:<span class="number">20</span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;name&quot;</span><span class="punctuation">:</span><span class="string">&quot;Zhangsan&quot;</span><span class="punctuation">,</span><span class="attr">&quot;age&quot;</span><span class="punctuation">:</span><span class="number">20</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>使用 <code>stringify</code> 方法的第3个参数，可以控制序列化结果中的缩进和空白符。</p>
 <p>缩进参数可以有2种格式：数值和字符串。</p>
 <p>1）如果缩进参数是数值，表示的是每个缩进级别的空格数：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> jsonObj = &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;Zhangsan&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">20</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Javascript 对象序列化</span></span><br><span class="line"><span class="keyword">var</span> jsonText = <span class="built_in">JSON</span>.stringify(jsonObj, <span class="literal">null</span>, <span class="number">4</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> jsonObj = &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;Zhangsan&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">20</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Javascript 对象序列化</span></span><br><span class="line"><span class="keyword">var</span> jsonText = <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(jsonObj, <span class="literal">null</span>, <span class="number">4</span>);</span><br></pre></td></tr></table></figure>
 
 <p>则 <code>jsonText</code> 的值为（缩进空格数为4）：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;Zhangsan&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;age&quot;</span>: <span class="number">20</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Zhangsan&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;age&quot;</span><span class="punctuation">:</span> <span class="number">20</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>只要传入了有效的缩进参数值，结果字符串也会包含换行符（因为只缩进不换行意义不大）。</p>
 <p>最大缩进格数为10，所有大于10的值都会自动转换为10。</p>
 <p>2）如果缩进参数是字符串，则这个字符串将会被用作缩进字符（不再使用空格）：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> jsonObj = &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;Zhangsan&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">20</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Javascript 对象序列化</span></span><br><span class="line"><span class="keyword">var</span> jsonText = <span class="built_in">JSON</span>.stringify(jsonObj, <span class="literal">null</span>, <span class="string">&#x27;----&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> jsonObj = &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;Zhangsan&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">20</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Javascript 对象序列化</span></span><br><span class="line"><span class="keyword">var</span> jsonText = <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(jsonObj, <span class="literal">null</span>, <span class="string">&#x27;----&#x27;</span>);</span><br></pre></td></tr></table></figure>
 
 <p>则 <code>jsonText</code> 的值为（缩进字符不再是空格）：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">----<span class="attr">&quot;name&quot;</span>: <span class="string">&quot;Zhangsan&quot;</span>,</span><br><span class="line">----<span class="attr">&quot;age&quot;</span>: <span class="number">20</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">----<span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Zhangsan&quot;</span><span class="punctuation">,</span></span><br><span class="line">----<span class="attr">&quot;age&quot;</span><span class="punctuation">:</span> <span class="number">20</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>缩进字符最大长度也不能超过10，如果字符长度超过了10，就会被截取成10个字符。</p>
 <h4 id="3-1-3-toJSON"><a href="#3-1-3-toJSON" class="headerlink" title="3.1.3 toJSON"></a>3.1.3 toJSON</h4><p>有时候，<code>JSON.stringify()</code> 还不能满足自定义序列化的需求，因此可以给对象定义 <code>toJSON</code> 方法，返回自定义的 JSON 数据格式。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> jsonObj = &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;Zhangsan&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">20</span>,</span><br><span class="line">    <span class="attr">toJSON</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;<span class="string">&quot;sex&quot;</span>: <span class="string">&quot;female&quot;</span>&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Javascript 对象序列化</span></span><br><span class="line"><span class="keyword">var</span> jsonText = <span class="built_in">JSON</span>.stringify(jsonObj);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> jsonObj = &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;Zhangsan&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">20</span>,</span><br><span class="line">    <span class="attr">toJSON</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;<span class="string">&quot;sex&quot;</span>: <span class="string">&quot;female&quot;</span>&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Javascript 对象序列化</span></span><br><span class="line"><span class="keyword">var</span> jsonText = <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(jsonObj);</span><br></pre></td></tr></table></figure>
 
 <p>则 <code>jsonText</code> 的值为（缩进字符不再是空格）：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">&quot;sex&quot;</span>: <span class="string">&quot;female&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;sex&quot;</span><span class="punctuation">:</span> <span class="string">&quot;female&quot;</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="3-1-4-序列化顺序"><a href="#3-1-4-序列化顺序" class="headerlink" title="3.1.4 序列化顺序"></a>3.1.4 序列化顺序</h4><ol>
 <li>如果存在 <code>toJSON</code> 方法，返回该方法的返回值，否则，返回对象本身</li>
@@ -342,226 +123,58 @@
 <li>还原函数，和过滤器函数类似</li>
 </ul>
 <p>例如：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> jsonText = <span class="string">&#x27;&#123;&quot;name&quot;:&quot;Zhangsan&quot;,&quot;age&quot;:20&#125;&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// JSON 数据解析</span></span><br><span class="line"><span class="keyword">var</span> jsonObj = <span class="built_in">JSON</span>.parse(jsonText);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> jsonText = <span class="string">&#x27;&#123;&quot;name&quot;:&quot;Zhangsan&quot;,&quot;age&quot;:20&#125;&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// JSON 数据解析</span></span><br><span class="line"><span class="keyword">var</span> jsonObj = <span class="title class_">JSON</span>.<span class="title function_">parse</span>(jsonText);</span><br></pre></td></tr></table></figure>
 
 <p>则 <code>jsonObj</code> 的值为：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&quot;Zhangsan&quot;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">20</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h4 id="3-2-1-还原函数"><a href="#3-2-1-还原函数" class="headerlink" title="3.2.1 还原函数"></a>3.2.1 还原函数</h4><p>还原函数和过滤器函数类似，也是接收2个参数：属性（键）名和属性值。</p>
 <p>还原函数的返回值将作为属性（键）名的值，如果函数返回 <code>undefined</code>，表示从结果中删除相应的键。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> jsonText = <span class="string">&#x27;&#123;&quot;name&quot;:&quot;Zhangsan&quot;,&quot;age&quot;:20&#125;&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// JSON 数据解析，增加还原函数</span></span><br><span class="line"><span class="keyword">var</span> jsonObj = <span class="built_in">JSON</span>.parse(jsonText, <span class="function"><span class="keyword">function</span> (<span class="params">key, value</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (key === <span class="string">&#x27;name&#x27;</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">undefined</span>;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> jsonText = <span class="string">&#x27;&#123;&quot;name&quot;:&quot;Zhangsan&quot;,&quot;age&quot;:20&#125;&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// JSON 数据解析，增加还原函数</span></span><br><span class="line"><span class="keyword">var</span> jsonObj = <span class="title class_">JSON</span>.<span class="title function_">parse</span>(jsonText, <span class="keyword">function</span> (<span class="params">key, value</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (key === <span class="string">&#x27;name&#x27;</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">undefined</span>;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <p>则 <code>jsonObj</code> 的值为：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&quot;Zhangsan&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-    </div>
-
-    
-    
-    
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/javascript/" rel="tag"># javascript</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/lang/js/error/" rel="prev" title="js如何处理错误">
-      <i class="fa fa-chevron-left"></i> js如何处理错误
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/lang/java/other/native/" rel="next" title="关键字native">
-      关键字native <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#JSON"><span class="nav-text">JSON</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E7%B1%BB%E5%9E%8B"><span class="nav-text">一、类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%B8%8E-Jsvacript-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-text">二、与 Jsvacript 的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E8%A7%A3%E6%9E%90%E4%B8%8E%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-text">三、解析与序列化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-text">3.1 序列化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-1-%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="nav-text">3.1.1 过滤器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-2-%E7%BC%A9%E8%BF%9B"><span class="nav-text">3.1.2 缩进</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-3-toJSON"><span class="nav-text">3.1.3 toJSON</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-4-%E5%BA%8F%E5%88%97%E5%8C%96%E9%A1%BA%E5%BA%8F"><span class="nav-text">3.1.4 序列化顺序</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E8%A7%A3%E6%9E%90"><span class="nav-text">3.2 解析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-1-%E8%BF%98%E5%8E%9F%E5%87%BD%E6%95%B0"><span class="nav-text">3.2.1 还原函数</span></a></li></ol></li></ol></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="jiaduo"
-      src="/images/lufei.jpeg">
-  <p class="site-author-name" itemprop="name">jiaduo</p>
-  <div class="site-description" itemprop="description">不积跬步，无以至千里</div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">137</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">45</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-
-
-
-      </div>
-
-    </div>
-
-    
-    
-    
-
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 2021/08 – 
-  <span itemprop="copyrightYear">2023</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">jiaduo</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-    <span title="站点总字数">558k</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-    <span title="站点阅读时长">8:27</span>
-</div>
-
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
-
-  
-  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
-
-
-  
-
-
-
-
-  
-<script src="/js/local-search.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-</body>
-</html>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&quot;Zhangsan&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div><div class="level is-mobile is-flex"><div class="article-licensing box"><div class="licensing-title"><p>JSON数据格式</p><p><a href="http://example.com/lang/js/json_data/">http://example.com/lang/js/json_data/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>jiaduo</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2021-08-28</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2023-04-02</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 is-uppercase"><i class="fas fa-tags has-text-grey"></i> <a class="link-muted" rel="tag" href="/tags/JavaScript/">JavaScript </a></div><!--!--></div></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/lang/java/other/native/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">关键字native</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/lang/js/error/"><span class="level-item">js如何处理错误</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><!--!--><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen  order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#JSON"><span class="level-left"><span class="level-item">JSON</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#一、类型"><span class="level-left"><span class="level-item">一、类型</span></span></a></li><li><a class="level is-mobile" href="#二、与-Jsvacript-的区别"><span class="level-left"><span class="level-item">二、与 Jsvacript 的区别</span></span></a></li><li><a class="level is-mobile" href="#三、解析与序列化"><span class="level-left"><span class="level-item">三、解析与序列化</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#3-1-序列化"><span class="level-left"><span class="level-item">3.1 序列化</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#3-1-1-过滤器"><span class="level-left"><span class="level-item">3.1.1 过滤器</span></span></a></li><li><a class="level is-mobile" href="#3-1-2-缩进"><span class="level-left"><span class="level-item">3.1.2 缩进</span></span></a></li><li><a class="level is-mobile" href="#3-1-3-toJSON"><span class="level-left"><span class="level-item">3.1.3 toJSON</span></span></a></li><li><a class="level is-mobile" href="#3-1-4-序列化顺序"><span class="level-left"><span class="level-item">3.1.4 序列化顺序</span></span></a></li></ul></li><li><a class="level is-mobile" href="#3-2-解析"><span class="level-left"><span class="level-item">3.2 解析</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#3-2-1-还原函数"><span class="level-left"><span class="level-item">3.2.1 还原函数</span></span></a></li></ul></li></ul></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.png" alt="追来者之人" height="28"></a><p class="is-size-7"><span>&copy; 2023 jiaduo</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
