@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>SSH - 追来者之人</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="追来者之人"><meta name="msapplication-TileImage" content="/img/logo.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="追来者之人"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="SSHSSH是一种网络协议，用于计算机之间的加密登录。 SSH只是一种协议，存在多种实现，既有商业实现，也有开源实现。 一、基本用法"><meta property="og:type" content="blog"><meta property="og:title" content="SSH"><meta property="og:url" content="http://example.com/operating_system/basic/SSH/"><meta property="og:site_name" content="追来者之人"><meta property="og:description" content="SSHSSH是一种网络协议，用于计算机之间的加密登录。 SSH只是一种协议，存在多种实现，既有商业实现，也有开源实现。 一、基本用法"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://example.com/img/og_image.png"><meta property="article:published_time" content="2022-04-07T03:23:54.000Z"><meta property="article:modified_time" content="2023-07-16T13:49:56.085Z"><meta property="article:author" content="jiaduo"><meta property="article:tag" content="操作系统"><meta property="article:tag" content="登录"><meta property="article:tag" content="SSH"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="http://example.com/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/operating_system/basic/SSH/"},"headline":"SSH","image":["http://example.com/img/og_image.png"],"datePublished":"2022-04-07T03:23:54.000Z","dateModified":"2023-07-16T13:49:56.085Z","author":{"@type":"Person","name":"jiaduo"},"publisher":{"@type":"Organization","name":"追来者之人","logo":{"@type":"ImageObject","url":"http://example.com/img/logo.png"}},"description":"SSHSSH是一种网络协议，用于计算机之间的加密登录。 SSH只是一种协议，存在多种实现，既有商业实现，也有开源实现。 一、基本用法"}</script><link rel="canonical" href="http://example.com/operating_system/basic/SSH/"><link rel="icon" href="/img/logo.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="追来者之人" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><h1 class="title is-3 is-size-4-mobile"><i class="fas fa-blog"> </i>SSH</h1><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><i class="fas fa-calendar-plus"> </i><time dateTime="2022-04-07T03:23:54.000Z" title="2022-04-07T03:23:54.000Z">2022-04-07</time></span><span class="level-item is-hidden-mobile"><i class="fas fa-calendar-check"> </i><time dateTime="2023-07-16T13:49:56.085Z" title="2023-07-16T13:49:56.085Z">2023-07-16</time></span><span class="level-item"><i class="fas fa-folder"> </i><a class="link-muted" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a><span> / </span><a class="link-muted" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/%E5%9F%BA%E7%A1%80/">基础</a></span><span class="level-item"><i class="fas fa-clock"> </i>9 分钟读完 (大约1299个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><div class="content"><h1 id="SSH"><a href="#SSH" class="headerlink" title="SSH"></a>SSH</h1><p>SSH是一种网络协议，用于计算机之间的加密登录。</p>
+<p>SSH只是一种协议，存在多种实现，既有商业实现，也有开源实现。</p>
+<h2 id="一、基本用法"><a href="#一、基本用法" class="headerlink" title="一、基本用法"></a>一、基本用法</h2><span id="more"></span>
+
+<p>SSH主要用于远程登录。</p>
+<p>假定要以用户名<code>user</code>登录远程主机<code>8.8.8.8</code>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">ssh user@8.8.8.8</span></span><br></pre></td></tr></table></figure>
+
+<p>当本地用户名与远程用户名一致，登录时可以省略用户名：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">ssh 8.8.8.8</span></span><br></pre></td></tr></table></figure>
+
+<p>SSH的默认端口是22，可以使用参数p进行调整，比如使用8888端口：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">ssh -p 8888 user@8.8.8.8</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="二、请求流程"><a href="#二、请求流程" class="headerlink" title="二、请求流程"></a>二、请求流程</h2><p>SSH 的登录流程如下：</p>
+<ol>
+<li>远程主机收到用户的登录请求，把自己的公钥发给用户</li>
+<li>用户使用这个公钥，将登录密码加密后，发送回来</li>
+<li>远程主机用自己的私钥，解密登录密码，如果密码正确，就同意用户登录</li>
+</ol>
+<h2 id="三、口令登录"><a href="#三、口令登录" class="headerlink" title="三、口令登录"></a>三、口令登录</h2><p>如果是第一次登录远程主机，系统会出现下面的提示：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">ssh user@host</span></span><br><span class="line"></span><br><span class="line">The authenticity of host &#x27;host (8.8.8.8)&#x27; can&#x27;t be established.</span><br><span class="line"></span><br><span class="line">RSA key fingerprint is 98:2e:d7:e0:de:9f:ac:67:28:c2:42:2d:37:16:58:4d.</span><br><span class="line"></span><br><span class="line">Are you sure you want to continue connecting (yes/no)?</span><br></pre></td></tr></table></figure>
+
+<p>这段话的意思是，无法确认host主机的真实性，只知道它的公钥指纹，问你还想继续连接吗？</p>
+<p>所谓”公钥指纹”，是指公钥长度较长（这里采用RSA算法，长达1024位），很难比对，所以对其进行MD5计算，将它变成一个128位的指纹。上例中是98:2e:d7:e0:de:9f:ac:67:28:c2:42:2d:37:16:58:4d，再进行比较，就容易多了。</p>
+<p>很自然的一个问题就是，用户怎么知道远程主机的公钥指纹应该是多少？回答是没有好办法，远程主机必须在自己的网站上贴出公钥指纹，以便用户自行核对。</p>
+<p>假定经过风险衡量以后，用户决定接受这个远程主机的公钥：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Are you sure you want to continue connecting (yes/no)? yes</span><br></pre></td></tr></table></figure>
+
+<p>系统会出现一句提示，表示host主机已经得到认可：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Warning: Permanently added &#x27;host,8.8.8.8&#x27; (RSA) to the list of known hosts.</span><br></pre></td></tr></table></figure>
+
+<p>然后，会要求输入密码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Password: (enter password)</span><br></pre></td></tr></table></figure>
+
+<p>如果密码正确，就可以登录了。</p>
+<p>当远程主机的公钥被接受以后，它就会被保存在文件<code>$HOME/.ssh/known_hosts</code>之中。下次再连接这台主机，系统就会认出它的公钥已经保存在本地了，从而跳过警告部分，直接提示输入密码。</p>
+<p>每个SSH用户都有自己的<code>known_hosts</code>文件，此外系统也有一个这样的文件，通常是<code>/etc/ssh/ssh_known_hosts</code>，保存一些对所有用户都可信赖的远程主机的公钥。</p>
+<h2 id="四、公钥登录"><a href="#四、公钥登录" class="headerlink" title="四、公钥登录"></a>四、公钥登录</h2><p>使用密码登录，每次都必须输入密码，非常麻烦。好在SSH还提供了公钥登录，可以省去输入密码的步骤。</p>
+<p>所谓”公钥登录”，原理很简单，就是用户将自己的公钥储存在远程主机上。登录的时候，远程主机会向用户发送一段随机字符串，用户用自己的私钥加密后，再发回来。远程主机用事先储存的公钥进行解密，如果成功，就证明用户是可信的，直接允许登录shell，不再要求密码。</p>
+<h3 id="4-1-用户端设置"><a href="#4-1-用户端设置" class="headerlink" title="4.1 用户端设置"></a>4.1 用户端设置</h3><p>这种方法要求用户必须提供自己的公钥。如果没有现成的，可以直接用<code>ssh-keygen</code>生成一个：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">ssh-keygen</span></span><br></pre></td></tr></table></figure>
+
+<p>运行上面的命令以后，系统会出现一系列提示，可以一路回车。其中有一个问题是，要不要对私钥设置口令（passphrase），如果担心私钥的安全，这里可以设置一个。</p>
+<p>运行结束以后，在<code>$HOME/.ssh/</code>目录下，会新生成两个文件：<code>id_rsa.pub</code>和<code>id_rsa</code>。前者是你的公钥，后者是你的私钥。</p>
+<p>这时再输入下面的命令，将公钥传送到远程主机host上面：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">ssh-copy-id user@8.8.8.8</span></span><br></pre></td></tr></table></figure>
+
+<p>好了，用户端的设置就完成了。</p>
+<h3 id="4-2-远程端设置"><a href="#4-2-远程端设置" class="headerlink" title="4.2 远程端设置"></a>4.2 远程端设置</h3><p>打开远程主机的/etc/ssh/sshd_config这个文件，检查下面几行前面”#”注释是否取掉：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">RSAAuthentication yes</span><br><span class="line">PubkeyAuthentication yes</span><br><span class="line">AuthorizedKeysFile .ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+
+<p>然后，重启远程主机的ssh服务。</p>
+<p>远程主机将用户的公钥，保存在登录后的用户主目录的<code>$HOME/.ssh/authorized_keys</code>文件中。公钥就是一段字符串，只要把它追加在<code>authorized_keys</code>文件的末尾就行了。</p>
+<p>这里不使用上面的<code>ssh-copy-id</code>命令，改用下面的命令，解释公钥的保存过程：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">ssh user@host <span class="string">&#x27;mkdir -p .ssh &amp;&amp; cat &gt;&gt; .ssh/authorized_keys&#x27;</span> &lt; ~/.ssh/id_rsa.pub</span></span><br></pre></td></tr></table></figure>
+
+<p>写入authorized_keys文件后，公钥登录的设置就完成了。</p>
+</div><div class="level is-mobile is-flex"><div class="article-licensing box"><div class="licensing-title"><p>SSH</p><p><a href="http://example.com/operating_system/basic/SSH/">http://example.com/operating_system/basic/SSH/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>jiaduo</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2022-04-07</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2023-07-16</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 is-uppercase"><i class="fas fa-tags has-text-grey"></i> <a class="link-muted" rel="tag" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统, </a><a class="link-muted" rel="tag" href="/tags/%E7%99%BB%E5%BD%95/">登录, </a><a class="link-muted" rel="tag" href="/tags/SSH/">SSH </a></div><!--!--></div></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/operating_system/basic/critical_section/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">临界区互斥</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/operating_system/linux/kernel_version/"><span class="level-item">内核版本</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><!--!--><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen  order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#SSH"><span class="level-left"><span class="level-item">SSH</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#一、基本用法"><span class="level-left"><span class="level-item">一、基本用法</span></span></a></li><li><a class="level is-mobile" href="#二、请求流程"><span class="level-left"><span class="level-item">二、请求流程</span></span></a></li><li><a class="level is-mobile" href="#三、口令登录"><span class="level-left"><span class="level-item">三、口令登录</span></span></a></li><li><a class="level is-mobile" href="#四、公钥登录"><span class="level-left"><span class="level-item">四、公钥登录</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#4-1-用户端设置"><span class="level-left"><span class="level-item">4.1 用户端设置</span></span></a></li><li><a class="level is-mobile" href="#4-2-远程端设置"><span class="level-left"><span class="level-item">4.2 远程端设置</span></span></a></li></ul></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.png" alt="追来者之人" height="28"></a><p class="is-size-7"><span>&copy; 2023 jiaduo</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

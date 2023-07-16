@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>信号量 - 追来者之人</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="追来者之人"><meta name="msapplication-TileImage" content="/img/logo.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="追来者之人"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="信号量一、是什么？信号量本质上是一个计数器，用于控制多进程&amp;#x2F;线程对共享资源的访问。  在进入一个关键代码段之前，必须先获取一个信号量 一旦该关键代码段完成了，必须释放之前获取的信号量  信号量即可以用于同步（如生产者-消费者），也可以用于互斥（二元信号量）。 二、为什么？"><meta property="og:type" content="blog"><meta property="og:title" content="信号量"><meta property="og:url" content="http://example.com/operating_system/basic/semaphore/"><meta property="og:site_name" content="追来者之人"><meta property="og:description" content="信号量一、是什么？信号量本质上是一个计数器，用于控制多进程&amp;#x2F;线程对共享资源的访问。  在进入一个关键代码段之前，必须先获取一个信号量 一旦该关键代码段完成了，必须释放之前获取的信号量  信号量即可以用于同步（如生产者-消费者），也可以用于互斥（二元信号量）。 二、为什么？"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://example.com/img/og_image.png"><meta property="article:published_time" content="2022-04-09T13:23:54.000Z"><meta property="article:modified_time" content="2023-07-16T13:52:32.926Z"><meta property="article:author" content="jiaduo"><meta property="article:tag" content="操作系统"><meta property="article:tag" content="信号量"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="http://example.com/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/operating_system/basic/semaphore/"},"headline":"信号量","image":["http://example.com/img/og_image.png"],"datePublished":"2022-04-09T13:23:54.000Z","dateModified":"2023-07-16T13:52:32.926Z","author":{"@type":"Person","name":"jiaduo"},"publisher":{"@type":"Organization","name":"追来者之人","logo":{"@type":"ImageObject","url":"http://example.com/img/logo.png"}},"description":"信号量一、是什么？信号量本质上是一个计数器，用于控制多进程&#x2F;线程对共享资源的访问。  在进入一个关键代码段之前，必须先获取一个信号量 一旦该关键代码段完成了，必须释放之前获取的信号量  信号量即可以用于同步（如生产者-消费者），也可以用于互斥（二元信号量）。 二、为什么？"}</script><link rel="canonical" href="http://example.com/operating_system/basic/semaphore/"><link rel="icon" href="/img/logo.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="追来者之人" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><h1 class="title is-3 is-size-4-mobile"><i class="fas fa-blog"> </i>信号量</h1><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><i class="fas fa-calendar-plus"> </i><time dateTime="2022-04-09T13:23:54.000Z" title="2022-04-09T13:23:54.000Z">2022-04-09</time></span><span class="level-item is-hidden-mobile"><i class="fas fa-calendar-check"> </i><time dateTime="2023-07-16T13:52:32.926Z" title="2023-07-16T13:52:32.926Z">2023-07-16</time></span><span class="level-item"><i class="fas fa-folder"> </i><a class="link-muted" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a><span> / </span><a class="link-muted" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/%E5%9F%BA%E7%A1%80/">基础</a></span><span class="level-item"><i class="fas fa-clock"> </i>17 分钟读完 (大约2579个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><div class="content"><h1 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h1><h2 id="一、是什么？"><a href="#一、是什么？" class="headerlink" title="一、是什么？"></a>一、是什么？</h2><p>信号量本质上是一个计数器，用于控制多进程/线程对共享资源的访问。</p>
+<ul>
+<li>在进入一个关键代码段之前，必须先获取一个信号量</li>
+<li>一旦该关键代码段完成了，必须释放之前获取的信号量</li>
+</ul>
+<p>信号量即可以用于同步（如生产者-消费者），也可以用于互斥（二元信号量）。</p>
+<h2 id="二、为什么？"><a href="#二、为什么？" class="headerlink" title="二、为什么？"></a>二、为什么？</h2><span id="more"></span>
+
+<p>信号量的主要目的是为了在保护共享资源的情况下，对进程/线程进行同步协调。</p>
+<p>在并发环境下，需要对共享资源进行保护时，可以考虑用信号量。</p>
+<h2 id="三、怎么用？"><a href="#三、怎么用？" class="headerlink" title="三、怎么用？"></a>三、怎么用？</h2><p>信号量本身是表示可用资源数量，所以它的取值是一个非负整数。</p>
+<p>信号量，除了它的初始化以外，只有2种操作可用：</p>
+<ul>
+<li>P(S)：如果S的值大于零，就给它减1；如果它的值为零，就挂起该进程</li>
+<li>V(S)：如果有其他进程因等待S而被挂起，就让它恢复运行；否则就给它加1</li>
+</ul>
+<p>并且，需满足以下条件：</p>
+<ul>
+<li>P(S) 和 V(S) 必须都是不可分割的原子操作</li>
+</ul>
+<p>它的功能定义就类似这样：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">P (S) &#123;</span><br><span class="line">    <span class="keyword">while</span> (S &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// process block wait</span></span><br><span class="line">    &#125;</span><br><span class="line">    S--;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">V (S) &#123;</span><br><span class="line">    <span class="keyword">if</span> (S has wait process) &#123;</span><br><span class="line">        signal wait process</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        S++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注：P(S) 和 V(S) 都是原子操作，这里的定义只用于表示它们里面做了什么事。</p>
+<p>有了信号量，就能够控制对共享资源的访问了，举个简单的例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">semaphore S = 1;</span><br><span class="line"></span><br><span class="line">void producer() &#123;</span><br><span class="line">    int item;</span><br><span class="line">    item = produce_item();</span><br><span class="line">    inert_item(item);</span><br><span class="line">    V(S); /* 通知消费者，已放入数据 */</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void consumer() &#123;</span><br><span class="line">    P(S); /* 消费者必须在此等待生产者放入数据 */</span><br><span class="line">    int item;</span><br><span class="line">    item = remove_item();</span><br><span class="line">    consume_item(item);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>P(S) 用于等待信号量的可用资源，没有可用资源时，进程将陷入沉睡。</p>
+<p>V(S) 用于唤醒在信号量 S 上等待的进程。</p>
+<p>另外，P(S) 和 V(S)，也可以用 wait(S) 和 signal(S) 来表示。</p>
+<h2 id="四、数据结构？"><a href="#四、数据结构？" class="headerlink" title="四、数据结构？"></a>四、数据结构？</h2><p>一般来说，信号量的结构定义可以是这样：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">int</span> value;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">process</span> *<span class="title">wait_list</span>;</span></span><br><span class="line">&#125; semaphore;</span><br></pre></td></tr></table></figure>
+
+<p>其中，<code>value</code> 表示信号量可用资源数量，<code>wait_list</code> 表示在此信号量上等待的进程列表。</p>
+<p>对应的 P(S) 和 V(S) 操作定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">wait(semaphore *S) &#123;</span><br><span class="line">    S-&gt;value--;</span><br><span class="line">    <span class="keyword">if</span> (S-&gt;value &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        add this process to S-&gt;wait_list;</span><br><span class="line">        block();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">signal(semaphore *S) &#123;</span><br><span class="line">    S-&gt;value++;</span><br><span class="line">    <span class="keyword">if</span> (S-&gt;value &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        remove a process P from S-&gt;wait_list;</span><br><span class="line">        wakeup(P);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中 操作 <code>block()</code> 挂起调用它的进程，操作 <code>wakeup(P)</code> 重新启动阻塞进程 P 的执行。</p>
+<p>在这种实现中，信号量的值可以是负数，这和经典的信号量定义是不一样的：</p>
+<ul>
+<li>大于0时，表示可用资源数量</li>
+<li>等于0时，表示无可用资源，并且没有进程在等待</li>
+<li>小于0时，表示无可用资源，但是有进程在等待，其绝对值表示等待的进程数量</li>
+</ul>
+<p>这种实现方式在实际的操作系统中比较常见。</p>
+<h2 id="五、如何保证原子性？"><a href="#五、如何保证原子性？" class="headerlink" title="五、如何保证原子性？"></a>五、如何保证原子性？</h2><p>信号量的操作必须是原子的，否则还是会出现并发问题。</p>
+<ul>
+<li>信号量，本身也是一个临界资源，所以可以采用临界区互斥的方式实现原子性</li>
+</ul>
+<p>临界区互斥的实现方式有：</p>
+<ul>
+<li>单处理器中，采用暂时屏蔽中断的方式，等操作完信号量后再打开</li>
+<li>多处理器中，采用硬件指令（TestAndSet 或 Swap）来给信号量加互斥锁访问</li>
+</ul>
+<p>比如说，在 linux 系统中，信号量定义是这样的：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">semaphore</span> &#123;</span></span><br><span class="line">    <span class="type">raw_spinlock_t</span> lock;        <span class="comment">/* 自旋锁 */</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> count;         <span class="comment">/* 信号量值 */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">wait_list</span>;</span> <span class="comment">/* 进程等待链表 */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>在信号量结构中，会带有一个锁变量 lock。</p>
+<p>每当对信号量操作时，都需要先对这个 lock 进行互斥加锁，然后才能操作。</p>
+<p>比如，P(S) 的实现（在 linux 中是 down()）如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">down</span><span class="params">(<span class="keyword">struct</span> semaphore *sem)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> flags;</span><br><span class="line">    raw_spin_lock_irqsave(&amp;sem-&gt;lock, flags);      <span class="comment">/* 自旋等待信号量的锁变量 */</span></span><br><span class="line">    <span class="keyword">if</span> (likely(sem-&gt;count &gt; <span class="number">0</span>))</span><br><span class="line">        sem-&gt;count--;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        __down(sem);                               <span class="comment">/* 如果信号量小于等于0，进入等待队列 */</span></span><br><span class="line">    raw_spin_unlock_irqrestore(&amp;sem-&gt;lock, flags); <span class="comment">/* 释放信号量的锁 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这实现代码写得很清晰了：</p>
+<ul>
+<li>操作前，首先获取信号量的锁变量，这里是用的自旋锁获取</li>
+<li>加锁成功后，再判断信号量的可用资源数</li>
+<li>如果可用资源数大于0，则直接减一；否则进入信号量的等待队列</li>
+<li>操作完成后，释放信号量的锁</li>
+</ul>
+<p>至于 <code> raw_spin_lock_irqsave</code> 自旋锁是如何实现的，实际上就是由更底层的硬件指令来完成的。</p>
+<p>比如 TestAndSet 或 Swap 等指令，TestAndSet 指令就类似于这样：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 进入临界区 */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">enter_region</span><span class="params">(<span class="type">int</span> *lock)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (TestAndSet(lock));      <span class="comment">/* 自旋加互斥锁 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>另外，还有一个问题，进入等待队列时都做了啥？具体看一下源码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">int</span> __sched __down_common(<span class="keyword">struct</span> semaphore *sem, <span class="type">long</span> state, <span class="type">long</span> timeout)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/* 为当前进程创建waiter对象 */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> *<span class="title">task</span> =</span> current;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">semaphore_waiter</span> <span class="title">waiter</span>;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 添加到信号量的等待队列 */</span></span><br><span class="line">    list_add_tail(&amp;waiter.<span class="built_in">list</span>, &amp;sem-&gt;wait_list);</span><br><span class="line">    waiter.task = task;</span><br><span class="line">    waiter.up = <span class="literal">false</span>;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="keyword">if</span> (signal_pending_state(state, task))</span><br><span class="line">            <span class="keyword">goto</span> interrupted;</span><br><span class="line">        <span class="keyword">if</span> (unlikely(timeout &lt;= <span class="number">0</span>))</span><br><span class="line">            <span class="keyword">goto</span> timed_out;</span><br><span class="line">        __set_task_state(task, state);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* 在切换到其他进程前，释放信号量的锁 */</span></span><br><span class="line">        raw_spin_unlock_irq(&amp;sem-&gt;lock);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* 调度切换进程 */</span></span><br><span class="line">        timeout = schedule_timeout(timeout);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* 重新获取信号量的锁 */</span></span><br><span class="line">        raw_spin_lock_irq(&amp;sem-&gt;lock);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* 被V(S)操作唤醒了 */</span></span><br><span class="line">        <span class="keyword">if</span> (waiter.up)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line"> timed_out:</span><br><span class="line">    list_del(&amp;waiter.<span class="built_in">list</span>);</span><br><span class="line">    <span class="keyword">return</span> -ETIME;</span><br><span class="line"> </span><br><span class="line"> interrupted:</span><br><span class="line">    list_del(&amp;waiter.<span class="built_in">list</span>);</span><br><span class="line">    <span class="keyword">return</span> -EINTR;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从这里可以看到，进程如果在调用 P(S) 时拿不到资源，就会做几件事：</p>
+<ul>
+<li>把当前进程添加到信号量的等待队列</li>
+<li>释放信号量的锁，因为当前进程要睡眠了，如果不释放，别的进程就拿不到了</li>
+<li>调度切换到其他进程，实际上并没有真正睡眠，而是等待了一段时间</li>
+</ul>
+<p>过一段时间后，等待进程再次调度执行时，又会做几件事：</p>
+<ul>
+<li>重新获取信号量的锁，不管对信号量做什么，即使只是验证它的值，也要先获取锁</li>
+<li>检查自己是不是被别人用 V(S) 唤醒了</li>
+<li>如果没有被唤醒，则进入下一轮等待</li>
+</ul>
+<p>就这样，一直重复等待，直到拿到信号量的可用资源为止。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>信号量是什么？</p>
+<ul>
+<li>信号量本质上是一个计数器，用于控制多进程/线程对共享资源的访问<ul>
+<li>在进入一个关键代码段之前，必须先获取一个信号量</li>
+<li>一旦该关键代码段完成了，必须释放之前获取的信号量</li>
+</ul>
+</li>
+<li>信号量即可以用于同步（如生产者-消费者），也可以用于互斥（二元信号量）</li>
+</ul>
+<p>为什么要用信号量？</p>
+<ul>
+<li>信号量的主要目的是为了在保护共享资源的情况下，对进程/线程进行同步协调</li>
+<li>在并发环境下，需要对共享资源进行保护时，可以考虑用信号量</li>
+</ul>
+<p>信号量怎么用？</p>
+<ul>
+<li>信号量本身是表示可用资源数量，所以它的取值是一个非负整数</li>
+<li>信号量，除了它的初始化以外，只有2种操作可用：<ul>
+<li>P(S)：如果S的值大于零，就给它减1；如果它的值为零，就挂起该进程</li>
+<li>V(S)：如果有其他进程因等待S而被挂起，就让它恢复运行；否则就给它加1</li>
+</ul>
+</li>
+<li>P(S) 和 V(S) 必须都是不可分割的原子操作</li>
+<li>P(S) 和 V(S) 操作，也可以用 wait(S) 和 signal(S) 来表示</li>
+</ul>
+<p>信号量的数据结构？</p>
+<ul>
+<li>在这种实现中，信号量的值可以是负数，这和经典的信号量定义是不一样的：<ul>
+<li>大于0时，表示可用资源数量</li>
+<li>等于0时，表示无可用资源，并且没有进程在等待</li>
+<li>小于0时，表示无可用资源，但是有进程在等待，其绝对值表示等待的进程数量</li>
+</ul>
+</li>
+<li>信号量实现比较灵活，但是正数始终表示可用资源数</li>
+</ul>
+<p>信号量的原子性保证？</p>
+<ul>
+<li>信号量，本身也是一个临界资源，所以可以采用临界区互斥的方式实现原子性<ul>
+<li>单处理器中，采用暂时屏蔽中断的方式，等操作完信号量后再打开</li>
+<li>多处理器中，采用硬件指令（TestAndSet 或 Swap）来给信号量加互斥锁访问</li>
+</ul>
+</li>
+<li>在 linux 系统中，信号量采用的是锁变量法来互斥访问信号量<ul>
+<li>信号量结构中自带有一个锁变量</li>
+<li>使用自旋锁来给锁变量加锁</li>
+<li>自旋锁底层实际上是用的硬件指令实现</li>
+</ul>
+</li>
+<li>进入等待队列时都做了什么？以 linux 系统为例：<ul>
+<li>把当前进程添加到信号量的等待队列</li>
+<li>释放信号量的锁，因为当前进程要睡眠了，如果不释放，别的进程就拿不到了</li>
+<li>调度切换到其他进程，实际上并没有真正睡眠，而是等待了一段时间</li>
+</ul>
+</li>
+<li>一段时间后，进程再次被调度执行时：<ul>
+<li>重新获取信号量的锁，不管对信号量做什么，即使只是验证它的值，也要先获取锁</li>
+<li>检查自己是不是被别人用 V(S) 唤醒了</li>
+<li>如果没有被唤醒，则进入下一轮等待</li>
+</ul>
+</li>
+</ul>
+</div><div class="level is-mobile is-flex"><div class="article-licensing box"><div class="licensing-title"><p>信号量</p><p><a href="http://example.com/operating_system/basic/semaphore/">http://example.com/operating_system/basic/semaphore/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>jiaduo</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2022-04-09</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2023-07-16</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 is-uppercase"><i class="fas fa-tags has-text-grey"></i> <a class="link-muted" rel="tag" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统, </a><a class="link-muted" rel="tag" href="/tags/%E4%BF%A1%E5%8F%B7%E9%87%8F/">信号量 </a></div><!--!--></div></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/operating_system/basic/monitors/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">管程</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/operating_system/basic/critical_section/"><span class="level-item">临界区互斥</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><!--!--><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen  order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#信号量"><span class="level-left"><span class="level-item">信号量</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#一、是什么？"><span class="level-left"><span class="level-item">一、是什么？</span></span></a></li><li><a class="level is-mobile" href="#二、为什么？"><span class="level-left"><span class="level-item">二、为什么？</span></span></a></li><li><a class="level is-mobile" href="#三、怎么用？"><span class="level-left"><span class="level-item">三、怎么用？</span></span></a></li><li><a class="level is-mobile" href="#四、数据结构？"><span class="level-left"><span class="level-item">四、数据结构？</span></span></a></li><li><a class="level is-mobile" href="#五、如何保证原子性？"><span class="level-left"><span class="level-item">五、如何保证原子性？</span></span></a></li><li><a class="level is-mobile" href="#总结"><span class="level-left"><span class="level-item">总结</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.png" alt="追来者之人" height="28"></a><p class="is-size-7"><span>&copy; 2023 jiaduo</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

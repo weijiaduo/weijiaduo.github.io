@@ -5840,115 +5840,6 @@
       </tags>
   </entry>
   <entry>
-    <title>05_基础构建模块</title>
-    <url>/lang/java/core/concurrency/05_%E5%9F%BA%E7%A1%80%E6%9E%84%E5%BB%BA%E6%A8%A1%E5%9D%97/</url>
-    <content><![CDATA[<h1 id="基础构建模块"><a href="#基础构建模块" class="headerlink" title="基础构建模块"></a>基础构建模块</h1><h2 id="一、同步容器"><a href="#一、同步容器" class="headerlink" title="一、同步容器"></a>一、同步容器</h2><ul>
-<li>同步容器类都是线程安全的，比如 Vector 和 HashTable</li>
-<li>实现线程安全的方式是：将它们的状态都封装起来，所有对外接口都是同步方法</li>
-<li>对容器状态的访问都串行化，保证每次只有一个线程访问容器</li>
-<li>能保证单个操作是线程安全的，但是复合操作是不能保证线程安全的</li>
-<li>常见的不安全的复合操作包括：迭代、跳转、条件运算</li>
-</ul>
-<span id="more"></span>
-
-<p>比如，条件运算的例子：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SyncContainer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; T <span class="title function_">deleteLast</span><span class="params">(Vector&lt;T&gt; list)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">lastIndex</span> <span class="operator">=</span> list.size() - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> list.remove(lastIndex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这种复合操作，实际上是线程不安全的。</p>
-<p>一般来说，同步容器的复合操作都需要加锁处理:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SyncContainer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; T <span class="title function_">deleteLast</span><span class="params">(Vector&lt;T&gt; list)</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (list) &#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">lastIndex</span> <span class="operator">=</span> list.size() - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">return</span> list.remove(lastIndex);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>同步容器类的锁就是对象本身，所以是对同步容器对象加锁。</p>
-<p>不过，对于迭代器的处理，加锁并不都是一种好方法：</p>
-<ul>
-<li>容器元素很多时，对迭代操作加锁，会导致容器被长时间阻塞，影响程序的性能</li>
-</ul>
-<p>比如：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SyncContainerIterator</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">visit</span><span class="params">(Vector&lt;T&gt; list)</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (list) &#123;</span><br><span class="line">            <span class="keyword">for</span> (T t : list) &#123;</span><br><span class="line">                <span class="comment">// do something</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>迭代时加锁，可能会使得容器锁无法释放，导致容器不可用。</p>
-<p>所以，对于迭代器的处理，还可以用另一种方式处理：克隆容器。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SyncCloneContainerIterator</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">visit</span><span class="params">(Vector&lt;T&gt; list)</span> &#123;</span><br><span class="line">        Vector&lt;T&gt; clone = (Vector&lt;T&gt;) list.clone();</span><br><span class="line">        <span class="keyword">for</span> (T t : clone) &#123;</span><br><span class="line">            <span class="comment">// do something</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>不过，克隆容器时，也存在明显的性能开销，但不会对原容器造成影响。</p>
-<p>容器的迭代器使用，除了比较明显的调用以外，一些隐藏方法也可能会用到：</p>
-<ul>
-<li>hashCode、equals、toString</li>
-<li>containsAll、removeAll、retainAll</li>
-</ul>
-<p>这些方法里面，实际上也隐含了对迭代器的使用，所以，这些方法也是不安全的。</p>
-<h2 id="二、并发容器"><a href="#二、并发容器" class="headerlink" title="二、并发容器"></a>二、并发容器</h2><ul>
-<li>并发容器类都是线程安全的</li>
-<li>实现线程安全的方式是：将它们的状态都封装起来，内部对状态的访问是加锁同步的</li>
-<li>并发容器是针对多个线程并发访问设计的，允许多个线程同时访问并发容器</li>
-<li>主要用于替代同步的容器，提高并发访问的性能</li>
-<li>并发容器的锁不是并发容器对象本身，对其加锁毫无意义</li>
-</ul>
-<p>比如说：</p>
-<ul>
-<li>ConcurrentHashMap 用于替代同步的 Map</li>
-<li>CopyOnWriteArrayList 用于在遍历操作为主要操作的情况下替代同步的 List</li>
-<li>…</li>
-</ul>
-<p>使用并发容器，可以获得比同步容器更高的并发性能。</p>
-<p>由于并发容器的锁是对象本身，所以对并发容器对象加锁是没有意义的：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SyncContainer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">delete</span><span class="params">(ConcurrentHashMap&lt;K, V&gt; map)</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (map) &#123;</span><br><span class="line">            map.remove(key);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>ConcurrentHashMap 的锁并不是它自己，所以加锁操作毫无意义。</p>
-<p>如果需要对整个容器进行独占访问，并发容器并不适合，这时应该用同步容器。</p>
-<h2 id="三、同步工具类"><a href="#三、同步工具类" class="headerlink" title="三、同步工具类"></a>三、同步工具类</h2><ul>
-<li>同步工具类，根据自身的状态来协调线程的控制流</li>
-<li>特点：<ul>
-<li>封装了一些状态，这些状态决定执行的线程是继续执行还是等待</li>
-<li>提供了一些方法来对状态进行访问</li>
-<li>提供一些方法来等待同步工具类达到某个状态</li>
-</ul>
-</li>
-<li>同步工具类包括：<ul>
-<li>闭锁（Latch）</li>
-<li>信号量（Semaphore）</li>
-<li>栅栏（Barrier）</li>
-<li>阻塞队列（BlockingQueue）</li>
-</ul>
-</li>
-</ul>
-<h3 id="3-1-闭锁"><a href="#3-1-闭锁" class="headerlink" title="3.1 闭锁"></a>3.1 闭锁</h3><ul>
-<li>延迟线程的进度直到其到达终止状态</li>
-<li>用于确保某些活动直到其他活动都完成后才继续执行</li>
-</ul>
-<p>比如说，一个线程等待其他线程完成工作后，再继续执行：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">long</span> <span class="title function_">timeTask</span><span class="params">(<span class="type">int</span> nThreads, <span class="keyword">final</span> Runnable task)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">CountDownLatch</span> <span class="variable">startGate</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CountDownLatch</span>(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">final</span> <span class="type">CountDownLatch</span> <span class="variable">endGate</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CountDownLatch</span>(nThreads);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; nThreads; i++) &#123;</span><br><span class="line">        <span class="type">Thread</span> <span class="variable">t</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="comment">// 所有线程等待开始信号</span></span><br><span class="line">                    startGate.await();</span><br><span class="line">                    <span class="keyword">try</span> &#123;</span><br><span class="line">                        task.run();</span><br><span class="line">                    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                        <span class="comment">// 线程结束发起信号</span></span><br><span class="line">                        endGate.countDown();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        t.start();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="type">long</span> <span class="variable">start</span> <span class="operator">=</span> System.nanoTime();</span><br><span class="line">    startGate.countDown();</span><br><span class="line">    endGate.await();</span><br><span class="line">    <span class="type">long</span> <span class="variable">end</span> <span class="operator">=</span> System.nanoTime();</span><br><span class="line">    <span class="keyword">return</span> end - start;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>闭锁的作用，就是等待某些线程异步操作完成，再继续往下执行。</p>
-<h3 id="3-2-信号量"><a href="#3-2-信号量" class="headerlink" title="3.2 信号量"></a>3.2 信号量</h3><ul>
-<li>控制同时访问某个特定资源的操作数量</li>
-<li>控制同时执行某个操作的线程数量</li>
-</ul>
-<p>比如说，信号量可以用于控制容器的元素数量：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">BoundHashSet</span>&lt;T&gt; &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Set&lt;T&gt; set;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Semaphore sem;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">BoundHashSet</span><span class="params">(<span class="type">int</span> bound)</span> &#123;</span><br><span class="line">        set = Collections.synchronizedSet(<span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;());</span><br><span class="line">        sem = <span class="keyword">new</span> <span class="title class_">Semaphore</span>(bound);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">add</span><span class="params">(T o)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        sem.acquire();</span><br><span class="line">        <span class="type">boolean</span> <span class="variable">wasAdded</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            wasAdded = set.add(o);</span><br><span class="line">            <span class="keyword">return</span> wasAdded;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (!wasAdded) &#123;</span><br><span class="line">                sem.release();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">remove</span><span class="params">(T o)</span> &#123;</span><br><span class="line">        <span class="type">boolean</span> <span class="variable">wasRemoved</span> <span class="operator">=</span> set.remove(o);</span><br><span class="line">        <span class="keyword">if</span> (wasRemoved) &#123;</span><br><span class="line">            sem.release();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> wasRemoved;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>通过信号量的数量限制，可以控制同时访问某个资源的线程数量。</p>
-<h3 id="3-3-栅栏"><a href="#3-3-栅栏" class="headerlink" title="3.3 栅栏"></a>3.3 栅栏</h3><ul>
-<li>阻塞一组线程直到某个事件发生</li>
-<li>所有线程必须同时到达栅栏位置，才能继续执行</li>
-<li>闭锁用于等待事件，栅栏则是等待线程</li>
-<li>栅栏是可以重复使用的</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">long</span> <span class="title function_">timeTask</span><span class="params">(<span class="type">int</span> nThreads, <span class="keyword">final</span> Runnable task)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="keyword">class</span> <span class="title class_">Time</span> &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="type">long</span> <span class="variable">value</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">Time</span> <span class="variable">time</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Time</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// nThreads + 1 是加上了主线程</span></span><br><span class="line">    <span class="keyword">final</span> <span class="type">CyclicBarrier</span> <span class="variable">gate</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CyclicBarrier</span>(nThreads + <span class="number">1</span>,</span><br><span class="line">            () -&gt; time.value = System.nanoTime() - time.value);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; nThreads; i++) &#123;</span><br><span class="line">        <span class="type">Thread</span> <span class="variable">t</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="comment">// 等待所有线程开始</span></span><br><span class="line">                    gate.await();</span><br><span class="line"></span><br><span class="line">                    task.run();</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// 等待所有线程结束</span></span><br><span class="line">                    gate.await();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        t.start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 等待所有线程开始</span></span><br><span class="line">    gate.await();</span><br><span class="line">    <span class="comment">// 等待所有线程结束</span></span><br><span class="line">    gate.await();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> time.value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>与闭锁不同，闭锁需要等到某个事件通知，如 countDown()，线程才会继续往下执行。</p>
-<p>而栅栏等待的就是线程，只要所有线程都到达栅栏位置，就可以继续执行下去。</p>
-<h2 id="四、缓存案例"><a href="#四、缓存案例" class="headerlink" title="四、缓存案例"></a>四、缓存案例</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Memoizer</span>&lt;K, V&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ConcurrentHashMap&lt;K, Future&lt;V&gt;&gt; cache = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Computable&lt;K, V&gt; computer;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Memoizer</span><span class="params">(Computable&lt;K, V&gt; c)</span> &#123;</span><br><span class="line">        computer = c;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> V <span class="title function_">get</span><span class="params">(K key)</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">            Future&lt;V&gt; result = cache.get(key);</span><br><span class="line">            <span class="keyword">if</span> (result == <span class="literal">null</span>) &#123;</span><br><span class="line">                FutureTask&lt;V&gt; task = <span class="keyword">new</span> <span class="title class_">FutureTask</span>&lt;&gt;(() -&gt; computer.compute(key));</span><br><span class="line">                result = cache.putIfAbsent(key, task);</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 处理并发访问的情况</span></span><br><span class="line">                <span class="keyword">if</span> (result == <span class="literal">null</span>) &#123;</span><br><span class="line">                    result = task;</span><br><span class="line">                    <span class="keyword">new</span> <span class="title class_">Thread</span>(task).start();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// 等待计算完成</span></span><br><span class="line">                <span class="keyword">return</span> result.get();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>编程语言</category>
-        <category>Java</category>
-      </categories>
-      <tags>
-        <tag>java</tag>
-        <tag>并发编程</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>06_任务的执行</title>
     <url>/lang/java/core/concurrency/06_%E4%BB%BB%E5%8A%A1%E7%9A%84%E6%89%A7%E8%A1%8C/</url>
     <content><![CDATA[<h1 id="任务的执行"><a href="#任务的执行" class="headerlink" title="任务的执行"></a>任务的执行</h1><h2 id="一、在线程中执行任务"><a href="#一、在线程中执行任务" class="headerlink" title="一、在线程中执行任务"></a>一、在线程中执行任务</h2><h3 id="1-1-串行执行"><a href="#1-1-串行执行" class="headerlink" title="1.1 串行执行"></a>1.1 串行执行</h3><p>串行执行，是指所有任务都在单个线程中串行地执行。</p>
@@ -6113,6 +6004,115 @@
 <li>为任务设置时限</li>
 </ul>
 ]]></content>
+      <categories>
+        <category>编程语言</category>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>java</tag>
+        <tag>并发编程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>05_基础构建模块</title>
+    <url>/lang/java/core/concurrency/05_%E5%9F%BA%E7%A1%80%E6%9E%84%E5%BB%BA%E6%A8%A1%E5%9D%97/</url>
+    <content><![CDATA[<h1 id="基础构建模块"><a href="#基础构建模块" class="headerlink" title="基础构建模块"></a>基础构建模块</h1><h2 id="一、同步容器"><a href="#一、同步容器" class="headerlink" title="一、同步容器"></a>一、同步容器</h2><ul>
+<li>同步容器类都是线程安全的，比如 Vector 和 HashTable</li>
+<li>实现线程安全的方式是：将它们的状态都封装起来，所有对外接口都是同步方法</li>
+<li>对容器状态的访问都串行化，保证每次只有一个线程访问容器</li>
+<li>能保证单个操作是线程安全的，但是复合操作是不能保证线程安全的</li>
+<li>常见的不安全的复合操作包括：迭代、跳转、条件运算</li>
+</ul>
+<span id="more"></span>
+
+<p>比如，条件运算的例子：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SyncContainer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; T <span class="title function_">deleteLast</span><span class="params">(Vector&lt;T&gt; list)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">lastIndex</span> <span class="operator">=</span> list.size() - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> list.remove(lastIndex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种复合操作，实际上是线程不安全的。</p>
+<p>一般来说，同步容器的复合操作都需要加锁处理:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SyncContainer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; T <span class="title function_">deleteLast</span><span class="params">(Vector&lt;T&gt; list)</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (list) &#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">lastIndex</span> <span class="operator">=</span> list.size() - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">return</span> list.remove(lastIndex);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同步容器类的锁就是对象本身，所以是对同步容器对象加锁。</p>
+<p>不过，对于迭代器的处理，加锁并不都是一种好方法：</p>
+<ul>
+<li>容器元素很多时，对迭代操作加锁，会导致容器被长时间阻塞，影响程序的性能</li>
+</ul>
+<p>比如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SyncContainerIterator</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">visit</span><span class="params">(Vector&lt;T&gt; list)</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (list) &#123;</span><br><span class="line">            <span class="keyword">for</span> (T t : list) &#123;</span><br><span class="line">                <span class="comment">// do something</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>迭代时加锁，可能会使得容器锁无法释放，导致容器不可用。</p>
+<p>所以，对于迭代器的处理，还可以用另一种方式处理：克隆容器。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SyncCloneContainerIterator</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">visit</span><span class="params">(Vector&lt;T&gt; list)</span> &#123;</span><br><span class="line">        Vector&lt;T&gt; clone = (Vector&lt;T&gt;) list.clone();</span><br><span class="line">        <span class="keyword">for</span> (T t : clone) &#123;</span><br><span class="line">            <span class="comment">// do something</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不过，克隆容器时，也存在明显的性能开销，但不会对原容器造成影响。</p>
+<p>容器的迭代器使用，除了比较明显的调用以外，一些隐藏方法也可能会用到：</p>
+<ul>
+<li>hashCode、equals、toString</li>
+<li>containsAll、removeAll、retainAll</li>
+</ul>
+<p>这些方法里面，实际上也隐含了对迭代器的使用，所以，这些方法也是不安全的。</p>
+<h2 id="二、并发容器"><a href="#二、并发容器" class="headerlink" title="二、并发容器"></a>二、并发容器</h2><ul>
+<li>并发容器类都是线程安全的</li>
+<li>实现线程安全的方式是：将它们的状态都封装起来，内部对状态的访问是加锁同步的</li>
+<li>并发容器是针对多个线程并发访问设计的，允许多个线程同时访问并发容器</li>
+<li>主要用于替代同步的容器，提高并发访问的性能</li>
+<li>并发容器的锁不是并发容器对象本身，对其加锁毫无意义</li>
+</ul>
+<p>比如说：</p>
+<ul>
+<li>ConcurrentHashMap 用于替代同步的 Map</li>
+<li>CopyOnWriteArrayList 用于在遍历操作为主要操作的情况下替代同步的 List</li>
+<li>…</li>
+</ul>
+<p>使用并发容器，可以获得比同步容器更高的并发性能。</p>
+<p>由于并发容器的锁是对象本身，所以对并发容器对象加锁是没有意义的：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SyncContainer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">delete</span><span class="params">(ConcurrentHashMap&lt;K, V&gt; map)</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (map) &#123;</span><br><span class="line">            map.remove(key);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ConcurrentHashMap 的锁并不是它自己，所以加锁操作毫无意义。</p>
+<p>如果需要对整个容器进行独占访问，并发容器并不适合，这时应该用同步容器。</p>
+<h2 id="三、同步工具类"><a href="#三、同步工具类" class="headerlink" title="三、同步工具类"></a>三、同步工具类</h2><ul>
+<li>同步工具类，根据自身的状态来协调线程的控制流</li>
+<li>特点：<ul>
+<li>封装了一些状态，这些状态决定执行的线程是继续执行还是等待</li>
+<li>提供了一些方法来对状态进行访问</li>
+<li>提供一些方法来等待同步工具类达到某个状态</li>
+</ul>
+</li>
+<li>同步工具类包括：<ul>
+<li>闭锁（Latch）</li>
+<li>信号量（Semaphore）</li>
+<li>栅栏（Barrier）</li>
+<li>阻塞队列（BlockingQueue）</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-1-闭锁"><a href="#3-1-闭锁" class="headerlink" title="3.1 闭锁"></a>3.1 闭锁</h3><ul>
+<li>延迟线程的进度直到其到达终止状态</li>
+<li>用于确保某些活动直到其他活动都完成后才继续执行</li>
+</ul>
+<p>比如说，一个线程等待其他线程完成工作后，再继续执行：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">long</span> <span class="title function_">timeTask</span><span class="params">(<span class="type">int</span> nThreads, <span class="keyword">final</span> Runnable task)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">CountDownLatch</span> <span class="variable">startGate</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CountDownLatch</span>(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">final</span> <span class="type">CountDownLatch</span> <span class="variable">endGate</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CountDownLatch</span>(nThreads);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; nThreads; i++) &#123;</span><br><span class="line">        <span class="type">Thread</span> <span class="variable">t</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="comment">// 所有线程等待开始信号</span></span><br><span class="line">                    startGate.await();</span><br><span class="line">                    <span class="keyword">try</span> &#123;</span><br><span class="line">                        task.run();</span><br><span class="line">                    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                        <span class="comment">// 线程结束发起信号</span></span><br><span class="line">                        endGate.countDown();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        t.start();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="type">long</span> <span class="variable">start</span> <span class="operator">=</span> System.nanoTime();</span><br><span class="line">    startGate.countDown();</span><br><span class="line">    endGate.await();</span><br><span class="line">    <span class="type">long</span> <span class="variable">end</span> <span class="operator">=</span> System.nanoTime();</span><br><span class="line">    <span class="keyword">return</span> end - start;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>闭锁的作用，就是等待某些线程异步操作完成，再继续往下执行。</p>
+<h3 id="3-2-信号量"><a href="#3-2-信号量" class="headerlink" title="3.2 信号量"></a>3.2 信号量</h3><ul>
+<li>控制同时访问某个特定资源的操作数量</li>
+<li>控制同时执行某个操作的线程数量</li>
+</ul>
+<p>比如说，信号量可以用于控制容器的元素数量：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">BoundHashSet</span>&lt;T&gt; &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Set&lt;T&gt; set;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Semaphore sem;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">BoundHashSet</span><span class="params">(<span class="type">int</span> bound)</span> &#123;</span><br><span class="line">        set = Collections.synchronizedSet(<span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;());</span><br><span class="line">        sem = <span class="keyword">new</span> <span class="title class_">Semaphore</span>(bound);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">add</span><span class="params">(T o)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        sem.acquire();</span><br><span class="line">        <span class="type">boolean</span> <span class="variable">wasAdded</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            wasAdded = set.add(o);</span><br><span class="line">            <span class="keyword">return</span> wasAdded;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (!wasAdded) &#123;</span><br><span class="line">                sem.release();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">remove</span><span class="params">(T o)</span> &#123;</span><br><span class="line">        <span class="type">boolean</span> <span class="variable">wasRemoved</span> <span class="operator">=</span> set.remove(o);</span><br><span class="line">        <span class="keyword">if</span> (wasRemoved) &#123;</span><br><span class="line">            sem.release();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> wasRemoved;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过信号量的数量限制，可以控制同时访问某个资源的线程数量。</p>
+<h3 id="3-3-栅栏"><a href="#3-3-栅栏" class="headerlink" title="3.3 栅栏"></a>3.3 栅栏</h3><ul>
+<li>阻塞一组线程直到某个事件发生</li>
+<li>所有线程必须同时到达栅栏位置，才能继续执行</li>
+<li>闭锁用于等待事件，栅栏则是等待线程</li>
+<li>栅栏是可以重复使用的</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">long</span> <span class="title function_">timeTask</span><span class="params">(<span class="type">int</span> nThreads, <span class="keyword">final</span> Runnable task)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="keyword">class</span> <span class="title class_">Time</span> &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="type">long</span> <span class="variable">value</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">Time</span> <span class="variable">time</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Time</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// nThreads + 1 是加上了主线程</span></span><br><span class="line">    <span class="keyword">final</span> <span class="type">CyclicBarrier</span> <span class="variable">gate</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CyclicBarrier</span>(nThreads + <span class="number">1</span>,</span><br><span class="line">            () -&gt; time.value = System.nanoTime() - time.value);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; nThreads; i++) &#123;</span><br><span class="line">        <span class="type">Thread</span> <span class="variable">t</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="comment">// 等待所有线程开始</span></span><br><span class="line">                    gate.await();</span><br><span class="line"></span><br><span class="line">                    task.run();</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// 等待所有线程结束</span></span><br><span class="line">                    gate.await();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        t.start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 等待所有线程开始</span></span><br><span class="line">    gate.await();</span><br><span class="line">    <span class="comment">// 等待所有线程结束</span></span><br><span class="line">    gate.await();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> time.value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>与闭锁不同，闭锁需要等到某个事件通知，如 countDown()，线程才会继续往下执行。</p>
+<p>而栅栏等待的就是线程，只要所有线程都到达栅栏位置，就可以继续执行下去。</p>
+<h2 id="四、缓存案例"><a href="#四、缓存案例" class="headerlink" title="四、缓存案例"></a>四、缓存案例</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Memoizer</span>&lt;K, V&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ConcurrentHashMap&lt;K, Future&lt;V&gt;&gt; cache = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Computable&lt;K, V&gt; computer;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Memoizer</span><span class="params">(Computable&lt;K, V&gt; c)</span> &#123;</span><br><span class="line">        computer = c;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> V <span class="title function_">get</span><span class="params">(K key)</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">            Future&lt;V&gt; result = cache.get(key);</span><br><span class="line">            <span class="keyword">if</span> (result == <span class="literal">null</span>) &#123;</span><br><span class="line">                FutureTask&lt;V&gt; task = <span class="keyword">new</span> <span class="title class_">FutureTask</span>&lt;&gt;(() -&gt; computer.compute(key));</span><br><span class="line">                result = cache.putIfAbsent(key, task);</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 处理并发访问的情况</span></span><br><span class="line">                <span class="keyword">if</span> (result == <span class="literal">null</span>) &#123;</span><br><span class="line">                    result = task;</span><br><span class="line">                    <span class="keyword">new</span> <span class="title class_">Thread</span>(task).start();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// 等待计算完成</span></span><br><span class="line">                <span class="keyword">return</span> result.get();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>编程语言</category>
         <category>Java</category>
@@ -6663,6 +6663,658 @@
       <tags>
         <tag>java</tag>
         <tag>并发编程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>管程</title>
+    <url>/operating_system/basic/monitors/</url>
+    <content><![CDATA[<h1 id="管程"><a href="#管程" class="headerlink" title="管程"></a>管程</h1><h2 id="一、是什么？"><a href="#一、是什么？" class="headerlink" title="一、是什么？"></a>一、是什么？</h2><p>管程，是由一组数据以及定义在这组数据上的操作组成的模块或软件包。</p>
+<p>管程的组成：</p>
+<ul>
+<li>局部于管程内部的数据说明，对外而言是共享数据</li>
+<li>对该数据结构进行操作的一组数据</li>
+<li>对局部于管程的共享数据设置初始值的语句</li>
+</ul>
+<p>管程的特性：</p>
+<span id="more"></span>
+
+<ul>
+<li>局部于管程的数据只能被管程内的过程访问</li>
+<li>一个进程只有通过管程内的过程才能访问共享数据</li>
+<li>每次仅允许一个进程在管程内执行某个过程</li>
+</ul>
+<p>简单来说：</p>
+<ul>
+<li>管程就是封装了临界区和互斥操作的实现，保证只有一个进程可以访问临界区</li>
+<li>管程是一个编程语言成分，它不是由程序员来保证互斥访问，而是由编译器来实现</li>
+</ul>
+<p>管程和信号量的区别是啥？</p>
+<ul>
+<li>管程实际上是在信号量的基础上，再封装了一层，保证同步以及互斥</li>
+<li>管程是一种高级同步原语，信号量则是一种低级同步原语</li>
+</ul>
+<h2 id="二、为什么？"><a href="#二、为什么？" class="headerlink" title="二、为什么？"></a>二、为什么？</h2><p>引入管程的目的有：</p>
+<ul>
+<li>为了解决临界区分散所带来的管理和控制问题</li>
+<li>使用信号量控制临界区，每次都需要在临界区内写 P、V 操作，很容易就写错了</li>
+<li>管程相当于把 P、V 操作移到了管程内部来统一实现，有效地避免了分散和难管理的问题</li>
+</ul>
+<p>比如说，采用信号量访问临界区时：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">P(S)</span><br><span class="line">count++;</span><br><span class="line">V(S);</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">P(S)</span><br><span class="line">count--;</span><br><span class="line">V(S)</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">P(S)</span><br><span class="line">count = <span class="number">1</span>;</span><br><span class="line">V(S)</span><br></pre></td></tr></table></figure>
+
+<p>每次访问共享变量，就必须采用 P、V 操作，这样临界区就很分散（比如这里就分了3个临界区）。</p>
+<p>如果在某个临界区，忘记写 P 或 V 操作了，必然会导致某种问题，比如并发不安全，永远阻塞等。</p>
+<p>为了避免这种分散，不好管理，就出现了管程：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">monitor counter &#123;</span><br><span class="line">    <span class="type">int</span> count;</span><br><span class="line">    <span class="type">void</span> <span class="title function_">increment</span><span class="params">()</span> &#123;</span><br><span class="line">        count++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">void</span> <span class="title function_">decrement</span><span class="params">()</span> &#123;</span><br><span class="line">        count--;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">void</span> <span class="title function_">set</span><span class="params">(<span class="type">int</span> c)</span> &#123;</span><br><span class="line">        count = c;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">counter.increment();</span><br><span class="line">counter.decrement();</span><br><span class="line">counter.<span class="built_in">set</span>(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<p>注意，管程保证了同一时刻内只会有一个进程，所以没有并发问题。</p>
+<p>管程，就是提供了很方便的接口给我们使用，并且还帮我们实现了同步和互斥。</p>
+<h2 id="三、怎么用？"><a href="#三、怎么用？" class="headerlink" title="三、怎么用？"></a>三、怎么用？</h2><p>管程是一种编程语言成分，也就是说，使用管程，必须是语言自身支持才行。</p>
+<p>管程的互斥实现，是编译器负责的。</p>
+<p>就比如说，java 中的 synchronized 关键字，实际上底层就利用了管程：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">synchronized</span> <span class="title function_">increment</span> <span class="params">(lock)</span> &#123;</span><br><span class="line">    count++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>synchronized 关键字保护的临界区，可以保证只有1个线程能访问，底层实际上由管程对象来实现的。</p>
+<p>访问 synchronized 的临界区时，必须先获取 lock 锁对象对应的管程对象。</p>
+]]></content>
+      <categories>
+        <category>操作系统</category>
+        <category>基础</category>
+      </categories>
+      <tags>
+        <tag>操作系统</tag>
+        <tag>管程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>信号量</title>
+    <url>/operating_system/basic/semaphore/</url>
+    <content><![CDATA[<h1 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h1><h2 id="一、是什么？"><a href="#一、是什么？" class="headerlink" title="一、是什么？"></a>一、是什么？</h2><p>信号量本质上是一个计数器，用于控制多进程/线程对共享资源的访问。</p>
+<ul>
+<li>在进入一个关键代码段之前，必须先获取一个信号量</li>
+<li>一旦该关键代码段完成了，必须释放之前获取的信号量</li>
+</ul>
+<p>信号量即可以用于同步（如生产者-消费者），也可以用于互斥（二元信号量）。</p>
+<h2 id="二、为什么？"><a href="#二、为什么？" class="headerlink" title="二、为什么？"></a>二、为什么？</h2><span id="more"></span>
+
+<p>信号量的主要目的是为了在保护共享资源的情况下，对进程/线程进行同步协调。</p>
+<p>在并发环境下，需要对共享资源进行保护时，可以考虑用信号量。</p>
+<h2 id="三、怎么用？"><a href="#三、怎么用？" class="headerlink" title="三、怎么用？"></a>三、怎么用？</h2><p>信号量本身是表示可用资源数量，所以它的取值是一个非负整数。</p>
+<p>信号量，除了它的初始化以外，只有2种操作可用：</p>
+<ul>
+<li>P(S)：如果S的值大于零，就给它减1；如果它的值为零，就挂起该进程</li>
+<li>V(S)：如果有其他进程因等待S而被挂起，就让它恢复运行；否则就给它加1</li>
+</ul>
+<p>并且，需满足以下条件：</p>
+<ul>
+<li>P(S) 和 V(S) 必须都是不可分割的原子操作</li>
+</ul>
+<p>它的功能定义就类似这样：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">P (S) &#123;</span><br><span class="line">    <span class="keyword">while</span> (S &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// process block wait</span></span><br><span class="line">    &#125;</span><br><span class="line">    S--;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">V (S) &#123;</span><br><span class="line">    <span class="keyword">if</span> (S has wait process) &#123;</span><br><span class="line">        signal wait process</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        S++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注：P(S) 和 V(S) 都是原子操作，这里的定义只用于表示它们里面做了什么事。</p>
+<p>有了信号量，就能够控制对共享资源的访问了，举个简单的例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">semaphore S = 1;</span><br><span class="line"></span><br><span class="line">void producer() &#123;</span><br><span class="line">    int item;</span><br><span class="line">    item = produce_item();</span><br><span class="line">    inert_item(item);</span><br><span class="line">    V(S); /* 通知消费者，已放入数据 */</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void consumer() &#123;</span><br><span class="line">    P(S); /* 消费者必须在此等待生产者放入数据 */</span><br><span class="line">    int item;</span><br><span class="line">    item = remove_item();</span><br><span class="line">    consume_item(item);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>P(S) 用于等待信号量的可用资源，没有可用资源时，进程将陷入沉睡。</p>
+<p>V(S) 用于唤醒在信号量 S 上等待的进程。</p>
+<p>另外，P(S) 和 V(S)，也可以用 wait(S) 和 signal(S) 来表示。</p>
+<h2 id="四、数据结构？"><a href="#四、数据结构？" class="headerlink" title="四、数据结构？"></a>四、数据结构？</h2><p>一般来说，信号量的结构定义可以是这样：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">int</span> value;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">process</span> *<span class="title">wait_list</span>;</span></span><br><span class="line">&#125; semaphore;</span><br></pre></td></tr></table></figure>
+
+<p>其中，<code>value</code> 表示信号量可用资源数量，<code>wait_list</code> 表示在此信号量上等待的进程列表。</p>
+<p>对应的 P(S) 和 V(S) 操作定义如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">wait(semaphore *S) &#123;</span><br><span class="line">    S-&gt;value--;</span><br><span class="line">    <span class="keyword">if</span> (S-&gt;value &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        add this process to S-&gt;wait_list;</span><br><span class="line">        block();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">signal(semaphore *S) &#123;</span><br><span class="line">    S-&gt;value++;</span><br><span class="line">    <span class="keyword">if</span> (S-&gt;value &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        remove a process P from S-&gt;wait_list;</span><br><span class="line">        wakeup(P);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中 操作 <code>block()</code> 挂起调用它的进程，操作 <code>wakeup(P)</code> 重新启动阻塞进程 P 的执行。</p>
+<p>在这种实现中，信号量的值可以是负数，这和经典的信号量定义是不一样的：</p>
+<ul>
+<li>大于0时，表示可用资源数量</li>
+<li>等于0时，表示无可用资源，并且没有进程在等待</li>
+<li>小于0时，表示无可用资源，但是有进程在等待，其绝对值表示等待的进程数量</li>
+</ul>
+<p>这种实现方式在实际的操作系统中比较常见。</p>
+<h2 id="五、如何保证原子性？"><a href="#五、如何保证原子性？" class="headerlink" title="五、如何保证原子性？"></a>五、如何保证原子性？</h2><p>信号量的操作必须是原子的，否则还是会出现并发问题。</p>
+<ul>
+<li>信号量，本身也是一个临界资源，所以可以采用临界区互斥的方式实现原子性</li>
+</ul>
+<p>临界区互斥的实现方式有：</p>
+<ul>
+<li>单处理器中，采用暂时屏蔽中断的方式，等操作完信号量后再打开</li>
+<li>多处理器中，采用硬件指令（TestAndSet 或 Swap）来给信号量加互斥锁访问</li>
+</ul>
+<p>比如说，在 linux 系统中，信号量定义是这样的：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">semaphore</span> &#123;</span></span><br><span class="line">    <span class="type">raw_spinlock_t</span> lock;        <span class="comment">/* 自旋锁 */</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> count;         <span class="comment">/* 信号量值 */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">wait_list</span>;</span> <span class="comment">/* 进程等待链表 */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>在信号量结构中，会带有一个锁变量 lock。</p>
+<p>每当对信号量操作时，都需要先对这个 lock 进行互斥加锁，然后才能操作。</p>
+<p>比如，P(S) 的实现（在 linux 中是 down()）如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">down</span><span class="params">(<span class="keyword">struct</span> semaphore *sem)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> flags;</span><br><span class="line">    raw_spin_lock_irqsave(&amp;sem-&gt;lock, flags);      <span class="comment">/* 自旋等待信号量的锁变量 */</span></span><br><span class="line">    <span class="keyword">if</span> (likely(sem-&gt;count &gt; <span class="number">0</span>))</span><br><span class="line">        sem-&gt;count--;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        __down(sem);                               <span class="comment">/* 如果信号量小于等于0，进入等待队列 */</span></span><br><span class="line">    raw_spin_unlock_irqrestore(&amp;sem-&gt;lock, flags); <span class="comment">/* 释放信号量的锁 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这实现代码写得很清晰了：</p>
+<ul>
+<li>操作前，首先获取信号量的锁变量，这里是用的自旋锁获取</li>
+<li>加锁成功后，再判断信号量的可用资源数</li>
+<li>如果可用资源数大于0，则直接减一；否则进入信号量的等待队列</li>
+<li>操作完成后，释放信号量的锁</li>
+</ul>
+<p>至于 <code> raw_spin_lock_irqsave</code> 自旋锁是如何实现的，实际上就是由更底层的硬件指令来完成的。</p>
+<p>比如 TestAndSet 或 Swap 等指令，TestAndSet 指令就类似于这样：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 进入临界区 */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">enter_region</span><span class="params">(<span class="type">int</span> *lock)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (TestAndSet(lock));      <span class="comment">/* 自旋加互斥锁 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>另外，还有一个问题，进入等待队列时都做了啥？具体看一下源码：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">int</span> __sched __down_common(<span class="keyword">struct</span> semaphore *sem, <span class="type">long</span> state, <span class="type">long</span> timeout)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/* 为当前进程创建waiter对象 */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> *<span class="title">task</span> =</span> current;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">semaphore_waiter</span> <span class="title">waiter</span>;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 添加到信号量的等待队列 */</span></span><br><span class="line">    list_add_tail(&amp;waiter.<span class="built_in">list</span>, &amp;sem-&gt;wait_list);</span><br><span class="line">    waiter.task = task;</span><br><span class="line">    waiter.up = <span class="literal">false</span>;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="keyword">if</span> (signal_pending_state(state, task))</span><br><span class="line">            <span class="keyword">goto</span> interrupted;</span><br><span class="line">        <span class="keyword">if</span> (unlikely(timeout &lt;= <span class="number">0</span>))</span><br><span class="line">            <span class="keyword">goto</span> timed_out;</span><br><span class="line">        __set_task_state(task, state);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* 在切换到其他进程前，释放信号量的锁 */</span></span><br><span class="line">        raw_spin_unlock_irq(&amp;sem-&gt;lock);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* 调度切换进程 */</span></span><br><span class="line">        timeout = schedule_timeout(timeout);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* 重新获取信号量的锁 */</span></span><br><span class="line">        raw_spin_lock_irq(&amp;sem-&gt;lock);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* 被V(S)操作唤醒了 */</span></span><br><span class="line">        <span class="keyword">if</span> (waiter.up)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line"> timed_out:</span><br><span class="line">    list_del(&amp;waiter.<span class="built_in">list</span>);</span><br><span class="line">    <span class="keyword">return</span> -ETIME;</span><br><span class="line"> </span><br><span class="line"> interrupted:</span><br><span class="line">    list_del(&amp;waiter.<span class="built_in">list</span>);</span><br><span class="line">    <span class="keyword">return</span> -EINTR;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从这里可以看到，进程如果在调用 P(S) 时拿不到资源，就会做几件事：</p>
+<ul>
+<li>把当前进程添加到信号量的等待队列</li>
+<li>释放信号量的锁，因为当前进程要睡眠了，如果不释放，别的进程就拿不到了</li>
+<li>调度切换到其他进程，实际上并没有真正睡眠，而是等待了一段时间</li>
+</ul>
+<p>过一段时间后，等待进程再次调度执行时，又会做几件事：</p>
+<ul>
+<li>重新获取信号量的锁，不管对信号量做什么，即使只是验证它的值，也要先获取锁</li>
+<li>检查自己是不是被别人用 V(S) 唤醒了</li>
+<li>如果没有被唤醒，则进入下一轮等待</li>
+</ul>
+<p>就这样，一直重复等待，直到拿到信号量的可用资源为止。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>信号量是什么？</p>
+<ul>
+<li>信号量本质上是一个计数器，用于控制多进程/线程对共享资源的访问<ul>
+<li>在进入一个关键代码段之前，必须先获取一个信号量</li>
+<li>一旦该关键代码段完成了，必须释放之前获取的信号量</li>
+</ul>
+</li>
+<li>信号量即可以用于同步（如生产者-消费者），也可以用于互斥（二元信号量）</li>
+</ul>
+<p>为什么要用信号量？</p>
+<ul>
+<li>信号量的主要目的是为了在保护共享资源的情况下，对进程/线程进行同步协调</li>
+<li>在并发环境下，需要对共享资源进行保护时，可以考虑用信号量</li>
+</ul>
+<p>信号量怎么用？</p>
+<ul>
+<li>信号量本身是表示可用资源数量，所以它的取值是一个非负整数</li>
+<li>信号量，除了它的初始化以外，只有2种操作可用：<ul>
+<li>P(S)：如果S的值大于零，就给它减1；如果它的值为零，就挂起该进程</li>
+<li>V(S)：如果有其他进程因等待S而被挂起，就让它恢复运行；否则就给它加1</li>
+</ul>
+</li>
+<li>P(S) 和 V(S) 必须都是不可分割的原子操作</li>
+<li>P(S) 和 V(S) 操作，也可以用 wait(S) 和 signal(S) 来表示</li>
+</ul>
+<p>信号量的数据结构？</p>
+<ul>
+<li>在这种实现中，信号量的值可以是负数，这和经典的信号量定义是不一样的：<ul>
+<li>大于0时，表示可用资源数量</li>
+<li>等于0时，表示无可用资源，并且没有进程在等待</li>
+<li>小于0时，表示无可用资源，但是有进程在等待，其绝对值表示等待的进程数量</li>
+</ul>
+</li>
+<li>信号量实现比较灵活，但是正数始终表示可用资源数</li>
+</ul>
+<p>信号量的原子性保证？</p>
+<ul>
+<li>信号量，本身也是一个临界资源，所以可以采用临界区互斥的方式实现原子性<ul>
+<li>单处理器中，采用暂时屏蔽中断的方式，等操作完信号量后再打开</li>
+<li>多处理器中，采用硬件指令（TestAndSet 或 Swap）来给信号量加互斥锁访问</li>
+</ul>
+</li>
+<li>在 linux 系统中，信号量采用的是锁变量法来互斥访问信号量<ul>
+<li>信号量结构中自带有一个锁变量</li>
+<li>使用自旋锁来给锁变量加锁</li>
+<li>自旋锁底层实际上是用的硬件指令实现</li>
+</ul>
+</li>
+<li>进入等待队列时都做了什么？以 linux 系统为例：<ul>
+<li>把当前进程添加到信号量的等待队列</li>
+<li>释放信号量的锁，因为当前进程要睡眠了，如果不释放，别的进程就拿不到了</li>
+<li>调度切换到其他进程，实际上并没有真正睡眠，而是等待了一段时间</li>
+</ul>
+</li>
+<li>一段时间后，进程再次被调度执行时：<ul>
+<li>重新获取信号量的锁，不管对信号量做什么，即使只是验证它的值，也要先获取锁</li>
+<li>检查自己是不是被别人用 V(S) 唤醒了</li>
+<li>如果没有被唤醒，则进入下一轮等待</li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>操作系统</category>
+        <category>基础</category>
+      </categories>
+      <tags>
+        <tag>操作系统</tag>
+        <tag>信号量</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>临界区互斥</title>
+    <url>/operating_system/basic/critical_section/</url>
+    <content><![CDATA[<h1 id="临界区互斥"><a href="#临界区互斥" class="headerlink" title="临界区互斥"></a>临界区互斥</h1><h2 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h2><h3 id="1-1-临界概念"><a href="#1-1-临界概念" class="headerlink" title="1.1 临界概念"></a>1.1 临界概念</h3><p>定义：</p>
+<ul>
+<li>临界资源：一次仅允许1个进程/线程使用的资源。比如，进程间的共享内存</li>
+<li>临界区：对临界资源进行访问的代码片段。比如，进程中对共享内存进行访问的程序片段</li>
+</ul>
+<h3 id="1-2-同步"><a href="#1-2-同步" class="headerlink" title="1.2 同步"></a>1.2 同步</h3><span id="more"></span>
+
+<ul>
+<li>同步是一种进程/线程之间的合作关系</li>
+<li>为完成某种任务而建立的多个进程或者线程之间的协调调用，次序等待，传递消息告知资源占用情况</li>
+<li>同步是一种协调关系，为的是有序地运行</li>
+</ul>
+<h3 id="1-3-互斥"><a href="#1-3-互斥" class="headerlink" title="1.3 互斥"></a>1.3 互斥</h3><ul>
+<li>互斥是一种进程/线程之间的制约关系</li>
+<li>当一个进程/线程进入临界区时，其他进程/线程必须等待</li>
+<li>互斥具有唯一性和排它性，为的是避免访问冲突</li>
+</ul>
+<h2 id="二、实现临界区互斥的基本方法"><a href="#二、实现临界区互斥的基本方法" class="headerlink" title="二、实现临界区互斥的基本方法"></a>二、实现临界区互斥的基本方法</h2><p>为禁止2个进程/线程同时进入临界区，需满足以下条件：</p>
+<ul>
+<li>空闲等待：临界区空闲时，允许进程/线程进入临界区</li>
+<li>忙则等待：2个进程/线程不允许同时处于临界区，后来的进程/线程必须等待</li>
+<li>有限等待：不能让进程/线程无限期地等待进入临界区</li>
+<li>让权等待：当进程/线程不能进入临界区时，应立即释放处理器，防止忙等待</li>
+</ul>
+<h3 id="2-1-软件方法"><a href="#2-1-软件方法" class="headerlink" title="2.1 软件方法"></a>2.1 软件方法</h3><h4 id="2-1-1-锁变量法"><a href="#2-1-1-锁变量法" class="headerlink" title="2.1.1 锁变量法"></a>2.1.1 锁变量法</h4><p>直接用1个全局锁变量，其初始值为0，来记录当前进入临界区的进程：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> turn;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 进入临界区 */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">enter_region</span><span class="params">(<span class="type">int</span> process)</span>                          <span class="comment">/* 当前进程号 */</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (turn != <span class="number">0</span>);                                  <span class="comment">/* 其他进程正在访问临界区 */</span></span><br><span class="line">    turn = process;                                     <span class="comment">/* 设置临界区访问标志 */</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 离开临界区 */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">leave_region</span><span class="params">(<span class="type">int</span> porcess)</span>                          <span class="comment">/* 当前进程号 */</span></span><br><span class="line">&#123;</span><br><span class="line">    turn = <span class="number">0</span>;                                           <span class="comment">/* 设置临界区访问标志 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种方法有可能导致2个进程同时进入临界区。</p>
+<p>因为 <code>while(turn != 0)</code> 这一处代码有可能被2个进程同时执行，然后验证都能通过。</p>
+<h4 id="2-1-2-双标志法"><a href="#2-1-2-双标志法" class="headerlink" title="2.1.2 双标志法"></a>2.1.2 双标志法</h4><p>2个线程时，给每个进程1个标志，用于表示当前线程正处于临界区内：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> interested[<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 进入临界区 */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">enter_region</span><span class="params">(<span class="type">int</span> process)</span>                          <span class="comment">/* 当前进程号，进程号是0或1 */</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> other;</span><br><span class="line">    other = <span class="number">1</span> - process;                                <span class="comment">/* 另一方进程号 */</span></span><br><span class="line">    <span class="keyword">while</span> (interested[other] == <span class="number">1</span>);                     <span class="comment">/* 另一方进程正在访问临界区 */</span></span><br><span class="line">    interested[process] = <span class="number">1</span>;                            <span class="comment">/* 设置当前进程状态 */</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 离开临界区 */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">leave_region</span><span class="params">(<span class="type">int</span> porcess)</span>                          <span class="comment">/* 当前进程号，进程号是0或1 */</span></span><br><span class="line">&#123;</span><br><span class="line">    interested[process] = <span class="number">0</span>;                            <span class="comment">/* 设置当前进程状态 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>和锁变量法一样，同样存在2个进程同时进入临界区的情况。</p>
+<p><code>while (interested[other] == 1);</code> 可能会并发同时执行，2个进程验证都能通过。</p>
+<h4 id="2-13-Peterson-算法"><a href="#2-13-Peterson-算法" class="headerlink" title="2.13 Peterson 算法"></a>2.13 Peterson 算法</h4><p>当2个进程同时要访问临界区时，结合锁变量 + 双标志法，后进入的线程需等待前一个线程执行完成：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> turn;</span><br><span class="line"><span class="type">int</span> interested[<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 进入临界区 */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">enter_region</span><span class="params">(<span class="type">int</span> process)</span>                          <span class="comment">/* 当前进程号，进程号是0或1 */</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> other;</span><br><span class="line">    other = <span class="number">1</span> - process;                                <span class="comment">/* 另一方进程号 */</span></span><br><span class="line">    interested[process] = <span class="number">1</span>;                            <span class="comment">/* 设置当前进程状态 */</span></span><br><span class="line">    turn = process;                                     <span class="comment">/* 设置临界区访问标志 */</span></span><br><span class="line">    <span class="keyword">while</span> (turn == process &amp;&amp; interested[other] == <span class="number">1</span>);  <span class="comment">/* 另一方进程正在访问临界区 */</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 离开临界区 */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">leave_region</span><span class="params">(<span class="type">int</span> porcess)</span>                          <span class="comment">/* 当前进程号，进程号是0或1 */</span></span><br><span class="line">&#123;</span><br><span class="line">    interested[process] = <span class="number">0</span>;                            <span class="comment">/* 设置当前进程状态 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在2个进程的情况下，可以保证在同一时间段内，只有1个进程能够访问临界区。</p>
+<p>后来的进程会在 <code>while (turn == process &amp;&amp; interested[other] == 1);</code> 这里等待前一个进程退出临界区为止。</p>
+<h3 id="2-2-硬件方法"><a href="#2-2-硬件方法" class="headerlink" title="2.2 硬件方法"></a>2.2 硬件方法</h3><h4 id="2-2-1-中断屏蔽法"><a href="#2-2-1-中断屏蔽法" class="headerlink" title="2.2.1 中断屏蔽法"></a>2.2.1 中断屏蔽法</h4><p>进程切换，只会在 CPU 发生中断的情况下，所以只要禁止一切中断，就能避免进程切换。</p>
+<p>它的基本模式如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 进入临界区 */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">enter_region</span><span class="params">(<span class="type">int</span> process)</span></span><br><span class="line">&#123;</span><br><span class="line">    关闭中断</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 离开临界区 */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">leave_region</span><span class="params">(<span class="type">int</span> porcess)</span></span><br><span class="line">&#123;</span><br><span class="line">    打开中断</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>屏蔽中断，实际上只会对单处理器生效。</p>
+<p>比如说，在处理器1上屏蔽中断，是不会影响到处理器2的中断的，处理器2依旧能正常处理中断信号。</p>
+<p>所以，屏蔽中断法，只能对单处理器生效，对于多处理器还是有问题的。</p>
+<h4 id="2-2-2-硬件指令法"><a href="#2-2-2-硬件指令法" class="headerlink" title="2.2.2 硬件指令法"></a>2.2.2 硬件指令法</h4><p>计算机中有一些特殊的硬件指令，允许对一个内存字的内容进行检测和修改，并且保证读和写是不可分割的。即在该指令结束前，其他处理器均不允许访问该内存字。</p>
+<p>这种硬件的原子指令，基本都是通过锁住内存总线，以达到禁止其他 CPU 访问内存字的目的。</p>
+<p>屏蔽中断和锁住总线的区别：</p>
+<ul>
+<li>屏蔽中断：只会对当前 CPU 生效，不影响其他 CPU 的中断处理</li>
+<li>锁住总线：对所有 CPU 生效，因为 CPU 读写内存字，必须要经过内存总线</li>
+</ul>
+<p>通过锁住总线的方式，可以避免多个 CPU 同时访问相同的内存字。</p>
+<p>硬件指令法，实际上就是硬件版的锁变量法：</p>
+<ol>
+<li>首先为每个临界区都设置一个共享变量 lock</li>
+<li>然后利用硬件的原子指令设置 lock 的值</li>
+<li>设置成功的进程，就拿到了临界区的访问权</li>
+<li>设置不成功的进程，就进行自旋等待</li>
+</ol>
+<p>具体看一下有哪些原子指令可以实现互斥。</p>
+<p><strong>(1) TestAndSet 指令</strong></p>
+<p>TestAndSet 指令的作用就是测试并设置内存字的值。</p>
+<p>这类指令有 TSL 指令，它会将一个内存字读到寄存器，并在该内存地址上设值一个非零值。</p>
+<p>伪代码类似这样（实际由硬件实现，是不可分割的原子操作）：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">TestAndSet</span> <span class="params">(<span class="type">int</span> *lock)</span> &#123;</span><br><span class="line">    <span class="type">int</span> old;</span><br><span class="line">    old = *lock;</span><br><span class="line">    *lock = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> old;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>利用这个指令实现的临界区互斥方法：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 进入临界区 */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">enter_region</span><span class="params">(<span class="type">int</span> *lock)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (TestAndSet(lock));      <span class="comment">/* 自旋加互斥锁 */</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 离开临界区 */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">leave_region</span><span class="params">(<span class="type">int</span> *lock)</span></span><br><span class="line">&#123;</span><br><span class="line">    *lock = <span class="number">0</span>;                     <span class="comment">/* 释放互斥锁 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>硬件原子指令保证 <code>TestAndSet(&amp;lock)</code> 是不可分割的，所以不存在2个进程都验证通过的情况。</p>
+<p><strong>(2) Swap 指令</strong></p>
+<p>Swap 指令的作用就是交换2个位置的内存，而且是原子不可分割的。</p>
+<p>这类指令有 XCHG 指令，它可以交换2个位置的内存。</p>
+<p>伪代码类似这样（实际由硬件实现，是不可分割的原子操作）：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">Swap</span> <span class="params">(<span class="type">int</span> *a, <span class="type">int</span> *b)</span> &#123;</span><br><span class="line">    <span class="type">int</span> t;</span><br><span class="line">    t = *a;</span><br><span class="line">    *a = *b;</span><br><span class="line">    *b = t;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>利用这个指令实现的临界区互斥方法：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 进入临界区 */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">enter_region</span><span class="params">(<span class="type">int</span> *lock)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (Swap(&amp;lock, <span class="number">1</span>));        <span class="comment">/* 自旋加互斥锁 */</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 离开临界区 */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">leave_region</span><span class="params">(<span class="type">int</span> *lock)</span></span><br><span class="line">&#123;</span><br><span class="line">    *lock = <span class="number">0</span>;                     <span class="comment">/* 释放互斥锁 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>硬件原子指令保证 <code>Swap(&amp;lock, 1)</code> 是不可分割的，所以也不存在2个进程都验证通过的情况。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>临界概念：</p>
+<ul>
+<li>临界资源：一次仅允许1个进程/线程使用的资源。比如，进程间的共享内存</li>
+<li>临界区：对临界资源进行访问的代码片段。比如，进程中对共享内存进行访问的程序片段</li>
+</ul>
+<p>同步：</p>
+<ul>
+<li>同步是一种进程/线程之间的合作关系</li>
+<li>为完成某种任务而建立的多个进程或者线程之间的协调调用，次序等待，传递消息告知资源占用情况</li>
+<li>同步是一种协调关系，为的是有序地运行</li>
+</ul>
+<p>互斥：</p>
+<ul>
+<li>互斥是一种进程/线程之间的制约关系</li>
+<li>当一个进程/线程进入临界区时，其他进程/线程必须等待</li>
+<li>互斥具有唯一性和排它性，为的是避免访问冲突</li>
+</ul>
+<p>临界区互斥实现：</p>
+<ul>
+<li>软件互斥：<ul>
+<li>锁变量法和双标志法，都不是完美的临界区互斥实现</li>
+<li>Peterson 算法，可以正确互斥，保证2个进程互斥访问临界区</li>
+<li>只支持2个进程的互斥，自旋等待可能非常占用 CPU 资源</li>
+</ul>
+</li>
+<li>硬件互斥：<ul>
+<li>中断屏蔽法，只对单处理器保证互斥访问临界区，多处理器无效</li>
+<li>硬件指令法，可以保证对多处理器下互斥访问临界区</li>
+<li>支持任意进程数量的互斥，支持进程有多个临界区（设多个临界区锁变量即可）</li>
+</ul>
+</li>
+<li>软硬件互斥实现，都有忙等待的缺点</li>
+</ul>
+]]></content>
+      <categories>
+        <category>操作系统</category>
+        <category>基础</category>
+      </categories>
+      <tags>
+        <tag>操作系统</tag>
+        <tag>临界区</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SSH</title>
+    <url>/operating_system/basic/SSH/</url>
+    <content><![CDATA[<h1 id="SSH"><a href="#SSH" class="headerlink" title="SSH"></a>SSH</h1><p>SSH是一种网络协议，用于计算机之间的加密登录。</p>
+<p>SSH只是一种协议，存在多种实现，既有商业实现，也有开源实现。</p>
+<h2 id="一、基本用法"><a href="#一、基本用法" class="headerlink" title="一、基本用法"></a>一、基本用法</h2><span id="more"></span>
+
+<p>SSH主要用于远程登录。</p>
+<p>假定要以用户名<code>user</code>登录远程主机<code>8.8.8.8</code>：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">ssh user@8.8.8.8</span></span><br></pre></td></tr></table></figure>
+
+<p>当本地用户名与远程用户名一致，登录时可以省略用户名：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">ssh 8.8.8.8</span></span><br></pre></td></tr></table></figure>
+
+<p>SSH的默认端口是22，可以使用参数p进行调整，比如使用8888端口：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">ssh -p 8888 user@8.8.8.8</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="二、请求流程"><a href="#二、请求流程" class="headerlink" title="二、请求流程"></a>二、请求流程</h2><p>SSH 的登录流程如下：</p>
+<ol>
+<li>远程主机收到用户的登录请求，把自己的公钥发给用户</li>
+<li>用户使用这个公钥，将登录密码加密后，发送回来</li>
+<li>远程主机用自己的私钥，解密登录密码，如果密码正确，就同意用户登录</li>
+</ol>
+<h2 id="三、口令登录"><a href="#三、口令登录" class="headerlink" title="三、口令登录"></a>三、口令登录</h2><p>如果是第一次登录远程主机，系统会出现下面的提示：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">ssh user@host</span></span><br><span class="line"></span><br><span class="line">The authenticity of host &#x27;host (8.8.8.8)&#x27; can&#x27;t be established.</span><br><span class="line"></span><br><span class="line">RSA key fingerprint is 98:2e:d7:e0:de:9f:ac:67:28:c2:42:2d:37:16:58:4d.</span><br><span class="line"></span><br><span class="line">Are you sure you want to continue connecting (yes/no)?</span><br></pre></td></tr></table></figure>
+
+<p>这段话的意思是，无法确认host主机的真实性，只知道它的公钥指纹，问你还想继续连接吗？</p>
+<p>所谓”公钥指纹”，是指公钥长度较长（这里采用RSA算法，长达1024位），很难比对，所以对其进行MD5计算，将它变成一个128位的指纹。上例中是98:2e:d7:e0:de:9f:ac:67:28:c2:42:2d:37:16:58:4d，再进行比较，就容易多了。</p>
+<p>很自然的一个问题就是，用户怎么知道远程主机的公钥指纹应该是多少？回答是没有好办法，远程主机必须在自己的网站上贴出公钥指纹，以便用户自行核对。</p>
+<p>假定经过风险衡量以后，用户决定接受这个远程主机的公钥：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Are you sure you want to continue connecting (yes/no)? yes</span><br></pre></td></tr></table></figure>
+
+<p>系统会出现一句提示，表示host主机已经得到认可：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Warning: Permanently added &#x27;host,8.8.8.8&#x27; (RSA) to the list of known hosts.</span><br></pre></td></tr></table></figure>
+
+<p>然后，会要求输入密码：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Password: (enter password)</span><br></pre></td></tr></table></figure>
+
+<p>如果密码正确，就可以登录了。</p>
+<p>当远程主机的公钥被接受以后，它就会被保存在文件<code>$HOME/.ssh/known_hosts</code>之中。下次再连接这台主机，系统就会认出它的公钥已经保存在本地了，从而跳过警告部分，直接提示输入密码。</p>
+<p>每个SSH用户都有自己的<code>known_hosts</code>文件，此外系统也有一个这样的文件，通常是<code>/etc/ssh/ssh_known_hosts</code>，保存一些对所有用户都可信赖的远程主机的公钥。</p>
+<h2 id="四、公钥登录"><a href="#四、公钥登录" class="headerlink" title="四、公钥登录"></a>四、公钥登录</h2><p>使用密码登录，每次都必须输入密码，非常麻烦。好在SSH还提供了公钥登录，可以省去输入密码的步骤。</p>
+<p>所谓”公钥登录”，原理很简单，就是用户将自己的公钥储存在远程主机上。登录的时候，远程主机会向用户发送一段随机字符串，用户用自己的私钥加密后，再发回来。远程主机用事先储存的公钥进行解密，如果成功，就证明用户是可信的，直接允许登录shell，不再要求密码。</p>
+<h3 id="4-1-用户端设置"><a href="#4-1-用户端设置" class="headerlink" title="4.1 用户端设置"></a>4.1 用户端设置</h3><p>这种方法要求用户必须提供自己的公钥。如果没有现成的，可以直接用<code>ssh-keygen</code>生成一个：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">ssh-keygen</span></span><br></pre></td></tr></table></figure>
+
+<p>运行上面的命令以后，系统会出现一系列提示，可以一路回车。其中有一个问题是，要不要对私钥设置口令（passphrase），如果担心私钥的安全，这里可以设置一个。</p>
+<p>运行结束以后，在<code>$HOME/.ssh/</code>目录下，会新生成两个文件：<code>id_rsa.pub</code>和<code>id_rsa</code>。前者是你的公钥，后者是你的私钥。</p>
+<p>这时再输入下面的命令，将公钥传送到远程主机host上面：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">ssh-copy-id user@8.8.8.8</span></span><br></pre></td></tr></table></figure>
+
+<p>好了，用户端的设置就完成了。</p>
+<h3 id="4-2-远程端设置"><a href="#4-2-远程端设置" class="headerlink" title="4.2 远程端设置"></a>4.2 远程端设置</h3><p>打开远程主机的/etc/ssh/sshd_config这个文件，检查下面几行前面”#”注释是否取掉：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">RSAAuthentication yes</span><br><span class="line">PubkeyAuthentication yes</span><br><span class="line">AuthorizedKeysFile .ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+
+<p>然后，重启远程主机的ssh服务。</p>
+<p>远程主机将用户的公钥，保存在登录后的用户主目录的<code>$HOME/.ssh/authorized_keys</code>文件中。公钥就是一段字符串，只要把它追加在<code>authorized_keys</code>文件的末尾就行了。</p>
+<p>这里不使用上面的<code>ssh-copy-id</code>命令，改用下面的命令，解释公钥的保存过程：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">ssh user@host <span class="string">&#x27;mkdir -p .ssh &amp;&amp; cat &gt;&gt; .ssh/authorized_keys&#x27;</span> &lt; ~/.ssh/id_rsa.pub</span></span><br></pre></td></tr></table></figure>
+
+<p>写入authorized_keys文件后，公钥登录的设置就完成了。</p>
+]]></content>
+      <categories>
+        <category>操作系统</category>
+        <category>基础</category>
+      </categories>
+      <tags>
+        <tag>操作系统</tag>
+        <tag>登录</tag>
+        <tag>SSH</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>内核版本</title>
+    <url>/operating_system/linux/kernel_version/</url>
+    <content><![CDATA[<h1 id="内核版本"><a href="#内核版本" class="headerlink" title="内核版本"></a>内核版本</h1><p>主要是Linux内核版本的说明。</p>
+<h2 id="一、内核版本号格式"><a href="#一、内核版本号格式" class="headerlink" title="一、内核版本号格式"></a>一、内核版本号格式</h2><p>Linux内核版本号的格式可以分为3个阶段：</p>
+<ul>
+<li>早期版本，在1.0以前</li>
+<li>过渡版本，在1.0 ~ 2.6之间</li>
+<li>最新版本，在2.6.0以后</li>
+</ul>
+<h3 id="1-1-早期版本"><a href="#1-1-早期版本" class="headerlink" title="1.1 早期版本"></a>1.1 早期版本</h3><span id="more"></span>
+
+<p>用于在1.0以前，版本号格式是 <code>x.xx</code>，例如 <code>0.01</code>、<code>0.02</code>、···、<code>1.0</code> 等。</p>
+<h3 id="1-2-过渡版本"><a href="#1-2-过渡版本" class="headerlink" title="1.2 过渡版本"></a>1.2 过渡版本</h3><p>用于1.0 ~ 2.6之间，版本号格式是 <code>A.B.C</code>，例如 <code>2.0.28</code>、<code>2.4.18</code>、···、<code>2.6.0</code> 等。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">A : 表示大幅度转变的内核，只有当发生重大变化的代码和内核发生才会发生，在历史上曾改变两次的内核：1994年的1.0及1996年的2.0</span><br><span class="line">B : 是指一些重大修改的内核，奇数表示开发版本，偶数表示稳定版本</span><br><span class="line">C : 是内核修订版本号，是指轻微修订的内核。当有安全补丁、bug修复、新的功能或驱动程序时，便会有变化</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-最新版本"><a href="#1-3-最新版本" class="headerlink" title="1.3 最新版本"></a>1.3 最新版本</h3><p>用于2.6.0以后，版本号格式是 <code>major.minor.patch-build.desc</code>，例如 <code>2.6.32-642.15.1.el6.x86_64</code>、<code>4.4.131-1.el7.elrepo.x86_64</code> 等。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">major : 主版本号，有结构变化才变更 </span><br><span class="line">minor : 次版本号，新增功能时才发生变化，一般技术表示测试版，偶数表示生产版 </span><br><span class="line">patch : 补丁包数或次版本的修改次数 </span><br><span class="line">build : 编译（或构建）的次数，每次编译可能对少量程序做优化或修改，但一般没有大的（可控的）功能变化。</span><br><span class="line">desc  : 当前版本的特殊信息，其信息由编译时指定，具有较大的随意性，有如下的标识是常用的： </span><br><span class="line">    rc（或r），表示发行候选版本（release candidate），rc后的数字表示该正式版本的第几个候选版本，多数情况下，各候选版本之间数字越大越接近正式版。</span><br><span class="line">    smp，表示对称多处理器（Symmetric MultiProcessing）。</span><br><span class="line">    pp，在Red Hat Linux中常用来表示测试版本（pre-patch）。</span><br><span class="line">    EL，在Red Hat Linux中用来表示企业版Linux（Enterprise Linux）。</span><br><span class="line">    mm，表示专门用来测试新的技术或新功能的版本。</span><br><span class="line">    fc，在Red Hat Linux中表示Fedora Core。  </span><br></pre></td></tr></table></figure>
+
+<p>例如 <code>2.6.32-642.15.1.el6.x86_64</code>，它的说明如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">第一个组数字：2, 主版本号</span><br><span class="line">第二个组数字：6, 次版本号，当前为稳定版本</span><br><span class="line">第三个组数字：32, 修订版本号</span><br><span class="line">第四个组数字：642.15.1，表示发型版本的补丁版本</span><br><span class="line">el6：则表示我正在使用的内核是 RedHat / CentOS 系列发行版专用内核</span><br><span class="line">x86_64：采用的是64位的CPU</span><br></pre></td></tr></table></figure>
+
+<h2 id="二、内核版本分类"><a href="#二、内核版本分类" class="headerlink" title="二、内核版本分类"></a>二、内核版本分类</h2><h3 id="2-1-mainline"><a href="#2-1-mainline" class="headerlink" title="2.1 mainline"></a>2.1 mainline</h3><p>主线版本。</p>
+<h3 id="2-2-stable"><a href="#2-2-stable" class="headerlink" title="2.2 stable"></a>2.2 stable</h3><p>稳定版，由mainline在时机成熟时发布，稳定版也会在相应版本号的主线上提供bug修复和安全补丁，但内核社区人力有限，因此较老版本会停止维护，而标记为EOL(End of Life)的版本表示不再支持的版本。</p>
+<h3 id="2-3-longterm-Long-Term-Support"><a href="#2-3-longterm-Long-Term-Support" class="headerlink" title="2.3 longterm(Long Term Support)"></a>2.3 longterm(Long Term Support)</h3><p>长期支持版，长期支持版的内核不再支持时会标记EOL。</p>
+<h3 id="2-4-linux-next，snapshot"><a href="#2-4-linux-next，snapshot" class="headerlink" title="2.4 linux-next，snapshot"></a>2.4 linux-next，snapshot</h3><p>代码提交周期结束之前生成的快照，用于给Linux代码贡献者们做测试。</p>
+<h2 id="三、查看内核版本"><a href="#三、查看内核版本" class="headerlink" title="三、查看内核版本"></a>三、查看内核版本</h2><h3 id="3-1-cat-proc-version"><a href="#3-1-cat-proc-version" class="headerlink" title="3.1  cat /proc/version"></a>3.1  cat /proc/version</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[root@home]# cat /proc/version</span><br><span class="line">Linux version 4.4.131-1.el7.elrepo.x86_64 (mockbuild@Build64R7) (gcc version 4.8.5 20150623 (Red Hat 4.8.5-28) (GCC) ) #1 SMP Wed May 2 13:09:02 EDT 2018</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-uname-a"><a href="#3-2-uname-a" class="headerlink" title="3.2 uname -a"></a>3.2 uname -a</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[root@home]# uname -a</span><br><span class="line">Linux bogon 4.4.131-1.el7.elrepo.x86_64 #1 SMP Wed May 2 13:09:02 EDT 2018 x86_64 x86_64 x86_64 GNU/Linux</span><br></pre></td></tr></table></figure>
+
+<h2 id="四、查看系统版本"><a href="#四、查看系统版本" class="headerlink" title="四、查看系统版本"></a>四、查看系统版本</h2><h3 id="4-1-lsb-release-a"><a href="#4-1-lsb-release-a" class="headerlink" title="4.1 lsb_release -a"></a>4.1 lsb_release -a</h3><p><code>lsb_release -a</code> 适用于所有的Linux发行版本。</p>
+<p>LSB是Linux Standard Base的缩写，lsb_release命令用来显示LSB和特定版本的相关信息。如果使用该命令时不带参数，则默认加上-v参数。</p>
+<p>说明：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-v 显示版本信息。</span><br><span class="line">-i 显示发行版的id。</span><br><span class="line">-d 显示该发行版的描述信息。</span><br><span class="line">-r 显示当前系统是发行版的具体版本号。</span><br><span class="line">-c 发行版代号。</span><br><span class="line">-a 显示上面的所有信息。</span><br><span class="line">-h 显示帮助信息。</span><br><span class="line">-s 输出简短的描述信息(仅限于redhat和fedora系统) 。</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-cat-etc-issue"><a href="#3-2-cat-etc-issue" class="headerlink" title="3.2 cat /etc/issue"></a>3.2 cat /etc/issue</h3><p><code>cat /etc/issue</code> 适用于所有的Linux发行版本。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[root@home]# cat /etc/issue</span><br><span class="line">Ubuntu 14.04.5 LTS \n \l</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-cat-etc-redhat-release"><a href="#3-2-cat-etc-redhat-release" class="headerlink" title="3.2 cat /etc/redhat-release"></a>3.2 cat /etc/redhat-release</h3><p><code>cat /etc/redhat-release</code> 适用于Redhat系的Linux。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[root@home]# cat /etc/redhat-release</span><br><span class="line">CentOS Linux release 7.5.1804 (Core) </span><br></pre></td></tr></table></figure>
+
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><blockquote>
+<p><a href="https://jasonhzy.github.io/2019/02/05/linux-kernel-version/">https://jasonhzy.github.io/2019/02/05/linux-kernel-version/</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>操作系统</category>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>操作系统</tag>
+        <tag>内核版本</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>系统启动流程</title>
+    <url>/operating_system/basic/startup/</url>
+    <content><![CDATA[<h1 id="系统启动流程"><a href="#系统启动流程" class="headerlink" title="系统启动流程"></a>系统启动流程</h1><p>操作系统是存储在磁盘中的，那计算机是如何启动操作系统，并执行它的代码呢？</p>
+<p>为了了解操作系统的启动流程，首先介绍一些基本的概念。</p>
+<h2 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h2><h3 id="1-1-BIOS"><a href="#1-1-BIOS" class="headerlink" title="1.1 BIOS"></a>1.1 BIOS</h3><span id="more"></span>
+
+<p>在计算机主板上，有一个称为基本输入输出系统（Basic Input Output System，BIOS）的固件（即写入到硬件的软件程序）。</p>
+<p>BIOS 是计算机系统在启动过程中主动执行的第一个程序。</p>
+<h3 id="1-2-扇区"><a href="#1-2-扇区" class="headerlink" title="1.2 扇区"></a>1.2 扇区</h3><p>磁盘上可以分为扇区（Sector）和磁道（Track）2种单位，其中扇区的物理大小设计有2种，分别是512字节和4K字节。</p>
+<p>早期磁盘的第一个扇区（旧磁盘扇区都是512字节）里面含有重要的信息，它里面包括了2个信息：</p>
+<ul>
+<li>主引导记录（Master Boot Record，MBR）：可以安装启动引导程序的地方，有446字节；</li>
+<li>分区表（partition table）：用于记录整块磁盘的分区情况，有64字节。</li>
+</ul>
+<h3 id="1-3-MBR"><a href="#1-3-MBR" class="headerlink" title="1.3 MBR"></a>1.3 MBR</h3><p>主引导记录（Master Boot Record，MBR）是安装启动引导程序的地方，可以用于加载操作系统核心文件，从而启动操作系统。</p>
+<p>例如，在电脑安装双系统以后，启动计算机时，经常可以看到系统选择菜单，询问我们选择启动哪个系统，这个选择程序就是启动引导程序。</p>
+<h3 id="1-4-分区表"><a href="#1-4-分区表" class="headerlink" title="1.4 分区表"></a>1.4 分区表</h3><p>分区表主要用于记录磁盘分区的状态，它仅有64字节，因此最多仅能记录4组记录，每组记录区记录了该区段的起始与结束的柱面号码。</p>
+<ul>
+<li>分区只是针对那64个字节的分区表进行设置</li>
+<li>分区表仅能写入4组分区信息</li>
+<li>分区的最小单位是柱面（Cylinder）</li>
+<li>分区类型只有2种：主要（Primary）分区和扩展（Extended）分区</li>
+<li>主要分区和扩展分区最多只能4个</li>
+<li>扩展分区最多只能有1个（操作系统限制）</li>
+<li>主要分区不能再继续分区</li>
+<li>扩展分区可以进一步分为更细的分区，这些分区称为逻辑分区（logical partition）</li>
+</ul>
+<p>例如：</p>
+<p>64字节分区表</p>
+<table>
+<thead>
+<tr>
+<th>分区</th>
+<th>柱面</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>P1</td>
+<td>1 ~ 100（Primary）</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>101 ~ 200（Primary）</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>201 ~ 300（Primary）</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>301 ~ 400（Extended）</td>
+</tr>
+</tbody></table>
+<p>扩展分区记录</p>
+<table>
+<thead>
+<tr>
+<th>分区</th>
+<th>柱面</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>L1</td>
+<td>301 ~ 330</td>
+</tr>
+<tr>
+<td>L2</td>
+<td>331 ~ 360</td>
+</tr>
+<tr>
+<td>L3</td>
+<td>361 ~ 400</td>
+</tr>
+</tbody></table>
+<h3 id="1-5-DBR"><a href="#1-5-DBR" class="headerlink" title="1.5 DBR"></a>1.5 DBR</h3><p>实际上启动引导程序除了可以安装在MBR以外，还可以安装在每个分区的启动扇区（boot sector）中，这个扇区称为分区引导扇区（DOS Boot Record，DBR）。</p>
+<p>DBR和MBR是比较类似的，MBR是整个磁盘的第一个扇区，而DBR则是分区的第一个扇区，它们都可以安装启动引导程序。</p>
+<p>就比如说，整个磁盘分成了4个分区，分区情况如下：</p>
+<table>
+<thead>
+<tr>
+<th>分区</th>
+<th>柱面</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>P1</td>
+<td>1 ~ 100（Primary）</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>101 ~ 200（Primary）</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>201 ~ 300（Primary）</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>301 ~ 400（Primary）</td>
+</tr>
+</tbody></table>
+<p>那么，对于整个磁盘来说，MBR就位于0号扇区上，每个分区的DBR则分别位于1号、101号、201号和301号扇区上。</p>
+<h2 id="二、启动流程"><a href="#二、启动流程" class="headerlink" title="二、启动流程"></a>二、启动流程</h2><p>计算机的启动流程大致是这样的：</p>
+<ol>
+<li>BIOS：检查设备情况，并决定第一个可启动的设备</li>
+<li>MBR：识别可启动设备的第一个扇区内的主引导记录，执行启动引导程序</li>
+<li>启动引导程序：读取内核文件，或者执行下一个启动引导程序</li>
+<li>内核文件：启动操作系统</li>
+</ol>
+<h3 id="2-1-BIOS"><a href="#2-1-BIOS" class="headerlink" title="2.1 BIOS"></a>2.1 BIOS</h3><p>在计算机启动时，首个执行的程序就是 BIOS，它的主要作用包括：</p>
+<ul>
+<li>检查所安装的RAM数量</li>
+<li>检测键盘、鼠标和其他基本设备是否已安装并正常响应</li>
+<li>扫描总线并找出连在上面的所有设备</li>
+<li>读取存储在CMOS存储器中的设备清单，并决定启动设备</li>
+<li>读入启动设备的第一个扇区，识别主引导记录和分区表，并执行其中包含的启动引导程序</li>
+</ul>
+<h3 id="2-2-MBR"><a href="#2-2-MBR" class="headerlink" title="2.2 MBR"></a>2.2 MBR</h3><p>在BIOS执行的最后，会读取启动设备的主引导记录MBR，并开始执行其中的启动引导程序，此时BIOS就完成了它的任务，接下来就交给启动引导程序了。</p>
+<p>启动引导程序的作用主要包括：</p>
+<ul>
+<li>加载内核文件</li>
+<li>转交给其他启动引导程序</li>
+</ul>
+<p>1）加载内核文件</p>
+<p>实际上就是加载操作系统文件，加载完成之后，就可以直接启动操作系统了，同时启动引导程序的任务也就完成了。</p>
+<p>2）转交给其他启动引导程序</p>
+<p>由于启动引导程序不仅可以安装在MBR上，还可以安装在DBR上。因此在某些情况下，MBR的启动引导程序可以将执行权转交给DBR中的启动引导程序。</p>
+<p>就比如说，磁盘分为4个分区：</p>
+<table>
+<thead>
+<tr>
+<th>分区</th>
+<th>柱面</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>P1</td>
+<td>1 ~ 100（Primary）</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>101 ~ 200（Primary）</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>201 ~ 300（Primary）</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>301 ~ 400（Primary）</td>
+</tr>
+</tbody></table>
+<p>假如P1和P2分区分别安装了Windows和Linux。那么启动过程中首先会执行MBR的启动引导程序，如果此时MBR启动引导程序提供了2个选项：</p>
+<ul>
+<li>选项一 直接加载P1分区的Windows内核文件</li>
+<li>选项二 转交给P2分区的DBR的启动引导程序</li>
+</ul>
+<p>当选择了选项二，那么MBR启动引导程序就会加载P2分区的DBR，并执行DBR的启动引导程序，然后剩下的事就交给DBR的启动引导程序了。</p>
+<p>这其实就是多重引导的工作原理，首先执行的肯定是MBR的启动引导程序，然后通过切换到DBR的启动引导程序，来实现多个操作系统的切换。</p>
+<h3 id="2-3-启动引导程序"><a href="#2-3-启动引导程序" class="headerlink" title="2.3 启动引导程序"></a>2.3 启动引导程序</h3><p>启动引导程序的目的在于加载内核文件，它会识别磁盘内的文件系统格式，从而读取内核文件，启动操作系统。</p>
+]]></content>
+      <categories>
+        <category>操作系统</category>
+        <category>基础</category>
+      </categories>
+      <tags>
+        <tag>操作系统</tag>
+        <tag>启动</tag>
       </tags>
   </entry>
   <entry>
