@@ -1,6 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>左倾堆</title>
+    <url>/datastructure/heap/leftistheap/</url>
+    <content><![CDATA[<h1 id="左倾堆"><a href="#左倾堆" class="headerlink" title="左倾堆"></a>左倾堆</h1><h2 id="一、什么是左倾堆？"><a href="#一、什么是左倾堆？" class="headerlink" title="一、什么是左倾堆？"></a>一、什么是左倾堆？</h2><p>左倾堆（Leftist Heap），也称为左偏树（Leftist Tree）、左偏堆，最左堆等。</p>
+<p>和二叉堆（即常见的堆，基于数组实现的完全堆）一样，左倾堆也是优先队列的一种实现方式。</p>
+<p>只不过左倾堆具有一些特殊的性质：</p>
+<span id="more"></span>
+
+<ol>
+<li>左倾性：左倾堆中左子树的深度（或高度）都不小于右子树的深度</li>
+<li>最小堆性：左倾堆通常用于实现最小堆，所以根节点通常都是最小值</li>
+</ol>
+<p>为了实现左倾性，左倾堆的节点都有一个 NPL（Null Path Length）属性：</p>
+<ul>
+<li>NPL：节点到一个“最近的不满节点”的最短路径的长度。空节点的 NPL = -1</li>
+</ul>
+<p>其中，“不满节点”是指左右子节点中至少有一个为 null 的节点。</p>
+<p>而左倾堆的结构中，也有几个基本性质：</p>
+<ol>
+<li>节点的键值 &lt;= 它的左右子节点的键值</li>
+<li>节点的左孩子的 NPL &gt;= 节点右孩子的 NPL</li>
+<li>节点的 NPL = 它的右孩子的 NPL + 1</li>
+</ol>
+<p>下面是左倾堆的一个例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">        2(1)</span><br><span class="line">       /    \</span><br><span class="line">    3(1)     4(0)</span><br><span class="line">   /    \</span><br><span class="line">5(0)    7(0)</span><br><span class="line">       /     </span><br><span class="line">    9(0)</span><br></pre></td></tr></table></figure>
+
+<p>其中，括号中的数字表示 NPL。</p>
+<p>像 4，5，7，9 这几个节点都有 null 子节点，所以它们的 NPL 都是 0。</p>
+<p>而 2，3 的 NPL 则等于它们右孩子的 NPL + 1。</p>
+<p>另外，有一点需要说明的是：根节点的 NPL 不一定比子节点的大。</p>
+<h2 id="二、为什么用左倾堆？"><a href="#二、为什么用左倾堆？" class="headerlink" title="二、为什么用左倾堆？"></a>二、为什么用左倾堆？</h2><p>左倾堆和二叉堆的作用是一样的，只是在结构上有所区别：</p>
+<ul>
+<li>二叉堆是用数组实现，堆结构是一棵完全二叉树</li>
+<li>左倾堆是用树实现，结构就是一棵普通的二叉树</li>
+</ul>
+<p>二叉堆和左倾堆都能用于优先队列的实现，区别不是很大。</p>
+<ul>
+<li>但是在涉及“合并操作”时，二叉堆的效率会比较低，而左倾堆的性能更好</li>
+<li>而左倾堆也有自己的缺点，就是在删除最小元素操作上可能表现略差一些</li>
+</ul>
+<p>所以，左倾堆适用于某些特殊场景下，特别是需要频繁执行合并操作的情况。</p>
+<h2 id="三、怎么实现左倾堆？"><a href="#三、怎么实现左倾堆？" class="headerlink" title="三、怎么实现左倾堆？"></a>三、怎么实现左倾堆？</h2><p>合并操作是左倾堆的重点，合并两个堆的步骤如下：</p>
+<ol>
+<li>如果两个堆中有一个为空，则直接返回另一个堆</li>
+<li>如果两个堆都不为空，则比较两个堆的根节点，将较小的根节点作为新堆的根节点</li>
+<li>将较小根节点的右子树和较大根节点合并，然后将合并后的树作为新堆的右子树</li>
+<li>如果新堆的右子树的 NPL &gt; 左子树的 NPL，则交换左右子树</li>
+<li>新堆的 NPL = 右子树的 NPL + 1</li>
+</ol>
+<p>步骤看起来挺多的，但是其实逻辑很简单，伪代码如下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">merge(h1, h2) &#123;</span><br><span class="line">    <span class="comment">// 1. 返回非空堆</span></span><br><span class="line">    <span class="keyword">if</span> (h1 == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> h2;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (h2 == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> h1;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 以小根节点作为新堆的根节点</span></span><br><span class="line">    min = h1.val &lt; h2.val ? h1 : h2;</span><br><span class="line">    max = h1.val &gt; h2.val ? h1 : h2;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 小根节点的右子节点和大根节点合并</span></span><br><span class="line">    min.right = merge(min.right, max);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 交换左右子节点</span></span><br><span class="line">    <span class="keyword">if</span> (npl(min.right) &gt; npl(min.left)) &#123;</span><br><span class="line">        swap(min.left, min.right);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 5. 根节点距离 = 右子节点距离 + 1</span></span><br><span class="line">    min.npl = npl(min.right) + <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> min;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下面给出一个合并操作的例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">    堆1                     堆2</span><br><span class="line"></span><br><span class="line">    2(1)                   1(1)</span><br><span class="line">   /    \                 /    \</span><br><span class="line">6(0)    4(0)           3(0)    5(0)</span><br></pre></td></tr></table></figure>
+
+<p>1）首先，取小根节点 1(1) 作为新堆的根节点，然后合并小根右孩子与大根堆</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">    新堆1                          待合并</span><br><span class="line">       </span><br><span class="line">    1(1)                      5(0)     2(1)     </span><br><span class="line">   /                                  /    \</span><br><span class="line">3(0)                               6(0)    4(0)</span><br></pre></td></tr></table></figure>
+
+<p>2）同样地，取小根节点 2(1) 作为新堆的根节点，合并小根右孩子与大根堆</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">    新堆1       新堆2              待合并</span><br><span class="line">                                 </span><br><span class="line">    1(1)        2(1)           5(0)    4(0)</span><br><span class="line">   /           /  </span><br><span class="line">3(0)         6(0)</span><br></pre></td></tr></table></figure>
+
+<p>3）同上，取小根节点 4(0) 作为新堆根节点，合并小根右孩子（null 节点）与大根堆</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">    新堆1       新堆2        新堆3</span><br><span class="line">                                 </span><br><span class="line">    1(1)        2(1)        4(0)</span><br><span class="line">   /           /               \</span><br><span class="line">3(0)         6(0)              5(0)</span><br></pre></td></tr></table></figure>
+
+<p>4）此时 <code>4</code> 的右孩子 <code>5(0)</code> 大于左孩子 <code>NULL(-1)</code> 的 NPL，需要交换左右孩子</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">    新堆1       新堆2        新堆3</span><br><span class="line">                                 </span><br><span class="line">    1(1)        2(1)        4(0)</span><br><span class="line">   /           /           /</span><br><span class="line">3(0)         6(0)        5(0)</span><br></pre></td></tr></table></figure>
+
+<p>同时更新 <code>4</code> 的 NPL = NPL(null) + 1 = -1 + 1 = 0。</p>
+<p>5）接着，完成后开始递归往上合并，4 返回给 2 的右孩子</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">    新堆1       新堆2</span><br><span class="line">                                 </span><br><span class="line">    1(1)        2(1)</span><br><span class="line">   /           /    \</span><br><span class="line">3(0)         6(0)   4(0)</span><br><span class="line">                   /</span><br><span class="line">                5(0)</span><br></pre></td></tr></table></figure>
+
+<p>由于 <code>4(0)</code> 并不比 <code>6(0)</code> 的 NPL 大，所以不需要交换左右子节点。</p>
+<p>同时更新 <code>2</code> 的 NPL = NPL(4) + 1 = 0 + 1 = 1。</p>
+<p>6）继续合并完成后开始递归往上，2 返回给 1 的右孩子</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">    新堆</span><br><span class="line">                                 </span><br><span class="line">    1(1)</span><br><span class="line">   /    \</span><br><span class="line">3(0)    2(1)</span><br><span class="line">       /    \</span><br><span class="line">    6(0)    4(0)</span><br><span class="line">           /</span><br><span class="line">        5(0)</span><br></pre></td></tr></table></figure>
+
+<p>7）由于 <code>2(1)</code> 比 <code>3(0)</code> 的 NPL 大，所以需要交换左右子节点</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">        新堆</span><br><span class="line">                                     </span><br><span class="line">        1(1)</span><br><span class="line">       /    \</span><br><span class="line">    2(1)    3(0)</span><br><span class="line">   /    \</span><br><span class="line">6(0)    4(0)</span><br><span class="line">       /</span><br><span class="line">    5(0)</span><br></pre></td></tr></table></figure>
+
+<p>同时更新 <code>1</code> 的 NPL = NPL(3) + 1 = 0 + 1 = 1。</p>
+<p>至此，合并操作就完成了。</p>
+<p>至于其他的操作，比如删除和插入，实际上都是通过合并操作实现的：</p>
+<ol>
+<li>删除最小元素：相当于删除根节点，然后合并左右子树</li>
+<li>插入新元素：相当于将新元素作为一个新的左倾堆，然后两个堆合并</li>
+</ol>
+<p>下面是它们的伪代码：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">removeFirst() &#123;</span><br><span class="line">    temp = root;</span><br><span class="line">    root = merge(root.left, root.right);</span><br><span class="line">    temp.left = temp.right = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">return</span> temp.val;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">insert(val) &#123;</span><br><span class="line">    root = merge(root, <span class="keyword">new</span> <span class="title class_">Node</span>&lt;&gt;(val));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>总体来说，左倾堆的实现还是比较简单的。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><blockquote>
+<p><a href="https://www.cnblogs.com/skywang12345/p/3638384.html">https://www.cnblogs.com/skywang12345/p/3638384.html</a></p>
+</blockquote>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="左倾堆接口"><a href="#左倾堆接口" class="headerlink" title="左倾堆接口"></a>左倾堆接口</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 左倾堆（Leftist Heap）</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * 基本性质：</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * 1. 节点的键值小于或等于它的左右子节点的键值</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * 2. 节点的左孩子的NPL &gt;= 右孩子的NPL</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * 3. 节点的NPL = 它的右孩子的NPL + 1</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> weijiaduo</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 2023/9/26</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">LeftistHeap</span>&lt;T&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 合并另外一个堆</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> other 另外一个堆</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">merge</span><span class="params">(LeftistHeap&lt;T&gt; other)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 插入新值</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> val 新值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">insert</span><span class="params">(T val)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 移除根节点</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 根节点值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    T <span class="title function_">removeFirst</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 根节点值</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 根节点值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    T <span class="title function_">first</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 堆大小</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 堆大小</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="type">int</span> <span class="title function_">size</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 是否为空</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> true/false</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="type">boolean</span> <span class="title function_">isEmpty</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="左倾堆实现"><a href="#左倾堆实现" class="headerlink" title="左倾堆实现"></a>左倾堆实现</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 左倾堆节点</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> weijiaduo</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 2023/9/26</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LeftistHeapNode</span>&lt;T&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 节点值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> T val;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 零距离（Null Path Length）</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> npl;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 左子节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> LeftistHeapNode&lt;T&gt; left;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 右子节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> LeftistHeapNode&lt;T&gt; right;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">LeftistHeapNode</span><span class="params">(T val)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.val = val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> val.toString() + <span class="string">&quot;(&quot;</span> + npl + <span class="string">&quot;)&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 左倾堆（Leftist Heap）实现类</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * 基本性质：</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * 1. 节点的键值小于或等于它的左右子节点的键值</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * 2. 节点的左孩子的NPL &gt;= 右孩子的NPL</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * 3. 节点的NPL = 它的右孩子的NPL + 1</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> weijiaduo</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 2023/9/26</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LeftistHeapImpl</span>&lt;T <span class="keyword">extends</span> <span class="title class_">Comparable</span>&lt;T&gt;&gt; <span class="keyword">implements</span> <span class="title class_">LeftistHeap</span>&lt;T&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 根节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> LeftistHeapNode&lt;T&gt; root;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 节点数量</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> size;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">merge</span><span class="params">(LeftistHeap&lt;T&gt; other)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (!(other <span class="keyword">instanceof</span> LeftistHeapImpl&lt;T&gt;)) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        root = merge(root, ((LeftistHeapImpl&lt;T&gt;) other).root);</span><br><span class="line">        size += other.size();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">insert</span><span class="params">(T val)</span> &#123;</span><br><span class="line">        root = merge(root, <span class="keyword">new</span> <span class="title class_">LeftistHeapNode</span>&lt;&gt;(val));</span><br><span class="line">        size++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> T <span class="title function_">removeFirst</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (size &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalStateException</span>(<span class="string">&quot;Heap is Empty!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        LeftistHeapNode&lt;T&gt; node = root;</span><br><span class="line">        root = merge(root.left, root.right);</span><br><span class="line">        node.left = node.right = <span class="literal">null</span>;</span><br><span class="line">        size--;</span><br><span class="line">        <span class="keyword">return</span> node.val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> T <span class="title function_">first</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (size &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalStateException</span>(<span class="string">&quot;Heap is Empty!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> root.val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">size</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> size;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isEmpty</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> size &lt;= <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 合并 2 个堆，并返回新堆的根节点</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> h1 堆1 根节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> h2 堆2 根节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 新堆的根节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> LeftistHeapNode&lt;T&gt; <span class="title function_">merge</span><span class="params">(LeftistHeapNode&lt;T&gt; h1, LeftistHeapNode&lt;T&gt; h2)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (h1 == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> h2;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (h2 == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> h1;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 以小根节点作为新堆的根节点</span></span><br><span class="line">        LeftistHeapNode&lt;T&gt; min, max;</span><br><span class="line">        <span class="keyword">if</span> (h1.val.compareTo(h2.val) &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            min = h1;</span><br><span class="line">            max = h2;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            min = h2;</span><br><span class="line">            max = h1;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 小根节点的右子节点和大根节点合并</span></span><br><span class="line">        min.right = merge(min.right, max);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 右子节点距离 &gt; 左子节点距离，交换左右子节点</span></span><br><span class="line">        <span class="keyword">if</span> (npl(min.right) &gt; npl(min.left)) &#123;</span><br><span class="line">            LeftistHeapNode&lt;T&gt; tmp = min.left;</span><br><span class="line">            min.left = min.right;</span><br><span class="line">            min.right = tmp;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 根节点距离 = 右子节点距离 + 1</span></span><br><span class="line">        min.npl = npl(min.right) + <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> min;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 节点的 NPL 距离</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node 节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> NPL 距离</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="title function_">npl</span><span class="params">(LeftistHeapNode&lt;T&gt; node)</span> &#123;</span><br><span class="line">        <span class="comment">// null 节点的距离为 -1</span></span><br><span class="line">        <span class="keyword">return</span> node != <span class="literal">null</span> ? node.npl : -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>数据结构与算法</category>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+        <tag>数据结构</tag>
+        <tag>堆</tag>
+        <tag>左倾堆</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>KMP 算法</title>
     <url>/algorithm/strings/match/kmp/</url>
     <content><![CDATA[<h1 id="KMP-算法"><a href="#KMP-算法" class="headerlink" title="KMP 算法"></a>KMP 算法</h1><p>KMP 算法是一种字符串匹配算法，可以在 <code>O(n+m)</code> 的时间复杂度内实现两个字符串的匹配。</p>
@@ -282,7 +393,7 @@
   </entry>
   <entry>
     <title>堆</title>
-    <url>/datastructure/tree/heap/</url>
+    <url>/datastructure/heap/heap/</url>
     <content><![CDATA[<h1 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h1><h2 id="一、是什么？"><a href="#一、是什么？" class="headerlink" title="一、是什么？"></a>一、是什么？</h2><p>在逻辑意义上，堆是一棵二叉树，类似这样：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">  大值堆                    小值堆</span><br><span class="line"></span><br><span class="line">    30                        14    </span><br><span class="line"> /      \                  /      \ </span><br><span class="line">28      16                22      16</span><br><span class="line">  \    /                 /       /  </span><br><span class="line">  22  12                24      26  </span><br></pre></td></tr></table></figure>
 
@@ -5840,6 +5951,115 @@
       </tags>
   </entry>
   <entry>
+    <title>05_基础构建模块</title>
+    <url>/lang/java/core/concurrency/05_%E5%9F%BA%E7%A1%80%E6%9E%84%E5%BB%BA%E6%A8%A1%E5%9D%97/</url>
+    <content><![CDATA[<h1 id="基础构建模块"><a href="#基础构建模块" class="headerlink" title="基础构建模块"></a>基础构建模块</h1><h2 id="一、同步容器"><a href="#一、同步容器" class="headerlink" title="一、同步容器"></a>一、同步容器</h2><ul>
+<li>同步容器类都是线程安全的，比如 Vector 和 HashTable</li>
+<li>实现线程安全的方式是：将它们的状态都封装起来，所有对外接口都是同步方法</li>
+<li>对容器状态的访问都串行化，保证每次只有一个线程访问容器</li>
+<li>能保证单个操作是线程安全的，但是复合操作是不能保证线程安全的</li>
+<li>常见的不安全的复合操作包括：迭代、跳转、条件运算</li>
+</ul>
+<span id="more"></span>
+
+<p>比如，条件运算的例子：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SyncContainer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; T <span class="title function_">deleteLast</span><span class="params">(Vector&lt;T&gt; list)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">lastIndex</span> <span class="operator">=</span> list.size() - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> list.remove(lastIndex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种复合操作，实际上是线程不安全的。</p>
+<p>一般来说，同步容器的复合操作都需要加锁处理:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SyncContainer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; T <span class="title function_">deleteLast</span><span class="params">(Vector&lt;T&gt; list)</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (list) &#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">lastIndex</span> <span class="operator">=</span> list.size() - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">return</span> list.remove(lastIndex);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同步容器类的锁就是对象本身，所以是对同步容器对象加锁。</p>
+<p>不过，对于迭代器的处理，加锁并不都是一种好方法：</p>
+<ul>
+<li>容器元素很多时，对迭代操作加锁，会导致容器被长时间阻塞，影响程序的性能</li>
+</ul>
+<p>比如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SyncContainerIterator</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">visit</span><span class="params">(Vector&lt;T&gt; list)</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (list) &#123;</span><br><span class="line">            <span class="keyword">for</span> (T t : list) &#123;</span><br><span class="line">                <span class="comment">// do something</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>迭代时加锁，可能会使得容器锁无法释放，导致容器不可用。</p>
+<p>所以，对于迭代器的处理，还可以用另一种方式处理：克隆容器。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SyncCloneContainerIterator</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">visit</span><span class="params">(Vector&lt;T&gt; list)</span> &#123;</span><br><span class="line">        Vector&lt;T&gt; clone = (Vector&lt;T&gt;) list.clone();</span><br><span class="line">        <span class="keyword">for</span> (T t : clone) &#123;</span><br><span class="line">            <span class="comment">// do something</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不过，克隆容器时，也存在明显的性能开销，但不会对原容器造成影响。</p>
+<p>容器的迭代器使用，除了比较明显的调用以外，一些隐藏方法也可能会用到：</p>
+<ul>
+<li>hashCode、equals、toString</li>
+<li>containsAll、removeAll、retainAll</li>
+</ul>
+<p>这些方法里面，实际上也隐含了对迭代器的使用，所以，这些方法也是不安全的。</p>
+<h2 id="二、并发容器"><a href="#二、并发容器" class="headerlink" title="二、并发容器"></a>二、并发容器</h2><ul>
+<li>并发容器类都是线程安全的</li>
+<li>实现线程安全的方式是：将它们的状态都封装起来，内部对状态的访问是加锁同步的</li>
+<li>并发容器是针对多个线程并发访问设计的，允许多个线程同时访问并发容器</li>
+<li>主要用于替代同步的容器，提高并发访问的性能</li>
+<li>并发容器的锁不是并发容器对象本身，对其加锁毫无意义</li>
+</ul>
+<p>比如说：</p>
+<ul>
+<li>ConcurrentHashMap 用于替代同步的 Map</li>
+<li>CopyOnWriteArrayList 用于在遍历操作为主要操作的情况下替代同步的 List</li>
+<li>…</li>
+</ul>
+<p>使用并发容器，可以获得比同步容器更高的并发性能。</p>
+<p>由于并发容器的锁是对象本身，所以对并发容器对象加锁是没有意义的：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SyncContainer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">delete</span><span class="params">(ConcurrentHashMap&lt;K, V&gt; map)</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (map) &#123;</span><br><span class="line">            map.remove(key);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ConcurrentHashMap 的锁并不是它自己，所以加锁操作毫无意义。</p>
+<p>如果需要对整个容器进行独占访问，并发容器并不适合，这时应该用同步容器。</p>
+<h2 id="三、同步工具类"><a href="#三、同步工具类" class="headerlink" title="三、同步工具类"></a>三、同步工具类</h2><ul>
+<li>同步工具类，根据自身的状态来协调线程的控制流</li>
+<li>特点：<ul>
+<li>封装了一些状态，这些状态决定执行的线程是继续执行还是等待</li>
+<li>提供了一些方法来对状态进行访问</li>
+<li>提供一些方法来等待同步工具类达到某个状态</li>
+</ul>
+</li>
+<li>同步工具类包括：<ul>
+<li>闭锁（Latch）</li>
+<li>信号量（Semaphore）</li>
+<li>栅栏（Barrier）</li>
+<li>阻塞队列（BlockingQueue）</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-1-闭锁"><a href="#3-1-闭锁" class="headerlink" title="3.1 闭锁"></a>3.1 闭锁</h3><ul>
+<li>延迟线程的进度直到其到达终止状态</li>
+<li>用于确保某些活动直到其他活动都完成后才继续执行</li>
+</ul>
+<p>比如说，一个线程等待其他线程完成工作后，再继续执行：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">long</span> <span class="title function_">timeTask</span><span class="params">(<span class="type">int</span> nThreads, <span class="keyword">final</span> Runnable task)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">CountDownLatch</span> <span class="variable">startGate</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CountDownLatch</span>(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">final</span> <span class="type">CountDownLatch</span> <span class="variable">endGate</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CountDownLatch</span>(nThreads);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; nThreads; i++) &#123;</span><br><span class="line">        <span class="type">Thread</span> <span class="variable">t</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="comment">// 所有线程等待开始信号</span></span><br><span class="line">                    startGate.await();</span><br><span class="line">                    <span class="keyword">try</span> &#123;</span><br><span class="line">                        task.run();</span><br><span class="line">                    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                        <span class="comment">// 线程结束发起信号</span></span><br><span class="line">                        endGate.countDown();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        t.start();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="type">long</span> <span class="variable">start</span> <span class="operator">=</span> System.nanoTime();</span><br><span class="line">    startGate.countDown();</span><br><span class="line">    endGate.await();</span><br><span class="line">    <span class="type">long</span> <span class="variable">end</span> <span class="operator">=</span> System.nanoTime();</span><br><span class="line">    <span class="keyword">return</span> end - start;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>闭锁的作用，就是等待某些线程异步操作完成，再继续往下执行。</p>
+<h3 id="3-2-信号量"><a href="#3-2-信号量" class="headerlink" title="3.2 信号量"></a>3.2 信号量</h3><ul>
+<li>控制同时访问某个特定资源的操作数量</li>
+<li>控制同时执行某个操作的线程数量</li>
+</ul>
+<p>比如说，信号量可以用于控制容器的元素数量：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">BoundHashSet</span>&lt;T&gt; &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Set&lt;T&gt; set;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Semaphore sem;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">BoundHashSet</span><span class="params">(<span class="type">int</span> bound)</span> &#123;</span><br><span class="line">        set = Collections.synchronizedSet(<span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;());</span><br><span class="line">        sem = <span class="keyword">new</span> <span class="title class_">Semaphore</span>(bound);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">add</span><span class="params">(T o)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        sem.acquire();</span><br><span class="line">        <span class="type">boolean</span> <span class="variable">wasAdded</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            wasAdded = set.add(o);</span><br><span class="line">            <span class="keyword">return</span> wasAdded;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (!wasAdded) &#123;</span><br><span class="line">                sem.release();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">remove</span><span class="params">(T o)</span> &#123;</span><br><span class="line">        <span class="type">boolean</span> <span class="variable">wasRemoved</span> <span class="operator">=</span> set.remove(o);</span><br><span class="line">        <span class="keyword">if</span> (wasRemoved) &#123;</span><br><span class="line">            sem.release();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> wasRemoved;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过信号量的数量限制，可以控制同时访问某个资源的线程数量。</p>
+<h3 id="3-3-栅栏"><a href="#3-3-栅栏" class="headerlink" title="3.3 栅栏"></a>3.3 栅栏</h3><ul>
+<li>阻塞一组线程直到某个事件发生</li>
+<li>所有线程必须同时到达栅栏位置，才能继续执行</li>
+<li>闭锁用于等待事件，栅栏则是等待线程</li>
+<li>栅栏是可以重复使用的</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">long</span> <span class="title function_">timeTask</span><span class="params">(<span class="type">int</span> nThreads, <span class="keyword">final</span> Runnable task)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="keyword">class</span> <span class="title class_">Time</span> &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="type">long</span> <span class="variable">value</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">Time</span> <span class="variable">time</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Time</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// nThreads + 1 是加上了主线程</span></span><br><span class="line">    <span class="keyword">final</span> <span class="type">CyclicBarrier</span> <span class="variable">gate</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CyclicBarrier</span>(nThreads + <span class="number">1</span>,</span><br><span class="line">            () -&gt; time.value = System.nanoTime() - time.value);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; nThreads; i++) &#123;</span><br><span class="line">        <span class="type">Thread</span> <span class="variable">t</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="comment">// 等待所有线程开始</span></span><br><span class="line">                    gate.await();</span><br><span class="line"></span><br><span class="line">                    task.run();</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// 等待所有线程结束</span></span><br><span class="line">                    gate.await();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        t.start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 等待所有线程开始</span></span><br><span class="line">    gate.await();</span><br><span class="line">    <span class="comment">// 等待所有线程结束</span></span><br><span class="line">    gate.await();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> time.value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>与闭锁不同，闭锁需要等到某个事件通知，如 countDown()，线程才会继续往下执行。</p>
+<p>而栅栏等待的就是线程，只要所有线程都到达栅栏位置，就可以继续执行下去。</p>
+<h2 id="四、缓存案例"><a href="#四、缓存案例" class="headerlink" title="四、缓存案例"></a>四、缓存案例</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Memoizer</span>&lt;K, V&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ConcurrentHashMap&lt;K, Future&lt;V&gt;&gt; cache = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Computable&lt;K, V&gt; computer;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Memoizer</span><span class="params">(Computable&lt;K, V&gt; c)</span> &#123;</span><br><span class="line">        computer = c;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> V <span class="title function_">get</span><span class="params">(K key)</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">            Future&lt;V&gt; result = cache.get(key);</span><br><span class="line">            <span class="keyword">if</span> (result == <span class="literal">null</span>) &#123;</span><br><span class="line">                FutureTask&lt;V&gt; task = <span class="keyword">new</span> <span class="title class_">FutureTask</span>&lt;&gt;(() -&gt; computer.compute(key));</span><br><span class="line">                result = cache.putIfAbsent(key, task);</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 处理并发访问的情况</span></span><br><span class="line">                <span class="keyword">if</span> (result == <span class="literal">null</span>) &#123;</span><br><span class="line">                    result = task;</span><br><span class="line">                    <span class="keyword">new</span> <span class="title class_">Thread</span>(task).start();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// 等待计算完成</span></span><br><span class="line">                <span class="keyword">return</span> result.get();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>编程语言</category>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>java</tag>
+        <tag>并发编程</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>06_任务的执行</title>
     <url>/lang/java/core/concurrency/06_%E4%BB%BB%E5%8A%A1%E7%9A%84%E6%89%A7%E8%A1%8C/</url>
     <content><![CDATA[<h1 id="任务的执行"><a href="#任务的执行" class="headerlink" title="任务的执行"></a>任务的执行</h1><h2 id="一、在线程中执行任务"><a href="#一、在线程中执行任务" class="headerlink" title="一、在线程中执行任务"></a>一、在线程中执行任务</h2><h3 id="1-1-串行执行"><a href="#1-1-串行执行" class="headerlink" title="1.1 串行执行"></a>1.1 串行执行</h3><p>串行执行，是指所有任务都在单个线程中串行地执行。</p>
@@ -6004,115 +6224,6 @@
 <li>为任务设置时限</li>
 </ul>
 ]]></content>
-      <categories>
-        <category>编程语言</category>
-        <category>Java</category>
-      </categories>
-      <tags>
-        <tag>java</tag>
-        <tag>并发编程</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>05_基础构建模块</title>
-    <url>/lang/java/core/concurrency/05_%E5%9F%BA%E7%A1%80%E6%9E%84%E5%BB%BA%E6%A8%A1%E5%9D%97/</url>
-    <content><![CDATA[<h1 id="基础构建模块"><a href="#基础构建模块" class="headerlink" title="基础构建模块"></a>基础构建模块</h1><h2 id="一、同步容器"><a href="#一、同步容器" class="headerlink" title="一、同步容器"></a>一、同步容器</h2><ul>
-<li>同步容器类都是线程安全的，比如 Vector 和 HashTable</li>
-<li>实现线程安全的方式是：将它们的状态都封装起来，所有对外接口都是同步方法</li>
-<li>对容器状态的访问都串行化，保证每次只有一个线程访问容器</li>
-<li>能保证单个操作是线程安全的，但是复合操作是不能保证线程安全的</li>
-<li>常见的不安全的复合操作包括：迭代、跳转、条件运算</li>
-</ul>
-<span id="more"></span>
-
-<p>比如，条件运算的例子：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SyncContainer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; T <span class="title function_">deleteLast</span><span class="params">(Vector&lt;T&gt; list)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">lastIndex</span> <span class="operator">=</span> list.size() - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> list.remove(lastIndex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这种复合操作，实际上是线程不安全的。</p>
-<p>一般来说，同步容器的复合操作都需要加锁处理:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SyncContainer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; T <span class="title function_">deleteLast</span><span class="params">(Vector&lt;T&gt; list)</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (list) &#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">lastIndex</span> <span class="operator">=</span> list.size() - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">return</span> list.remove(lastIndex);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>同步容器类的锁就是对象本身，所以是对同步容器对象加锁。</p>
-<p>不过，对于迭代器的处理，加锁并不都是一种好方法：</p>
-<ul>
-<li>容器元素很多时，对迭代操作加锁，会导致容器被长时间阻塞，影响程序的性能</li>
-</ul>
-<p>比如：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SyncContainerIterator</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">visit</span><span class="params">(Vector&lt;T&gt; list)</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (list) &#123;</span><br><span class="line">            <span class="keyword">for</span> (T t : list) &#123;</span><br><span class="line">                <span class="comment">// do something</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>迭代时加锁，可能会使得容器锁无法释放，导致容器不可用。</p>
-<p>所以，对于迭代器的处理，还可以用另一种方式处理：克隆容器。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SyncCloneContainerIterator</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">visit</span><span class="params">(Vector&lt;T&gt; list)</span> &#123;</span><br><span class="line">        Vector&lt;T&gt; clone = (Vector&lt;T&gt;) list.clone();</span><br><span class="line">        <span class="keyword">for</span> (T t : clone) &#123;</span><br><span class="line">            <span class="comment">// do something</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>不过，克隆容器时，也存在明显的性能开销，但不会对原容器造成影响。</p>
-<p>容器的迭代器使用，除了比较明显的调用以外，一些隐藏方法也可能会用到：</p>
-<ul>
-<li>hashCode、equals、toString</li>
-<li>containsAll、removeAll、retainAll</li>
-</ul>
-<p>这些方法里面，实际上也隐含了对迭代器的使用，所以，这些方法也是不安全的。</p>
-<h2 id="二、并发容器"><a href="#二、并发容器" class="headerlink" title="二、并发容器"></a>二、并发容器</h2><ul>
-<li>并发容器类都是线程安全的</li>
-<li>实现线程安全的方式是：将它们的状态都封装起来，内部对状态的访问是加锁同步的</li>
-<li>并发容器是针对多个线程并发访问设计的，允许多个线程同时访问并发容器</li>
-<li>主要用于替代同步的容器，提高并发访问的性能</li>
-<li>并发容器的锁不是并发容器对象本身，对其加锁毫无意义</li>
-</ul>
-<p>比如说：</p>
-<ul>
-<li>ConcurrentHashMap 用于替代同步的 Map</li>
-<li>CopyOnWriteArrayList 用于在遍历操作为主要操作的情况下替代同步的 List</li>
-<li>…</li>
-</ul>
-<p>使用并发容器，可以获得比同步容器更高的并发性能。</p>
-<p>由于并发容器的锁是对象本身，所以对并发容器对象加锁是没有意义的：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SyncContainer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">delete</span><span class="params">(ConcurrentHashMap&lt;K, V&gt; map)</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (map) &#123;</span><br><span class="line">            map.remove(key);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>ConcurrentHashMap 的锁并不是它自己，所以加锁操作毫无意义。</p>
-<p>如果需要对整个容器进行独占访问，并发容器并不适合，这时应该用同步容器。</p>
-<h2 id="三、同步工具类"><a href="#三、同步工具类" class="headerlink" title="三、同步工具类"></a>三、同步工具类</h2><ul>
-<li>同步工具类，根据自身的状态来协调线程的控制流</li>
-<li>特点：<ul>
-<li>封装了一些状态，这些状态决定执行的线程是继续执行还是等待</li>
-<li>提供了一些方法来对状态进行访问</li>
-<li>提供一些方法来等待同步工具类达到某个状态</li>
-</ul>
-</li>
-<li>同步工具类包括：<ul>
-<li>闭锁（Latch）</li>
-<li>信号量（Semaphore）</li>
-<li>栅栏（Barrier）</li>
-<li>阻塞队列（BlockingQueue）</li>
-</ul>
-</li>
-</ul>
-<h3 id="3-1-闭锁"><a href="#3-1-闭锁" class="headerlink" title="3.1 闭锁"></a>3.1 闭锁</h3><ul>
-<li>延迟线程的进度直到其到达终止状态</li>
-<li>用于确保某些活动直到其他活动都完成后才继续执行</li>
-</ul>
-<p>比如说，一个线程等待其他线程完成工作后，再继续执行：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">long</span> <span class="title function_">timeTask</span><span class="params">(<span class="type">int</span> nThreads, <span class="keyword">final</span> Runnable task)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">CountDownLatch</span> <span class="variable">startGate</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CountDownLatch</span>(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">final</span> <span class="type">CountDownLatch</span> <span class="variable">endGate</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CountDownLatch</span>(nThreads);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; nThreads; i++) &#123;</span><br><span class="line">        <span class="type">Thread</span> <span class="variable">t</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="comment">// 所有线程等待开始信号</span></span><br><span class="line">                    startGate.await();</span><br><span class="line">                    <span class="keyword">try</span> &#123;</span><br><span class="line">                        task.run();</span><br><span class="line">                    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                        <span class="comment">// 线程结束发起信号</span></span><br><span class="line">                        endGate.countDown();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        t.start();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="type">long</span> <span class="variable">start</span> <span class="operator">=</span> System.nanoTime();</span><br><span class="line">    startGate.countDown();</span><br><span class="line">    endGate.await();</span><br><span class="line">    <span class="type">long</span> <span class="variable">end</span> <span class="operator">=</span> System.nanoTime();</span><br><span class="line">    <span class="keyword">return</span> end - start;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>闭锁的作用，就是等待某些线程异步操作完成，再继续往下执行。</p>
-<h3 id="3-2-信号量"><a href="#3-2-信号量" class="headerlink" title="3.2 信号量"></a>3.2 信号量</h3><ul>
-<li>控制同时访问某个特定资源的操作数量</li>
-<li>控制同时执行某个操作的线程数量</li>
-</ul>
-<p>比如说，信号量可以用于控制容器的元素数量：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">BoundHashSet</span>&lt;T&gt; &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Set&lt;T&gt; set;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Semaphore sem;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">BoundHashSet</span><span class="params">(<span class="type">int</span> bound)</span> &#123;</span><br><span class="line">        set = Collections.synchronizedSet(<span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;());</span><br><span class="line">        sem = <span class="keyword">new</span> <span class="title class_">Semaphore</span>(bound);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">add</span><span class="params">(T o)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        sem.acquire();</span><br><span class="line">        <span class="type">boolean</span> <span class="variable">wasAdded</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            wasAdded = set.add(o);</span><br><span class="line">            <span class="keyword">return</span> wasAdded;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (!wasAdded) &#123;</span><br><span class="line">                sem.release();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">remove</span><span class="params">(T o)</span> &#123;</span><br><span class="line">        <span class="type">boolean</span> <span class="variable">wasRemoved</span> <span class="operator">=</span> set.remove(o);</span><br><span class="line">        <span class="keyword">if</span> (wasRemoved) &#123;</span><br><span class="line">            sem.release();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> wasRemoved;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>通过信号量的数量限制，可以控制同时访问某个资源的线程数量。</p>
-<h3 id="3-3-栅栏"><a href="#3-3-栅栏" class="headerlink" title="3.3 栅栏"></a>3.3 栅栏</h3><ul>
-<li>阻塞一组线程直到某个事件发生</li>
-<li>所有线程必须同时到达栅栏位置，才能继续执行</li>
-<li>闭锁用于等待事件，栅栏则是等待线程</li>
-<li>栅栏是可以重复使用的</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">long</span> <span class="title function_">timeTask</span><span class="params">(<span class="type">int</span> nThreads, <span class="keyword">final</span> Runnable task)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="keyword">class</span> <span class="title class_">Time</span> &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="type">long</span> <span class="variable">value</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">Time</span> <span class="variable">time</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Time</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// nThreads + 1 是加上了主线程</span></span><br><span class="line">    <span class="keyword">final</span> <span class="type">CyclicBarrier</span> <span class="variable">gate</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CyclicBarrier</span>(nThreads + <span class="number">1</span>,</span><br><span class="line">            () -&gt; time.value = System.nanoTime() - time.value);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; nThreads; i++) &#123;</span><br><span class="line">        <span class="type">Thread</span> <span class="variable">t</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="comment">// 等待所有线程开始</span></span><br><span class="line">                    gate.await();</span><br><span class="line"></span><br><span class="line">                    task.run();</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// 等待所有线程结束</span></span><br><span class="line">                    gate.await();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        t.start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 等待所有线程开始</span></span><br><span class="line">    gate.await();</span><br><span class="line">    <span class="comment">// 等待所有线程结束</span></span><br><span class="line">    gate.await();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> time.value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>与闭锁不同，闭锁需要等到某个事件通知，如 countDown()，线程才会继续往下执行。</p>
-<p>而栅栏等待的就是线程，只要所有线程都到达栅栏位置，就可以继续执行下去。</p>
-<h2 id="四、缓存案例"><a href="#四、缓存案例" class="headerlink" title="四、缓存案例"></a>四、缓存案例</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Memoizer</span>&lt;K, V&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ConcurrentHashMap&lt;K, Future&lt;V&gt;&gt; cache = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Computable&lt;K, V&gt; computer;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Memoizer</span><span class="params">(Computable&lt;K, V&gt; c)</span> &#123;</span><br><span class="line">        computer = c;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> V <span class="title function_">get</span><span class="params">(K key)</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">            Future&lt;V&gt; result = cache.get(key);</span><br><span class="line">            <span class="keyword">if</span> (result == <span class="literal">null</span>) &#123;</span><br><span class="line">                FutureTask&lt;V&gt; task = <span class="keyword">new</span> <span class="title class_">FutureTask</span>&lt;&gt;(() -&gt; computer.compute(key));</span><br><span class="line">                result = cache.putIfAbsent(key, task);</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 处理并发访问的情况</span></span><br><span class="line">                <span class="keyword">if</span> (result == <span class="literal">null</span>) &#123;</span><br><span class="line">                    result = task;</span><br><span class="line">                    <span class="keyword">new</span> <span class="title class_">Thread</span>(task).start();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// 等待计算完成</span></span><br><span class="line">                <span class="keyword">return</span> result.get();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>编程语言</category>
         <category>Java</category>
