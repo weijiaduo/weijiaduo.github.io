@@ -1,6 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>斜堆</title>
+    <url>/datastructure/heap/skewheap/</url>
+    <content><![CDATA[<h1 id="斜堆"><a href="#斜堆" class="headerlink" title="斜堆"></a>斜堆</h1><h2 id="一、什么是斜堆？"><a href="#一、什么是斜堆？" class="headerlink" title="一、什么是斜堆？"></a>一、什么是斜堆？</h2><p>斜堆（Skew Heap），也称斜树（Skew Tree），自适应堆(Self-Adjusting Heap)，是一种自平衡二叉堆数据结构。</p>
+<p>斜堆是左倾堆（Leftist Heap）的一个变种，只是斜堆的节点中没有 NPL 这个属性而已。</p>
+<p>斜堆的主要特点包括：</p>
+<span id="more"></span>
+
+<ul>
+<li>不平衡性：整体是不平衡的，并且在任何操作中都不会显式执行旋转操作来维持平衡</li>
+<li>自平衡性：每次操作后，仅通过互换左右子树来调整结构，从而达到自平衡的效果</li>
+<li>简单性：因为不需要执行显式的平衡操作，所以实现起来相对简单</li>
+</ul>
+<p>斜堆最主要的特点就是，不执行显式的平衡操作，而是通过交换左右子树来维护自平衡性。</p>
+<p>下面是斜堆的一个例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">      1 </span><br><span class="line">     / \</span><br><span class="line">    2   3</span><br><span class="line">   / \</span><br><span class="line">  4   6</span><br><span class="line"> /</span><br><span class="line">5</span><br></pre></td></tr></table></figure>
+
+<p>单从结构上看，斜堆和普通堆差不多，感受不到区别。</p>
+<p>不过实际上它和左倾堆是类似的，整体结构具有左倾性。</p>
+<h2 id="二、为什么用斜堆？"><a href="#二、为什么用斜堆？" class="headerlink" title="二、为什么用斜堆？"></a>二、为什么用斜堆？</h2><p>斜堆在某些场景下，具有一些特定的应用和优点：</p>
+<ul>
+<li>实现简单：没有复杂的平衡操作，实现简单</li>
+<li>合并高效：合并操作非常高效，没有额外的平衡操作，仅需要互换左右子树</li>
+<li>自适应性：经常被访问的元素会被提升到根节点，从而提高了对这些元素的访问速度</li>
+<li>空间效率：节点不需要保存额外的平衡信息，比如 左倾堆、AVL、红黑树等</li>
+</ul>
+<p>尽管斜堆具有上述优点，但它也有一些缺点，最坏情况下的性能不如其他一些堆结构。</p>
+<p>斜堆通常适用于需要高效的合并操作和自适应性的场景，且不太依赖最坏情况性能保证的情况。</p>
+<p>比如 Prim 算法、Kruskal 算法、优先级队列等需要频繁合并操作的场景。</p>
+<h2 id="三、怎么实现斜堆？"><a href="#三、怎么实现斜堆？" class="headerlink" title="三、怎么实现斜堆？"></a>三、怎么实现斜堆？</h2><p>合并操作是斜堆的重点，合并两个堆的步骤如下：</p>
+<ol>
+<li>如果两个堆中有一个为空，则直接返回另一个堆</li>
+<li>如果两个堆都不为空，则比较两个堆的根节点，将较小的根节点作为新堆的根节点</li>
+<li>将较小根节点的右子树和较大根节点合并，然后将合并后的树作为新堆的右子树</li>
+<li>最后交换左右子树</li>
+</ol>
+<p>其实和左倾堆差不多，就是少了 NPL 属性判断而已，伪代码如下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">merge(h1, h2) &#123;</span><br><span class="line">    <span class="comment">// 1. 返回非空堆</span></span><br><span class="line">    <span class="keyword">if</span> (h1 == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> h2;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (h2 == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> h1;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 以小根节点作为新堆的根节点</span></span><br><span class="line">    min = h1.val &lt; h2.val ? h1 : h2;</span><br><span class="line">    max = h1.val &gt; h2.val ? h1 : h2;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 小根节点的右子节点和大根节点合并</span></span><br><span class="line">    min.right = merge(min.right, max);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 交换左右子节点</span></span><br><span class="line">    swap(min.left, min.right);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> min;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下面给出一个合并操作的例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"> 堆1              堆2</span><br><span class="line"></span><br><span class="line">  2                1</span><br><span class="line"> / \              / \</span><br><span class="line">6   4            3   5</span><br></pre></td></tr></table></figure>
+
+<p>1）首先，取小根节点 1 作为新堆的根节点，然后合并小根右孩子与大根堆</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"> 新堆1                     待合并</span><br><span class="line">      </span><br><span class="line">  1                       5      2     </span><br><span class="line"> /                              / \</span><br><span class="line">3                              6   4</span><br></pre></td></tr></table></figure>
+
+<p>2）同样地，取小根节点 2 作为新堆的根节点，合并小根右孩子与大根堆</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"> 新堆1     新堆2            待合并</span><br><span class="line">                                </span><br><span class="line">  1         2             5      4</span><br><span class="line"> /         /  </span><br><span class="line">3         6</span><br></pre></td></tr></table></figure>
+
+<p>3）同上，取小根节点 4 作为新堆根节点，合并小根右孩子（null 节点）与大根堆</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"> 新堆1     新堆2     新堆3</span><br><span class="line">                                </span><br><span class="line">  1         2        4</span><br><span class="line"> /         /          \</span><br><span class="line">3         6            5</span><br></pre></td></tr></table></figure>
+
+<p>4）接着交换 4 的左右孩子</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"> 新堆1     新堆2     新堆3</span><br><span class="line">                                </span><br><span class="line">  1         2        4</span><br><span class="line"> /         /        /</span><br><span class="line">3         6        5</span><br></pre></td></tr></table></figure>
+
+<p>5）接着开始递归往上合并，4 返回给 2 的右孩子</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"> 新堆1     新堆2</span><br><span class="line">                                </span><br><span class="line">  1         2</span><br><span class="line"> /         / \</span><br><span class="line">3         6   4</span><br><span class="line">             /</span><br><span class="line">            5</span><br></pre></td></tr></table></figure>
+
+<p>6）接着交换 2 的左右孩子</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"> 新堆1     新堆2</span><br><span class="line">                                </span><br><span class="line">  1         2</span><br><span class="line"> /         / \</span><br><span class="line">3         4   6</span><br><span class="line">         /</span><br><span class="line">        5</span><br></pre></td></tr></table></figure>
+
+<p>7）继续往上合并，2 返回给 1 的右孩子</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"> 新堆1</span><br><span class="line">                                </span><br><span class="line">  1 </span><br><span class="line"> / \</span><br><span class="line">3   2</span><br><span class="line">   / \</span><br><span class="line">  4   6</span><br><span class="line"> /</span><br><span class="line">5</span><br></pre></td></tr></table></figure>
+
+<p>8）接着交换 1 的左右孩子</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">     新堆1</span><br><span class="line">                                    </span><br><span class="line">      1 </span><br><span class="line">     / \</span><br><span class="line">    2   3</span><br><span class="line">   / \</span><br><span class="line">  4   6</span><br><span class="line"> /</span><br><span class="line">5</span><br></pre></td></tr></table></figure>
+
+<p>至此，合并操作就完成了。</p>
+<p>至于其他的操作，比如删除和插入，实际上都是通过合并操作实现的：</p>
+<ol>
+<li>删除最小元素：相当于删除根节点，然后合并左右子树</li>
+<li>插入新元素：相当于将新元素作为一个新的斜堆，然后两个堆合并</li>
+</ol>
+<p>下面是它们的伪代码：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">removeFirst() &#123;</span><br><span class="line">    temp = root;</span><br><span class="line">    root = merge(root.left, root.right);</span><br><span class="line">    temp.left = temp.right = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">return</span> temp.val;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">insert(val) &#123;</span><br><span class="line">    root = merge(root, <span class="keyword">new</span> <span class="title class_">Node</span>&lt;&gt;(val));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>总的来说，斜堆和左倾堆差不多，实现也是比较简单的。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><blockquote>
+<p><a href="https://www.cnblogs.com/skywang12345/p/3638552.html">https://www.cnblogs.com/skywang12345/p/3638552.html</a></p>
+</blockquote>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="斜堆接口"><a href="#斜堆接口" class="headerlink" title="斜堆接口"></a>斜堆接口</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 斜堆（Skew Heap）</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * 左倾堆（Leftist Heap）的变种，只是斜堆没有 NPL 这个属性</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> weijiaduo</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 2023/9/26</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">SkewHeap</span>&lt;T&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 合并另外一个堆</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> other 另外一个堆</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">merge</span><span class="params">(SkewHeap&lt;T&gt; other)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 插入新值</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> val 新值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">insert</span><span class="params">(T val)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 移除根节点</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 根节点值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    T <span class="title function_">removeFirst</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 根节点值</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 根节点值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    T <span class="title function_">first</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 堆大小</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 堆大小</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="type">int</span> <span class="title function_">size</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 是否为空</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> true/false</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="type">boolean</span> <span class="title function_">isEmpty</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="斜堆实现"><a href="#斜堆实现" class="headerlink" title="斜堆实现"></a>斜堆实现</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 斜堆（Skew Heap）实现类</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * 左倾堆（Leftist Heap）的变种，只是斜堆没有 NPL 这个属性</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> weijiaduo</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 2023/9/26</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SkewHeapImpl</span>&lt;T <span class="keyword">extends</span> <span class="title class_">Comparable</span>&lt;T&gt;&gt; <span class="keyword">implements</span> <span class="title class_">SkewHeap</span>&lt;T&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 堆根节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> SkewHeapNode&lt;T&gt; root;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 节点数量</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> size;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">merge</span><span class="params">(SkewHeap&lt;T&gt; other)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (!(other <span class="keyword">instanceof</span> SkewHeapImpl&lt;T&gt;)) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        root = merge(root, ((SkewHeapImpl&lt;T&gt;) other).root);</span><br><span class="line">        size += other.size();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">insert</span><span class="params">(T val)</span> &#123;</span><br><span class="line">        root = merge(root, <span class="keyword">new</span> <span class="title class_">SkewHeapNode</span>&lt;&gt;(val));</span><br><span class="line">        size++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> T <span class="title function_">removeFirst</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (size &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalStateException</span>(<span class="string">&quot;Heap is Empty!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        SkewHeapNode&lt;T&gt; node = root;</span><br><span class="line">        root = merge(root.left, root.right);</span><br><span class="line">        node.left = node.right = <span class="literal">null</span>;</span><br><span class="line">        size--;</span><br><span class="line">        <span class="keyword">return</span> node.val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> T <span class="title function_">first</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (size &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalStateException</span>(<span class="string">&quot;Heap is Empty!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> root.val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">size</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> size;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isEmpty</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> size &lt;= <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 合并 2 个堆，并返回新堆的根节点</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> h1 堆1 根节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> h2 堆2 根节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 新堆的根节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> SkewHeapNode&lt;T&gt; <span class="title function_">merge</span><span class="params">(SkewHeapNode&lt;T&gt; h1, SkewHeapNode&lt;T&gt; h2)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (h1 == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> h2;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (h2 == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> h1;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 以小根节点作为新堆的根节点</span></span><br><span class="line">        SkewHeapNode&lt;T&gt; min, max;</span><br><span class="line">        <span class="keyword">if</span> (h1.val.compareTo(h2.val) &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            min = h1;</span><br><span class="line">            max = h2;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            min = h2;</span><br><span class="line">            max = h1;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 小根节点的右子节点和大根节点合并</span></span><br><span class="line">        min.right = merge(min.right, max);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 交换左右子节点</span></span><br><span class="line">        SkewHeapNode&lt;T&gt; tmp = min.left;</span><br><span class="line">        min.left = min.right;</span><br><span class="line">        min.right = tmp;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> min;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>数据结构与算法</category>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+        <tag>数据结构</tag>
+        <tag>堆</tag>
+        <tag>斜堆</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>左倾堆</title>
     <url>/datastructure/heap/leftistheap/</url>
     <content><![CDATA[<h1 id="左倾堆"><a href="#左倾堆" class="headerlink" title="左倾堆"></a>左倾堆</h1><h2 id="一、什么是左倾堆？"><a href="#一、什么是左倾堆？" class="headerlink" title="一、什么是左倾堆？"></a>一、什么是左倾堆？</h2><p>左倾堆（Leftist Heap），也称为左偏树（Leftist Tree）、左偏堆，最左堆等。</p>
@@ -5828,6 +5923,74 @@
       </tags>
   </entry>
   <entry>
+    <title>07_02_线程中断</title>
+    <url>/lang/java/core/concurrency/07_02_%E7%BA%BF%E7%A8%8B%E4%B8%AD%E6%96%AD/</url>
+    <content><![CDATA[<h1 id="线程中断"><a href="#线程中断" class="headerlink" title="线程中断"></a>线程中断</h1><p>中断线程，指的是向线程发起一个中断信号。</p>
+<p>其目的是为了中断线程，对象是线程，而不是线程内运行的任务。</p>
+<span id="more"></span>
+
+<h2 id="一、中断策略"><a href="#一、中断策略" class="headerlink" title="一、中断策略"></a>一、中断策略</h2><p>任务有取消策略，线程也有对应的中断策略。</p>
+<ul>
+<li>中断策略：规定了线程如何解释某个中断请求</li>
+<li>中断策略，不是指如何中断线程，而是指线程在收到中断后，如何处理这个中断请求</li>
+</ul>
+<p>具体来说，就是在线程发现中断时：</p>
+<ul>
+<li>该做什么工作（需要的话）</li>
+<li>哪些工作单元对于中断来说是原子操作</li>
+<li>以多快的速度响应中断</li>
+</ul>
+<p>每个线程都有各自的中断策略，可以有不同的处理。</p>
+<h2 id="二、屏蔽中断策略"><a href="#二、屏蔽中断策略" class="headerlink" title="二、屏蔽中断策略"></a>二、屏蔽中断策略</h2><p>最简单的中断策略，就是屏蔽忽略线程的中断。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">IgnoreThread</span> <span class="keyword">extends</span> <span class="title class_">Thread</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        Runnable task;</span><br><span class="line">        <span class="keyword">for</span>(;;) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                task = tasks.take();</span><br><span class="line">                task.run();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                <span class="comment">// 屏蔽忽略所有的中断</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种完全屏蔽中断的行为，不是一种很合理的方式，过于粗暴。</p>
+<h2 id="三、结束线程策略"><a href="#三、结束线程策略" class="headerlink" title="三、结束线程策略"></a>三、结束线程策略</h2><p>最合理的中断策略，就是线程级取消操作或服务级取消操作：</p>
+<ul>
+<li>线程发现中断后，尽快退出结束，在必要时进行清理，通知某个所有者该线程已经退出</li>
+</ul>
+<p>比如说，线程可以运行多个任务，如果中断了线程，那还得等任务都执行完之后才能退出。</p>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ExitThread</span> <span class="keyword">extends</span> <span class="title class_">Thread</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Runnable task;</span><br><span class="line">            <span class="keyword">for</span>(;;) &#123;</span><br><span class="line">                <span class="comment">// 检查是否发生了中断</span></span><br><span class="line">                <span class="keyword">if</span> (Thread.currentThread().isInterrupted()) &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                task = tasks.take();</span><br><span class="line">                task.run();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            <span class="comment">// 中断线程</span></span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">// 清理</span></span><br><span class="line">            cleanup();</span><br><span class="line">            <span class="comment">// 通知结束</span></span><br><span class="line">            notifyExit();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>收到中断后结束线程，算是一种比较合理的中断策略了。</p>
+<h2 id="四、重启线程策略"><a href="#四、重启线程策略" class="headerlink" title="四、重启线程策略"></a>四、重启线程策略</h2><p>还有其他的中断策略，比如暂停服务或重启服务：</p>
+<ul>
+<li>线程收到中断后，它先是销毁当前线程，然后再重新创建一个新的线程来替代</li>
+</ul>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">RebuildThread</span> <span class="keyword">extends</span> <span class="title class_">Thread</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Runnable task;</span><br><span class="line">            <span class="keyword">for</span>(;;) &#123;</span><br><span class="line">                <span class="comment">// 检查是否发生了中断</span></span><br><span class="line">                <span class="keyword">if</span> (Thread.currentThread().isInterrupted()) &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                task = tasks.take();</span><br><span class="line">                task.run();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            <span class="comment">// 中断线程</span></span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">// 重启新线程</span></span><br><span class="line">            createWorker(tasks);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种重启线程策略，实际在线程池中可能会用到。</p>
+<p>因为如果一个线程异常退出后，线程池可能需要补充一个新线程来恢复之前的规模。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>中断线程：</p>
+<ul>
+<li>中断线程，指的是向线程发起一个中断信号</li>
+<li>中断线程，对象是线程，而不是线程内运行的任务</li>
+</ul>
+<p>线程如何解释某个中断请求：</p>
+<ul>
+<li>该做什么工作（需要的话）</li>
+<li>哪些工作单元对于中断来说是原子操作</li>
+<li>以多快的速度响应中断</li>
+</ul>
+<p>中断策略：</p>
+<ul>
+<li>屏蔽中断策略</li>
+<li>结束线程策略</li>
+<li>重启线程策略</li>
+</ul>
+]]></content>
+      <categories>
+        <category>编程语言</category>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>java</tag>
+        <tag>并发编程</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>07_03_中断响应</title>
     <url>/lang/java/core/concurrency/07_03_%E4%B8%AD%E6%96%AD%E5%93%8D%E5%BA%94/</url>
     <content><![CDATA[<h1 id="中断响应"><a href="#中断响应" class="headerlink" title="中断响应"></a>中断响应</h1><p>在取消任务和中断线程中，中断都起到了很大作用：</p>
@@ -5931,74 +6094,6 @@
 </li>
 <li><p>线程中断实际上依赖于任务的中断处理，如果任务将中断屏蔽了，那么线程将不会收到中断</p>
 </li>
-</ul>
-]]></content>
-      <categories>
-        <category>编程语言</category>
-        <category>Java</category>
-      </categories>
-      <tags>
-        <tag>java</tag>
-        <tag>并发编程</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>07_02_线程中断</title>
-    <url>/lang/java/core/concurrency/07_02_%E7%BA%BF%E7%A8%8B%E4%B8%AD%E6%96%AD/</url>
-    <content><![CDATA[<h1 id="线程中断"><a href="#线程中断" class="headerlink" title="线程中断"></a>线程中断</h1><p>中断线程，指的是向线程发起一个中断信号。</p>
-<p>其目的是为了中断线程，对象是线程，而不是线程内运行的任务。</p>
-<span id="more"></span>
-
-<h2 id="一、中断策略"><a href="#一、中断策略" class="headerlink" title="一、中断策略"></a>一、中断策略</h2><p>任务有取消策略，线程也有对应的中断策略。</p>
-<ul>
-<li>中断策略：规定了线程如何解释某个中断请求</li>
-<li>中断策略，不是指如何中断线程，而是指线程在收到中断后，如何处理这个中断请求</li>
-</ul>
-<p>具体来说，就是在线程发现中断时：</p>
-<ul>
-<li>该做什么工作（需要的话）</li>
-<li>哪些工作单元对于中断来说是原子操作</li>
-<li>以多快的速度响应中断</li>
-</ul>
-<p>每个线程都有各自的中断策略，可以有不同的处理。</p>
-<h2 id="二、屏蔽中断策略"><a href="#二、屏蔽中断策略" class="headerlink" title="二、屏蔽中断策略"></a>二、屏蔽中断策略</h2><p>最简单的中断策略，就是屏蔽忽略线程的中断。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">IgnoreThread</span> <span class="keyword">extends</span> <span class="title class_">Thread</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        Runnable task;</span><br><span class="line">        <span class="keyword">for</span>(;;) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                task = tasks.take();</span><br><span class="line">                task.run();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                <span class="comment">// 屏蔽忽略所有的中断</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这种完全屏蔽中断的行为，不是一种很合理的方式，过于粗暴。</p>
-<h2 id="三、结束线程策略"><a href="#三、结束线程策略" class="headerlink" title="三、结束线程策略"></a>三、结束线程策略</h2><p>最合理的中断策略，就是线程级取消操作或服务级取消操作：</p>
-<ul>
-<li>线程发现中断后，尽快退出结束，在必要时进行清理，通知某个所有者该线程已经退出</li>
-</ul>
-<p>比如说，线程可以运行多个任务，如果中断了线程，那还得等任务都执行完之后才能退出。</p>
-<p>代码示例：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ExitThread</span> <span class="keyword">extends</span> <span class="title class_">Thread</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Runnable task;</span><br><span class="line">            <span class="keyword">for</span>(;;) &#123;</span><br><span class="line">                <span class="comment">// 检查是否发生了中断</span></span><br><span class="line">                <span class="keyword">if</span> (Thread.currentThread().isInterrupted()) &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                task = tasks.take();</span><br><span class="line">                task.run();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            <span class="comment">// 中断线程</span></span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">// 清理</span></span><br><span class="line">            cleanup();</span><br><span class="line">            <span class="comment">// 通知结束</span></span><br><span class="line">            notifyExit();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>收到中断后结束线程，算是一种比较合理的中断策略了。</p>
-<h2 id="四、重启线程策略"><a href="#四、重启线程策略" class="headerlink" title="四、重启线程策略"></a>四、重启线程策略</h2><p>还有其他的中断策略，比如暂停服务或重启服务：</p>
-<ul>
-<li>线程收到中断后，它先是销毁当前线程，然后再重新创建一个新的线程来替代</li>
-</ul>
-<p>代码示例：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">RebuildThread</span> <span class="keyword">extends</span> <span class="title class_">Thread</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Runnable task;</span><br><span class="line">            <span class="keyword">for</span>(;;) &#123;</span><br><span class="line">                <span class="comment">// 检查是否发生了中断</span></span><br><span class="line">                <span class="keyword">if</span> (Thread.currentThread().isInterrupted()) &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                task = tasks.take();</span><br><span class="line">                task.run();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            <span class="comment">// 中断线程</span></span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">// 重启新线程</span></span><br><span class="line">            createWorker(tasks);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这种重启线程策略，实际在线程池中可能会用到。</p>
-<p>因为如果一个线程异常退出后，线程池可能需要补充一个新线程来恢复之前的规模。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>中断线程：</p>
-<ul>
-<li>中断线程，指的是向线程发起一个中断信号</li>
-<li>中断线程，对象是线程，而不是线程内运行的任务</li>
-</ul>
-<p>线程如何解释某个中断请求：</p>
-<ul>
-<li>该做什么工作（需要的话）</li>
-<li>哪些工作单元对于中断来说是原子操作</li>
-<li>以多快的速度响应中断</li>
-</ul>
-<p>中断策略：</p>
-<ul>
-<li>屏蔽中断策略</li>
-<li>结束线程策略</li>
-<li>重启线程策略</li>
 </ul>
 ]]></content>
       <categories>
@@ -11348,40 +11443,6 @@
       </tags>
   </entry>
   <entry>
-    <title>16. 最接近的三数之和</title>
-    <url>/practice/leetcode/array/16.ThreeSumClosest/</url>
-    <content><![CDATA[<h1 id="16-最接近的三数之和"><a href="#16-最接近的三数之和" class="headerlink" title="16. 最接近的三数之和"></a>16. 最接近的三数之和</h1><h2 id="一、题目描述"><a href="#一、题目描述" class="headerlink" title="一、题目描述"></a>一、题目描述</h2><p>给定一个包括 n 个整数的数组 nums 和 一个目标值 target。找出 nums 中的三个整数，使得它们的和与 target 最接近。返回这三个数的和</p>
-<p>假定每组输入只存在唯一答案。</p>
-<ul>
-<li>3 &lt;= nums.length &lt;= 10^3</li>
-<li>-10^3 &lt;= nums[i] &lt;= 10^3</li>
-<li>-10^4 &lt;= target &lt;= 10^4</li>
-</ul>
-<span id="more"></span>
-
-
-<h2 id="二、解题思路"><a href="#二、解题思路" class="headerlink" title="二、解题思路"></a>二、解题思路</h2><p>原理和求3数之和一样，把它转换成找2数之和，问题就变得稍微容易一些。</p>
-<ul>
-<li><code>a + b + c = target</code> 可以转成 <code>b + c = target - a</code>，那么就相当于查找2数之和</li>
-</ul>
-<p>2数之和就快很多了。</p>
-<h2 id="三、复杂度分析"><a href="#三、复杂度分析" class="headerlink" title="三、复杂度分析"></a>三、复杂度分析</h2><ul>
-<li>时间 <code>O(n^2)</code></li>
-<li>空间 <code>O(1)</code></li>
-</ul>
-<h2 id="四、参考代码"><a href="#四、参考代码" class="headerlink" title="四、参考代码"></a>四、参考代码</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 最近的3数之和</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> nums 数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> target 目标值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 3数之和</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="type">int</span> <span class="title function_">threeSumClosest</span><span class="params">(<span class="type">int</span>[] nums, <span class="type">int</span> target)</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">closestSum</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    Arrays.sort(nums);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; nums.length - <span class="number">2</span>; i++) &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">sum</span> <span class="operator">=</span> twoSumClosest(nums, target - nums[i], i + <span class="number">1</span>, nums.length - <span class="number">1</span>);</span><br><span class="line">        sum += nums[i];</span><br><span class="line">        <span class="keyword">if</span> (sum == target) &#123;</span><br><span class="line">            <span class="keyword">return</span> sum;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 取最接近的值</span></span><br><span class="line">        <span class="keyword">if</span> (i == <span class="number">0</span> || Math.abs(sum - target) &lt; Math.abs(closestSum - target)) &#123;</span><br><span class="line">            closestSum = sum;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> closestSum;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 最近的2数之和</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> nums 排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> target 目标值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> start 起始索引</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> end 终止索引</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 2数之和</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="type">int</span> <span class="title function_">twoSumClosest</span><span class="params">(<span class="type">int</span>[] nums, <span class="type">int</span> target, <span class="type">int</span> start, <span class="type">int</span> end)</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">lp</span> <span class="operator">=</span> start, rp = end;</span><br><span class="line">    <span class="type">int</span> <span class="variable">sum</span> <span class="operator">=</span> nums[lp] + nums[rp];</span><br><span class="line">    <span class="keyword">while</span> (lp &lt; rp) &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">temp</span> <span class="operator">=</span> nums[lp] + nums[rp];</span><br><span class="line">        <span class="keyword">if</span> (temp == target) &#123;</span><br><span class="line">            <span class="keyword">return</span> target;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (Math.abs(temp - target) &lt; Math.abs(sum - target)) &#123;</span><br><span class="line">            sum = temp;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (temp &lt; target) &#123;</span><br><span class="line">            lp++;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            rp--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>数据结构与算法</category>
-        <category>实战训练</category>
-      </categories>
-      <tags>
-        <tag>算法</tag>
-        <tag>实战</tag>
-        <tag>LeetCode</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>15. 三数之和</title>
     <url>/practice/leetcode/array/15.ThreeSum/</url>
     <content><![CDATA[<h1 id="15-三数之和"><a href="#15-三数之和" class="headerlink" title="15. 三数之和"></a>15. 三数之和</h1><h2 id="一、题目描述"><a href="#一、题目描述" class="headerlink" title="一、题目描述"></a>一、题目描述</h2><p>给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有和为 0 且不重复的三元组。</p>
@@ -11411,6 +11472,40 @@
 <li>空间 <code>O(1)</code></li>
 </ul>
 <h2 id="四、参考代码"><a href="#四、参考代码" class="headerlink" title="四、参考代码"></a>四、参考代码</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 三数之和</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> nums 数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 所有三元组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> List&lt;List&lt;Integer&gt;&gt; <span class="title function_">threeSum</span><span class="params">(<span class="type">int</span>[] nums)</span> &#123;</span><br><span class="line">    List&lt;List&lt;Integer&gt;&gt; result = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">if</span> (nums.length &lt; <span class="number">3</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">    Arrays.sort(nums);</span><br><span class="line">    <span class="keyword">if</span> (nums[<span class="number">0</span>] &gt; <span class="number">0</span> || nums[nums.length - <span class="number">1</span>] &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; nums.length &amp;&amp; nums[i] &lt;= <span class="number">0</span>; i++) &#123;</span><br><span class="line">        List&lt;List&lt;Integer&gt;&gt; sumList = twoSum(nums, -nums[i], i + <span class="number">1</span>, nums.length - <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">if</span> (sumList.size() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            result.addAll(sumList);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 去重</span></span><br><span class="line">        <span class="keyword">while</span> (i &lt; nums.length - <span class="number">1</span> &amp;&amp; nums[i] == nums[i + <span class="number">1</span>]) &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 求2数之和</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> nums 升序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> sum 两数和</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> start 起始地址</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> end 结束地址</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 两数，或null</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> List&lt;List&lt;Integer&gt;&gt; <span class="title function_">twoSum</span><span class="params">(<span class="type">int</span>[] nums, <span class="type">int</span> sum, <span class="type">int</span> start, <span class="type">int</span> end)</span> &#123;</span><br><span class="line">    List&lt;List&lt;Integer&gt;&gt; result = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">    <span class="type">int</span> <span class="variable">lp</span> <span class="operator">=</span> start, rp = end;</span><br><span class="line">    <span class="keyword">while</span> (lp &lt; rp) &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">temp</span> <span class="operator">=</span> nums[lp] + nums[rp];</span><br><span class="line">        <span class="keyword">if</span> (temp == sum) &#123;</span><br><span class="line">            List&lt;Integer&gt; sumList = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(<span class="number">3</span>);</span><br><span class="line">            sumList.add(-sum);</span><br><span class="line">            sumList.add(nums[lp]);</span><br><span class="line">            sumList.add(nums[rp]);</span><br><span class="line">            result.add(sumList);</span><br><span class="line">            <span class="comment">// 去重</span></span><br><span class="line">            <span class="keyword">while</span> (lp &lt; rp &amp;&amp; nums[lp] == nums[++lp]);</span><br><span class="line">            <span class="keyword">while</span> (lp &lt; rp &amp;&amp; nums[rp] == nums[--rp]);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (temp &lt; sum) &#123;</span><br><span class="line">            lp++;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            rp--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>数据结构与算法</category>
+        <category>实战训练</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+        <tag>实战</tag>
+        <tag>LeetCode</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>16. 最接近的三数之和</title>
+    <url>/practice/leetcode/array/16.ThreeSumClosest/</url>
+    <content><![CDATA[<h1 id="16-最接近的三数之和"><a href="#16-最接近的三数之和" class="headerlink" title="16. 最接近的三数之和"></a>16. 最接近的三数之和</h1><h2 id="一、题目描述"><a href="#一、题目描述" class="headerlink" title="一、题目描述"></a>一、题目描述</h2><p>给定一个包括 n 个整数的数组 nums 和 一个目标值 target。找出 nums 中的三个整数，使得它们的和与 target 最接近。返回这三个数的和</p>
+<p>假定每组输入只存在唯一答案。</p>
+<ul>
+<li>3 &lt;= nums.length &lt;= 10^3</li>
+<li>-10^3 &lt;= nums[i] &lt;= 10^3</li>
+<li>-10^4 &lt;= target &lt;= 10^4</li>
+</ul>
+<span id="more"></span>
+
+
+<h2 id="二、解题思路"><a href="#二、解题思路" class="headerlink" title="二、解题思路"></a>二、解题思路</h2><p>原理和求3数之和一样，把它转换成找2数之和，问题就变得稍微容易一些。</p>
+<ul>
+<li><code>a + b + c = target</code> 可以转成 <code>b + c = target - a</code>，那么就相当于查找2数之和</li>
+</ul>
+<p>2数之和就快很多了。</p>
+<h2 id="三、复杂度分析"><a href="#三、复杂度分析" class="headerlink" title="三、复杂度分析"></a>三、复杂度分析</h2><ul>
+<li>时间 <code>O(n^2)</code></li>
+<li>空间 <code>O(1)</code></li>
+</ul>
+<h2 id="四、参考代码"><a href="#四、参考代码" class="headerlink" title="四、参考代码"></a>四、参考代码</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 最近的3数之和</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> nums 数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> target 目标值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 3数之和</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="type">int</span> <span class="title function_">threeSumClosest</span><span class="params">(<span class="type">int</span>[] nums, <span class="type">int</span> target)</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">closestSum</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    Arrays.sort(nums);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; nums.length - <span class="number">2</span>; i++) &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">sum</span> <span class="operator">=</span> twoSumClosest(nums, target - nums[i], i + <span class="number">1</span>, nums.length - <span class="number">1</span>);</span><br><span class="line">        sum += nums[i];</span><br><span class="line">        <span class="keyword">if</span> (sum == target) &#123;</span><br><span class="line">            <span class="keyword">return</span> sum;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 取最接近的值</span></span><br><span class="line">        <span class="keyword">if</span> (i == <span class="number">0</span> || Math.abs(sum - target) &lt; Math.abs(closestSum - target)) &#123;</span><br><span class="line">            closestSum = sum;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> closestSum;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 最近的2数之和</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> nums 排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> target 目标值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> start 起始索引</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> end 终止索引</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 2数之和</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="type">int</span> <span class="title function_">twoSumClosest</span><span class="params">(<span class="type">int</span>[] nums, <span class="type">int</span> target, <span class="type">int</span> start, <span class="type">int</span> end)</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">lp</span> <span class="operator">=</span> start, rp = end;</span><br><span class="line">    <span class="type">int</span> <span class="variable">sum</span> <span class="operator">=</span> nums[lp] + nums[rp];</span><br><span class="line">    <span class="keyword">while</span> (lp &lt; rp) &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">temp</span> <span class="operator">=</span> nums[lp] + nums[rp];</span><br><span class="line">        <span class="keyword">if</span> (temp == target) &#123;</span><br><span class="line">            <span class="keyword">return</span> target;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (Math.abs(temp - target) &lt; Math.abs(sum - target)) &#123;</span><br><span class="line">            sum = temp;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (temp &lt; target) &#123;</span><br><span class="line">            lp++;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            rp--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>数据结构与算法</category>
