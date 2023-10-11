@@ -5982,6 +5982,74 @@
       </tags>
   </entry>
   <entry>
+    <title>07_02_线程中断</title>
+    <url>/lang/java/core/concurrency/07_02_%E7%BA%BF%E7%A8%8B%E4%B8%AD%E6%96%AD/</url>
+    <content><![CDATA[<h1 id="线程中断"><a href="#线程中断" class="headerlink" title="线程中断"></a>线程中断</h1><p>中断线程，指的是向线程发起一个中断信号。</p>
+<p>其目的是为了中断线程，对象是线程，而不是线程内运行的任务。</p>
+<span id="more"></span>
+
+<h2 id="一、中断策略"><a href="#一、中断策略" class="headerlink" title="一、中断策略"></a>一、中断策略</h2><p>任务有取消策略，线程也有对应的中断策略。</p>
+<ul>
+<li>中断策略：规定了线程如何解释某个中断请求</li>
+<li>中断策略，不是指如何中断线程，而是指线程在收到中断后，如何处理这个中断请求</li>
+</ul>
+<p>具体来说，就是在线程发现中断时：</p>
+<ul>
+<li>该做什么工作（需要的话）</li>
+<li>哪些工作单元对于中断来说是原子操作</li>
+<li>以多快的速度响应中断</li>
+</ul>
+<p>每个线程都有各自的中断策略，可以有不同的处理。</p>
+<h2 id="二、屏蔽中断策略"><a href="#二、屏蔽中断策略" class="headerlink" title="二、屏蔽中断策略"></a>二、屏蔽中断策略</h2><p>最简单的中断策略，就是屏蔽忽略线程的中断。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">IgnoreThread</span> <span class="keyword">extends</span> <span class="title class_">Thread</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        Runnable task;</span><br><span class="line">        <span class="keyword">for</span>(;;) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                task = tasks.take();</span><br><span class="line">                task.run();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                <span class="comment">// 屏蔽忽略所有的中断</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种完全屏蔽中断的行为，不是一种很合理的方式，过于粗暴。</p>
+<h2 id="三、结束线程策略"><a href="#三、结束线程策略" class="headerlink" title="三、结束线程策略"></a>三、结束线程策略</h2><p>最合理的中断策略，就是线程级取消操作或服务级取消操作：</p>
+<ul>
+<li>线程发现中断后，尽快退出结束，在必要时进行清理，通知某个所有者该线程已经退出</li>
+</ul>
+<p>比如说，线程可以运行多个任务，如果中断了线程，那还得等任务都执行完之后才能退出。</p>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ExitThread</span> <span class="keyword">extends</span> <span class="title class_">Thread</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Runnable task;</span><br><span class="line">            <span class="keyword">for</span>(;;) &#123;</span><br><span class="line">                <span class="comment">// 检查是否发生了中断</span></span><br><span class="line">                <span class="keyword">if</span> (Thread.currentThread().isInterrupted()) &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                task = tasks.take();</span><br><span class="line">                task.run();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            <span class="comment">// 中断线程</span></span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">// 清理</span></span><br><span class="line">            cleanup();</span><br><span class="line">            <span class="comment">// 通知结束</span></span><br><span class="line">            notifyExit();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>收到中断后结束线程，算是一种比较合理的中断策略了。</p>
+<h2 id="四、重启线程策略"><a href="#四、重启线程策略" class="headerlink" title="四、重启线程策略"></a>四、重启线程策略</h2><p>还有其他的中断策略，比如暂停服务或重启服务：</p>
+<ul>
+<li>线程收到中断后，它先是销毁当前线程，然后再重新创建一个新的线程来替代</li>
+</ul>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">RebuildThread</span> <span class="keyword">extends</span> <span class="title class_">Thread</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Runnable task;</span><br><span class="line">            <span class="keyword">for</span>(;;) &#123;</span><br><span class="line">                <span class="comment">// 检查是否发生了中断</span></span><br><span class="line">                <span class="keyword">if</span> (Thread.currentThread().isInterrupted()) &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                task = tasks.take();</span><br><span class="line">                task.run();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            <span class="comment">// 中断线程</span></span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">// 重启新线程</span></span><br><span class="line">            createWorker(tasks);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种重启线程策略，实际在线程池中可能会用到。</p>
+<p>因为如果一个线程异常退出后，线程池可能需要补充一个新线程来恢复之前的规模。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>中断线程：</p>
+<ul>
+<li>中断线程，指的是向线程发起一个中断信号</li>
+<li>中断线程，对象是线程，而不是线程内运行的任务</li>
+</ul>
+<p>线程如何解释某个中断请求：</p>
+<ul>
+<li>该做什么工作（需要的话）</li>
+<li>哪些工作单元对于中断来说是原子操作</li>
+<li>以多快的速度响应中断</li>
+</ul>
+<p>中断策略：</p>
+<ul>
+<li>屏蔽中断策略</li>
+<li>结束线程策略</li>
+<li>重启线程策略</li>
+</ul>
+]]></content>
+      <categories>
+        <category>编程语言</category>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>java</tag>
+        <tag>并发编程</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>07_03_中断响应</title>
     <url>/lang/java/core/concurrency/07_03_%E4%B8%AD%E6%96%AD%E5%93%8D%E5%BA%94/</url>
     <content><![CDATA[<h1 id="中断响应"><a href="#中断响应" class="headerlink" title="中断响应"></a>中断响应</h1><p>在取消任务和中断线程中，中断都起到了很大作用：</p>
@@ -6085,74 +6153,6 @@
 </li>
 <li><p>线程中断实际上依赖于任务的中断处理，如果任务将中断屏蔽了，那么线程将不会收到中断</p>
 </li>
-</ul>
-]]></content>
-      <categories>
-        <category>编程语言</category>
-        <category>Java</category>
-      </categories>
-      <tags>
-        <tag>java</tag>
-        <tag>并发编程</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>07_02_线程中断</title>
-    <url>/lang/java/core/concurrency/07_02_%E7%BA%BF%E7%A8%8B%E4%B8%AD%E6%96%AD/</url>
-    <content><![CDATA[<h1 id="线程中断"><a href="#线程中断" class="headerlink" title="线程中断"></a>线程中断</h1><p>中断线程，指的是向线程发起一个中断信号。</p>
-<p>其目的是为了中断线程，对象是线程，而不是线程内运行的任务。</p>
-<span id="more"></span>
-
-<h2 id="一、中断策略"><a href="#一、中断策略" class="headerlink" title="一、中断策略"></a>一、中断策略</h2><p>任务有取消策略，线程也有对应的中断策略。</p>
-<ul>
-<li>中断策略：规定了线程如何解释某个中断请求</li>
-<li>中断策略，不是指如何中断线程，而是指线程在收到中断后，如何处理这个中断请求</li>
-</ul>
-<p>具体来说，就是在线程发现中断时：</p>
-<ul>
-<li>该做什么工作（需要的话）</li>
-<li>哪些工作单元对于中断来说是原子操作</li>
-<li>以多快的速度响应中断</li>
-</ul>
-<p>每个线程都有各自的中断策略，可以有不同的处理。</p>
-<h2 id="二、屏蔽中断策略"><a href="#二、屏蔽中断策略" class="headerlink" title="二、屏蔽中断策略"></a>二、屏蔽中断策略</h2><p>最简单的中断策略，就是屏蔽忽略线程的中断。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">IgnoreThread</span> <span class="keyword">extends</span> <span class="title class_">Thread</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        Runnable task;</span><br><span class="line">        <span class="keyword">for</span>(;;) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                task = tasks.take();</span><br><span class="line">                task.run();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                <span class="comment">// 屏蔽忽略所有的中断</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这种完全屏蔽中断的行为，不是一种很合理的方式，过于粗暴。</p>
-<h2 id="三、结束线程策略"><a href="#三、结束线程策略" class="headerlink" title="三、结束线程策略"></a>三、结束线程策略</h2><p>最合理的中断策略，就是线程级取消操作或服务级取消操作：</p>
-<ul>
-<li>线程发现中断后，尽快退出结束，在必要时进行清理，通知某个所有者该线程已经退出</li>
-</ul>
-<p>比如说，线程可以运行多个任务，如果中断了线程，那还得等任务都执行完之后才能退出。</p>
-<p>代码示例：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ExitThread</span> <span class="keyword">extends</span> <span class="title class_">Thread</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Runnable task;</span><br><span class="line">            <span class="keyword">for</span>(;;) &#123;</span><br><span class="line">                <span class="comment">// 检查是否发生了中断</span></span><br><span class="line">                <span class="keyword">if</span> (Thread.currentThread().isInterrupted()) &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                task = tasks.take();</span><br><span class="line">                task.run();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            <span class="comment">// 中断线程</span></span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">// 清理</span></span><br><span class="line">            cleanup();</span><br><span class="line">            <span class="comment">// 通知结束</span></span><br><span class="line">            notifyExit();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>收到中断后结束线程，算是一种比较合理的中断策略了。</p>
-<h2 id="四、重启线程策略"><a href="#四、重启线程策略" class="headerlink" title="四、重启线程策略"></a>四、重启线程策略</h2><p>还有其他的中断策略，比如暂停服务或重启服务：</p>
-<ul>
-<li>线程收到中断后，它先是销毁当前线程，然后再重新创建一个新的线程来替代</li>
-</ul>
-<p>代码示例：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">RebuildThread</span> <span class="keyword">extends</span> <span class="title class_">Thread</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Runnable task;</span><br><span class="line">            <span class="keyword">for</span>(;;) &#123;</span><br><span class="line">                <span class="comment">// 检查是否发生了中断</span></span><br><span class="line">                <span class="keyword">if</span> (Thread.currentThread().isInterrupted()) &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                task = tasks.take();</span><br><span class="line">                task.run();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            <span class="comment">// 中断线程</span></span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">// 重启新线程</span></span><br><span class="line">            createWorker(tasks);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这种重启线程策略，实际在线程池中可能会用到。</p>
-<p>因为如果一个线程异常退出后，线程池可能需要补充一个新线程来恢复之前的规模。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>中断线程：</p>
-<ul>
-<li>中断线程，指的是向线程发起一个中断信号</li>
-<li>中断线程，对象是线程，而不是线程内运行的任务</li>
-</ul>
-<p>线程如何解释某个中断请求：</p>
-<ul>
-<li>该做什么工作（需要的话）</li>
-<li>哪些工作单元对于中断来说是原子操作</li>
-<li>以多快的速度响应中断</li>
-</ul>
-<p>中断策略：</p>
-<ul>
-<li>屏蔽中断策略</li>
-<li>结束线程策略</li>
-<li>重启线程策略</li>
 </ul>
 ]]></content>
       <categories>
@@ -9783,6 +9783,192 @@
       <tags>
         <tag>算法</tag>
         <tag>快速排序</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>二叉搜索树</title>
+    <url>/datastructure/tree/binary_search_tree/</url>
+    <content><![CDATA[<h1 id="二叉搜索树"><a href="#二叉搜索树" class="headerlink" title="二叉搜索树"></a>二叉搜索树</h1><h2 id="一、结构定义"><a href="#一、结构定义" class="headerlink" title="一、结构定义"></a>一、结构定义</h2><p>二叉搜索树（binary search tree），也称为二叉查找树，是一种二叉树，同时还满足了以下的条件：</p>
+<ol>
+<li>对于根节点，左子树中所有节点的值 &lt; 根节点的值 &lt; 右子树中所有节点的值</li>
+<li>任意节点的左、右子树也是二叉搜索树</li>
+</ol>
+<p>相比于普通二叉树，二叉搜索树的节点之间带有大小关系，这使得二叉搜索树可以支持快速的查找、插入、删除操作。</p>
+<span id="more"></span>
+
+<p>比如说，这就是一棵二叉搜索树：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">    5</span><br><span class="line">   / \</span><br><span class="line">  3   6</span><br><span class="line"> / \   \</span><br><span class="line">2   4   7</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="二、基本操作"><a href="#二、基本操作" class="headerlink" title="二、基本操作"></a>二、基本操作</h2><h3 id="2-1-遍历"><a href="#2-1-遍历" class="headerlink" title="2.1 遍历"></a>2.1 遍历</h3><p>二叉搜索树满足「左子节点 &lt; 根节点 &lt; 右子节点」的大小关系，而中序遍历恰好是按照「左 -&gt; 根 -&gt; 右」的顺序遍历：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">    5</span><br><span class="line">   / \</span><br><span class="line">  3   6        中序遍历：2 3 4 5 6 7</span><br><span class="line"> / \   \</span><br><span class="line">2   4   7</span><br></pre></td></tr></table></figure>
+
+<p>因此，对二叉搜索树进行中序遍历的话，可以得到一个递增的有序序列。</p>
+<p>利用中序遍历升序的性质，可以用二叉搜索树来实现排序：先将数据插入到二叉搜索树中，再进行中序遍历，就可以得到有序的数据序列。</p>
+<h3 id="2-2-查找"><a href="#2-2-查找" class="headerlink" title="2.2 查找"></a>2.2 查找</h3><p>二叉搜索树满足「左子节点 &lt; 根节点 &lt; 右子节点」的大小关系，因此查找操作与二分查找类似，每次可以将查找区间缩小一半。</p>
+<p>比如说，要查找值为 4 的节点：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">二叉搜索树                 查找 4</span><br><span class="line"></span><br><span class="line">    5                       5         -- 第一轮</span><br><span class="line">   / \                     /</span><br><span class="line">  3   6         --&gt;       3           -- 第二轮</span><br><span class="line"> / \   \                   \</span><br><span class="line">2   4   7                   4         -- 第三轮</span><br></pre></td></tr></table></figure>
+
+<p>查找过程就是，比较当前节点的值与目标值，根据判断结果决定向左子树还是右子树查找。</p>
+<p>查询过程的伪代码类似这样：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">TreeNode <span class="title function_">search</span><span class="params">(TreeNode root, <span class="type">int</span> val)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">null</span> || root.val == val) &#123;</span><br><span class="line">        <span class="keyword">return</span> root;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (root.val &lt; val) &#123;</span><br><span class="line">        <span class="keyword">return</span> search(root.right, val);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> search(root.left, val);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>复杂度分析：</p>
+<ul>
+<li>时间复杂度：O(logn)，查找次数最多是树的高度，平衡的二叉搜索树高度是 logn。</li>
+<li>空间复杂度：O(1)。</li>
+</ul>
+<h3 id="2-3-插入"><a href="#2-3-插入" class="headerlink" title="2.3 插入"></a>2.3 插入</h3><p>插入操作需要满足几个条件：</p>
+<ol>
+<li>插入后必须能保持二叉搜索树「左子树 &lt; 根节点 &lt; 右子树」的性质</li>
+<li>新插入节点必须是叶子节点</li>
+</ol>
+<p>比如说，要插入值为 1 的节点：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">二叉搜索树                 插入 1</span><br><span class="line"></span><br><span class="line">    5                       5</span><br><span class="line">   / \                     / \</span><br><span class="line">  3   6         --&gt;       3   6</span><br><span class="line"> / \   \                 / \   \</span><br><span class="line">2   4   7               2   4   7</span><br><span class="line">                       /</span><br><span class="line">                      1</span><br></pre></td></tr></table></figure>
+
+<p>插入的新节点必须是放在叶子节点，因此首先要找到插入位置，找的过程和查找操作类似。</p>
+<p>插入过程的伪代码类似这样：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">TreeNode <span class="title function_">insert</span><span class="params">(TreeNode root, <span class="type">int</span> val)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">TreeNode</span>(val);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (root.val &lt; val) &#123;</span><br><span class="line">        root.right = insert(root.right, val);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        root.left = insert(root.left, val);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>复杂度分析：</p>
+<ul>
+<li>时间复杂度：O(logn)，插入需要查找，与查找操作的复杂度相同。</li>
+<li>空间复杂度：O(1)。</li>
+</ul>
+<h3 id="2-4-删除"><a href="#2-4-删除" class="headerlink" title="2.4 删除"></a>2.4 删除</h3><p>删除操作也需要满足：删除后必须能保持二叉搜索树「左子树 &lt; 根节点 &lt; 右子树」的性质。</p>
+<p>因此，删除需要分为 3 种情况：</p>
+<ol>
+<li>要删除的节点是叶子节点，可以直接删除</li>
+<li>要删除的节点只有一个子节点，那么将子节点提升到要删除的节点的位置即可</li>
+<li>要删除的节点有两个子节点，需要找到左子树中最大的节点，或者右子树中最小的节点来接替要删除的节点</li>
+</ol>
+<h4 id="1-删除叶子节点"><a href="#1-删除叶子节点" class="headerlink" title="(1) 删除叶子节点"></a>(1) 删除叶子节点</h4><p>比如说，要删除值为 4 的节点：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">二叉搜索树                 删除 4</span><br><span class="line"></span><br><span class="line">    5                       5</span><br><span class="line">   / \                     / \</span><br><span class="line">  3   6         --&gt;       3   6</span><br><span class="line"> / \   \                 /     \</span><br><span class="line">2   4   7               2       7</span><br></pre></td></tr></table></figure>
+
+<p>删除叶子节点的过程就是：</p>
+<ol>
+<li>找到要删除的节点（4）。</li>
+<li>然后将父节点（3）指向它（4）的指针置为 null。</li>
+</ol>
+<h4 id="2-删除只有一个子节点的节点"><a href="#2-删除只有一个子节点的节点" class="headerlink" title="(2) 删除只有一个子节点的节点"></a>(2) 删除只有一个子节点的节点</h4><p>比如说，要删除值为 6 的节点：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">二叉搜索树                 删除 6</span><br><span class="line"></span><br><span class="line">    5                       5</span><br><span class="line">   / \                     / \</span><br><span class="line">  3   6         --&gt;       3   7</span><br><span class="line"> / \   \                 / \</span><br><span class="line">2   4   7               2   4  </span><br></pre></td></tr></table></figure>
+
+<p>删除只有一个子节点的节点的过程就是：</p>
+<ol>
+<li>找到要删除的节点（6）。</li>
+<li>然后将父节点（5）指向它（6）的指针指向它的子节点（7）。</li>
+</ol>
+<h4 id="3-删除有两个子节点的节点"><a href="#3-删除有两个子节点的节点" class="headerlink" title="(3) 删除有两个子节点的节点"></a>(3) 删除有两个子节点的节点</h4><p>比如说，要删除值为 5 的节点：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">二叉搜索树                删除 5（替换节点4）         删除 5（替换节点6）</span><br><span class="line"></span><br><span class="line">    5                          4                          6    </span><br><span class="line">   / \                        / \                        / \  </span><br><span class="line">  3   6         --&gt;          3   6          或          3   7  </span><br><span class="line"> / \   \                    /     \                    / \   </span><br><span class="line">2   4   7                  2       7                  2   4  </span><br></pre></td></tr></table></figure>
+
+<p>删除有两个子节点的节点的过程就是：</p>
+<ol>
+<li>找到要删除的节点（5）。</li>
+<li>然后找到删除节点左子树中最大的节点（4），或者右子树中最小的节点（6），作为替换节点。</li>
+<li>将替换节点（4/6）与要删除的节点（5）交换，然后删除要删除的节点（5）。</li>
+</ol>
+<p>删除过程的伪代码类似这样（以右子树中最小的节点作为替换节点）：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">TreeNode <span class="title function_">delete</span><span class="params">(TreeNode root, <span class="type">int</span> val)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (root.val == val) &#123;</span><br><span class="line">        <span class="comment">// 找到要删除的节点</span></span><br><span class="line">        <span class="comment">// 1. 删除叶子节点</span></span><br><span class="line">        <span class="keyword">if</span> (root.left == <span class="literal">null</span> &amp;&amp; root.right == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 2. 删除只有一个子节点的节点</span></span><br><span class="line">        <span class="keyword">if</span> (root.left == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> root.right;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (root.right == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> root.left;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 3. 删除有两个子节点的节点</span></span><br><span class="line">        <span class="comment">// 找到右子树中最小的节点，作为替换节点</span></span><br><span class="line">        <span class="type">TreeNode</span> <span class="variable">minNode</span> <span class="operator">=</span> getMin(root.right);</span><br><span class="line">        <span class="comment">// 删除 minNode（等价于交换 root 和 minNode，并删除 root）</span></span><br><span class="line">        root.right = delete(root.right, minNode.val);</span><br><span class="line">        <span class="comment">// 用 minNode 替换 root</span></span><br><span class="line">        minNode.left = root.left;</span><br><span class="line">        minNode.right = root.right;</span><br><span class="line">        root = minNode;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (root.val &lt; val) &#123;</span><br><span class="line">        <span class="comment">// 去右子树删除</span></span><br><span class="line">        root.right = delete(root.right, val);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (root.val &gt; val) &#123;</span><br><span class="line">        <span class="comment">// 去左子树删除</span></span><br><span class="line">        root.left = delete(root.left, val);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为删除涉及到了二叉搜索树的内部节点，为了保持它的性质，所以操作会稍微有点复杂。</p>
+<p>复杂度分析：</p>
+<ul>
+<li>时间复杂度：O(logn)，删除需要查找，与查找操作的复杂度相同。</li>
+<li>空间复杂度：O(1)。</li>
+</ul>
+<h2 id="三、典型应用"><a href="#三、典型应用" class="headerlink" title="三、典型应用"></a>三、典型应用</h2><ul>
+<li>索引：用作系统中的多级索引，实现高效的查找、插入、删除操作。</li>
+<li>搜索算法：作为某些搜索算法的底层数据结构。</li>
+<li>有序数据存储：用于存储数据流，以保持其有序状态。</li>
+<li>范围查询：BST可用于执行范围查询，例如查找在给定范围内的所有元素。</li>
+<li>自动补全和拼写检查：BST可用于实现自动补全和拼写检查功能，其中树中的节点存储单词或短语。</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><blockquote>
+<p><a href="https://www.hello-algo.com/chapter_tree/binary_search_tree/">https://www.hello-algo.com/chapter_tree/binary_search_tree/</a></p>
+<p><a href="https://time.geekbang.org/column/article/68334">https://time.geekbang.org/column/article/68334</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>数据结构与算法</category>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+        <tag>数据结构</tag>
+        <tag>二叉搜索树</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>二叉树遍历</title>
+    <url>/algorithm/tree/binary_tree_traversal/</url>
+    <content><![CDATA[<h1 id="二叉树遍历"><a href="#二叉树遍历" class="headerlink" title="二叉树遍历"></a>二叉树遍历</h1><p>二叉树常见的遍历方式包括层序遍历、前序遍历、中序遍历和后序遍历等。</p>
+<h2 id="一、层序遍历"><a href="#一、层序遍历" class="headerlink" title="一、层序遍历"></a>一、层序遍历</h2><p>层序遍历（Level-Order Traversal）从顶部到底部逐层遍历二叉树，并在每一层按照从左到右的顺序访问节点。</p>
+<p>层序遍历本质上属于广度优先遍历。</p>
+<span id="more"></span>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">    1</span><br><span class="line">   / \</span><br><span class="line">  2   3           层序遍历：1 2 3 4 5 6</span><br><span class="line"> / \   \</span><br><span class="line">4   5   6</span><br></pre></td></tr></table></figure>
+
+<p>层序遍历的伪代码类似这样：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">levelOrder</span><span class="params">(TreeNode root)</span> &#123;</span><br><span class="line">    Queue&lt;TreeNode&gt; queue = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">    queue.offer(root);</span><br><span class="line">    <span class="keyword">while</span> (!queue.isEmpty()) &#123;</span><br><span class="line">        <span class="type">TreeNode</span> <span class="variable">node</span> <span class="operator">=</span> queue.poll();</span><br><span class="line">        visit(node);</span><br><span class="line">        <span class="keyword">if</span> (node.left != <span class="literal">null</span>) &#123;</span><br><span class="line">            queue.offer(node.left);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (node.right != <span class="literal">null</span>) &#123;</span><br><span class="line">            queue.offer(node.right);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>复杂度分析：</p>
+<ul>
+<li>时间复杂度：O(n)，其中 n 是节点的数量。每个节点恰好会被运算一次。</li>
+<li>空间复杂度：O(n)，为队列的开销，队列中节点的个数不会超过 n。</li>
+</ul>
+<h2 id="二、深序遍历"><a href="#二、深序遍历" class="headerlink" title="二、深序遍历"></a>二、深序遍历</h2><p>深序遍历（Depth-Order Traversal）从顶部到底部遍历二叉树，并在按照一定的优先级顺序访问节点。</p>
+<p>深序遍历本质上属于深度优先遍历。</p>
+<p>根据遍历过程中节点访问顺序的不同，深序遍历可分为 3 种类型：</p>
+<ul>
+<li>前序遍历：根节点 -&gt; 左子树 -&gt; 右子树</li>
+<li>中序遍历：左子树 -&gt; 根节点 -&gt; 右子树</li>
+<li>后序遍历：左子树 -&gt; 右子树 -&gt; 根节点</li>
+</ul>
+<p>在前中后序中，前中后指的是根节点的访问顺序。</p>
+<h3 id="2-1-前序遍历"><a href="#2-1-前序遍历" class="headerlink" title="2.1 前序遍历"></a>2.1 前序遍历</h3><p>前序遍历遍历顺序为：根节点 -&gt; 左子树 -&gt; 右子树。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">    1</span><br><span class="line">   / \</span><br><span class="line">  2   3           前序遍历：1 2 4 5 3 6</span><br><span class="line"> / \   \</span><br><span class="line">4   5   6</span><br></pre></td></tr></table></figure>
+
+<p>前序遍历的伪代码类似这样：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">preOrder</span><span class="params">(TreeNode root)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 访问优先级：根节点 -&gt; 左子树 -&gt; 右子树</span></span><br><span class="line">    visit(root);</span><br><span class="line">    preOrder(root.left);</span><br><span class="line">    preOrder(root.right);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>复杂度分析：</p>
+<ul>
+<li>时间复杂度：O(n)，其中 n 是节点的数量。每个节点恰好会被运算一次。</li>
+<li>空间复杂度：O(n)，为递归过程中栈的开销，平均情况下为 O(logn)，最坏情况下树呈现链状，为 O(n)。</li>
+</ul>
+<h3 id="2-2-中序遍历"><a href="#2-2-中序遍历" class="headerlink" title="2.2 中序遍历"></a>2.2 中序遍历</h3><p>中序遍历遍历顺序为：左子树 -&gt; 根节点 -&gt; 右子树。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">    1</span><br><span class="line">   / \</span><br><span class="line">  2   3           中序遍历：4 2 5 1 3 6</span><br><span class="line"> / \   \</span><br><span class="line">4   5   6</span><br></pre></td></tr></table></figure>
+
+<p>中序遍历的伪代码类似这样：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">inOrder</span><span class="params">(TreeNode root)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 访问优先级：左子树 -&gt; 根节点 -&gt; 右子树</span></span><br><span class="line">    inOrder(root.left);</span><br><span class="line">    visit(root);</span><br><span class="line">    inOrder(root.right);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>复杂度分析：</p>
+<ul>
+<li>时间复杂度：O(n)，其中 n 是节点的数量。每个节点恰好会被运算一次。</li>
+<li>空间复杂度：O(n)，为递归过程中栈的开销，平均情况下为 O(logn)，最坏情况下树呈现链状，为 O(n)。</li>
+</ul>
+<h3 id="2-3-后序遍历"><a href="#2-3-后序遍历" class="headerlink" title="2.3 后序遍历"></a>2.3 后序遍历</h3><p>后序遍历遍历顺序为：左子树 -&gt; 右子树 -&gt; 根节点。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">    1</span><br><span class="line">   / \</span><br><span class="line">  2   3           后序遍历：4 5 2 6 3 1</span><br><span class="line"> / \   \</span><br><span class="line">4   5   6</span><br></pre></td></tr></table></figure>
+
+<p>后序遍历的伪代码类似这样：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">postOrder</span><span class="params">(TreeNode root)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 访问优先级：左子树 -&gt; 右子树 -&gt; 根节点</span></span><br><span class="line">    postOrder(root.left);</span><br><span class="line">    postOrder(root.right);</span><br><span class="line">    visit(root);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复杂度分析：</p>
+<ul>
+<li>时间复杂度：O(n)，其中 n 是节点的数量。每个节点恰好会被运算一次。</li>
+<li>空间复杂度：O(n)，为递归过程中栈的开销，平均情况下为 O(logn)，最坏情况下树呈现链状，为 O(n)。</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><blockquote>
+<p><a href="https://www.hello-algo.com/chapter_tree/binary_tree_traversal/">https://www.hello-algo.com/chapter_tree/binary_tree_traversal/</a></p>
+<p><a href="https://time.geekbang.org/column/article/67856">https://time.geekbang.org/column/article/67856</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>数据结构与算法</category>
+        <category>遍历算法</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+        <tag>二叉树遍历</tag>
       </tags>
   </entry>
   <entry>
