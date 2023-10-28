@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-10-28T09:39:26.386Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36" etag="5hemZUygV4_dDtAEcFDZ" version="22.0.8" type="github">
+<mxfile host="app.diagrams.net" modified="2023-10-28T09:41:19.207Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36" etag="R7B6xzjV15a0PYRFFUJF" version="22.0.8" type="github">
   <diagram name="第 1 页" id="cQR1AnnfZqyHRSD-fw0c">
     <mxGraphModel dx="2074" dy="1110" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -314,8 +314,11 @@
         <mxCell id="GUb_MWUtf1tr1gasSi7g-156" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;首先要取消绿色节点&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="1050" y="131.25" width="200" height="37.5" as="geometry" />
         </mxCell>
-        <mxCell id="GUb_MWUtf1tr1gasSi7g-157" value="&lt;font color=&quot;#ff3333&quot; style=&quot;font-size: 14px;&quot;&gt;这种情况，如果是从前往后遍历的话，有可能存在死循环；而从后往前就不会出现问题&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="1290" y="600.63" width="200" height="58.75" as="geometry" />
+        <mxCell id="GUb_MWUtf1tr1gasSi7g-157" value="&lt;font color=&quot;#ff3333&quot; style=&quot;font-size: 14px;&quot;&gt;取消节点并不会直接从双向链表中移除，而是等后面的节点往前遍历时才会移除&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="990.62" width="200" height="58.75" as="geometry" />
+        </mxCell>
+        <mxCell id="GUb_MWUtf1tr1gasSi7g-158" value="&lt;font color=&quot;#ff3333&quot; style=&quot;font-size: 14px;&quot;&gt;这种情况，如果是从前往后遍历的话，有可能存在死循环；而从后往前就不会出现问题&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="610.63" width="200" height="58.75" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
